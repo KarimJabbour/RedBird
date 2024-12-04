@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RedBird Roster</title>
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <script src="../assets/js/dashboard.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="logo">
+                <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Dashboard</a></li>
+                <li><a href="#">Create Booking</a></li>
+                <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+          <!-- Pending Alternate Requests -->
+          <section class="column requests">
+              <div class="section-title">
+                  <h2>Pending Requests</h2>
+              </div>
+              <div class="booking-container">
+                  <div class="booking-row pending">
+                      <div class="column-title">Project Review</div>
+                      <div class="column-date">Nov 28 1:00PM - 2:00PM or</div>
+                      <div class="column-time">Nov 23 11:00AM - 1:00PM</div>
+                  </div>
+              </div>
+          </section>
+
+            <!-- Created Bookings -->
+            <section class="column bookings">
+                <div class="section-title">
+                    <h2>Scheduled Bookings</h2>
+                    <img src="Images/icons/booking_plus.png" alt="Create Booking" class="plus">
+                </div>
+                <div class="booking-container">
+                    <div class="booking-row created">
+                        <div class="column-title">Office Hours</div>
+                        <div class="column-date"><b>Date:</b> Every Monday</div>
+                        <div class="column-time"><b>Time:</b> 2:00 PM - 4:00 PM</div>
+                    </div>
+                    <div class="booking-row created">
+                        <div class="column-title">One Time Meeting</div>
+                        <div class="column-date"><b>Date:</b> Nov 28, 2024</div>
+                        <div class="column-time"><b>Time:</b> 10:00 AM - 11:00 AM</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="column polls">
+                <div class="section-title">
+                    <h2>Created Polls</h2>
+                    <img src="Images/icons/polls_plus.png" alt="Create Poll" class="plus">
+                </div>
+                <div class="empty">No polls created yet</div>
+            </section>
+
+            <section class="column bookings-history">
+                <div class="section-title">
+                    <h2>Bookings History</h2>
+                    <img src="Images/icons/booking_arrow.png" alt="Expand" class="arrow">
+                </div>
+            </section>
+
+        </main>
+    </div>
+</body>
+</html>
