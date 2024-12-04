@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Poll</title>
-    <link rel="stylesheet" href="../assets/css/create_poll.css">
+    <link rel="stylesheet" href="create_poll.css">
 </head>
 
 <body>
@@ -105,11 +105,25 @@
                 <div class="time-cards">
                     <div class="time-card">
                         <h3>November 28, 2024</h3>
-                        <p>10:00 AM - 11:00 AM</p>
+                        <label for="start-time" class="time-slot-label">
+                          <b>Start Time:</b>
+                          <input type="text" class="time-slot" id="start-time" name="end-time" placeholder="Click to enter" onfocus="(this.type='time')" onblur="(this.type='text')">
+                        </label>
+                        <label for="end-time" class="time-slot-label">
+                          <b>End Time:</b>
+                          <input type="text" class="time-slot" id="end-time" name="end-time" placeholder="Click to enter" onfocus="(this.type='time')" onblur="(this.type='text')">
+                        </label>
                     </div>
                     <div class="time-card">
-                        <h3>November 29, 2024</h3>
-                        <p>2:00 PM - 3:00 PM</p>
+                        <h3>December 3, 2024</h3>
+                        <label for="start-time" class="time-slot-label">
+                          <b>Start Time:</b>
+                          <input type="text" class="time-slot" id="start-time" name="end-time" placeholder="Click to enter" onfocus="(this.type='time')" onblur="(this.type='text')">
+                        </label>
+                        <label for="end-time" class="time-slot-label">
+                          <b>End Time:</b>
+                          <input type="text" class="time-slot" id="end-time" name="end-time" placeholder="Click to enter" onfocus="(this.type='time')" onblur="(this.type='text')">
+                        </label>
                     </div>
                 </div>
 
