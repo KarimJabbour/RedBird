@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Booking</title>
+  <link rel="stylesheet" href="../assets/css/create_booking.css">
+</head>
+
+<body>
+  <script src="../assets/js/createBooking.js"></script>
+  <div class="container">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+      <div class="logo">
+        <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
+      </div>
+      <ul class="nav-links">
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#" class="active">Create Booking</a></li>
+        <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
+      </ul>
+    </nav>
+
+    <header class="header">
+        <h1>Create a New Booking</h1>
+        <p class="sub-header">Pick a time and date from the calendar and configure the meeting details.</p>
+    </header>
+
+
+    <!-- Form Wrapper -->
+    <form action="createBooking.php" method="POST" class="booking-form" id="booking-form">
+      <!-- Main Content -->
+      <section class="split-content">
+          <!-- Dynamic Sidebar -->
+          <div class="dynamic-container">
+            <div class="dynamic-content" id="dynamic-calendar">
+              <h3 id="hello">Calendar</h3>
+              <div class="calendar">
+                <!-- Calendar Header -->
+                <div class="calendar-header">
+                    <button class="prev-month" type="button">
+                      <img src="Images/icons/FF702E_left_arrow.png" alt="Previous Month" class="arrow" onclick="changeMonth(-1)">
+                    </button>
+                    <div class="month-year" id="month-year">Hi</div>
+                    <button class="next-month" type="button">
+                      <img src="Images/icons/FF702E_right_arrow.png" alt="Next Month" class="arrow" onclick="changeMonth(1)">
+                    </button>
+                </div>
+                <!-- Calendar Grid -->
+                <div class="calendar-grid" id="calendar-grid">
+                  
+                </div>
+                <button class="clear-btn" onclick="clearAllHighlights()">Clear All Selections</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Section -->
+          <section class="form-container dates">
+              <h2>Booking Dates</h2>
+
+              <div class="form-group">
+                  <label for="booking-name">Booking Name</label>
+                  <input type="text" id="booking-name" name="booking-name" required>
+              </div>
+
+                <div class="form-group">
+                    <label for="recurring-timeline">Frequency</label>
+                    <select id="recurring-timeline" name="recurring-timeline" required>
+                        <option value="non-recurring" selected>Non-Recurring</option>
+                        <option value="daily">Every Day</option>
+                        <option value="weekly">Every Week</option>
+                        <option value="2weekly">Every 2 Weeks</option>
+                        <option value="4weekly">Every 4 Weeks</option>
+                        <option value="monthly">Every Month</option>
+                    </select>
+                </div>
+
+                <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
+
+                <div class="form-group">
+                  <label for="recurrence-days">Days</label>
+                  <div id="recurrence-days" class="days-picker">
+                      <input type="checkbox" id="day-m" name="days[]" value="M">
+                      <label for="day-m" class="day-option">M</label>
+              
+                      <input type="checkbox" id="day-t" name="days[]" value="T">
+                      <label for="day-t" class="day-option">T</label>
+              
+                      <input type="checkbox" id="day-w" name="days[]" value="W">
+                      <label for="day-w" class="day-option">W</label>
+              
+                      <input type="checkbox" id="day-th" name="days[]" value="Th">
+                      <label for="day-th" class="day-option">Th</label>
+              
+                      <input type="checkbox" id="day-f" name="days[]" value="F">
+                      <label for="day-f" class="day-option">F</label>
+              
+                      <input type="checkbox" id="day-s" name="days[]" value="S">
+                      <label for="day-s" class="day-option">S</label>
+              
+                      <input type="checkbox" id="day-su" name="days[]" value="Su">
+                      <label for="day-su" class="day-option">Su</label>
+                  </div>
+              </div>
+              
+              
+
+                <div class="form-group">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="start-date" name="start-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="end-date" name="end-date" required>
+                </div>
+                <p>Click on the calendar to pick dates</p>
+
+          </section>
+      </section>
+
+      <section class="form-container details">
+          <h2>Booking Details</h2>
+
+            <div class="form-group">
+                <label for="start-time">Start Time</label>
+                <input type="time" id="start-time" name="start-time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end-time">End Time</label>
+                <input type="time" id="end-time" name="end-time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+
+            <div class="form-group">
+                <label for="details">Additional Details</label>
+                <input type="text" id="details" name="details" placeholder="Provide additional information to your attendees (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="max-attendees">Max Attendees</label>
+                <input type="number" id="max-attendees" name="max-attendees" min="1" placeholder="Max number of attendees (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="time-slot">Time Slot Length</label>
+                <input type="number" id="time-slot" name="time-slot" min="5" placeholder="Length of time slot for each student (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="attachment-link">Attachments</label>
+                <input type="url" id="attachment-link" name="attachment-link" placeholder="Arrachment link (if applicable)">
+            </div>
+
+            <div class="form-group">
+                <label for="meeting-link">Zoom Link</label>
+                <input type="url" id="meeting-link" name="meeting-link" placeholder="Meeting link (if applicable)">
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn-save">Create Booking</button>
+            </div>
+
+      </section>
+    </form>
+
+  </div>
+
+</body>
+
+</html>
