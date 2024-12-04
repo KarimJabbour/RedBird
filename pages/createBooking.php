@@ -33,6 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $meetingDates = '"' . $meetingDates . '"';
     echo $meetingDates;
 
+    
+    $recurrenceDays = htmlspecialchars($_POST['recurring-days']);
+    echo "RecurrenceDays: " . $recurrenceDays;
+
     //placeholder value
     $userId = -1;
     //$meetingDates = '" "';

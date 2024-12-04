@@ -5,11 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Booking</title>
-  <link rel="stylesheet" href="../assets/css/create_booking.css">
+  <link rel="stylesheet" href="create_booking.css">
 </head>
 
 <body>
-  <script src="../assets/js/createBooking.js"></script>
+  <script src="createBooking.js"></script>
   <div class="container">
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -52,7 +52,7 @@
                 <div class="calendar-grid" id="calendar-grid">
                   
                 </div>
-                <button class="clear-btn" onclick="clearAllHighlights()">Clear All Selections</button>
+                <button class="clear-btn" type="button" onclick="clearAllHighlights()">Clear All Selections</button>
               </div>
             </div>
           </div>
@@ -79,6 +79,7 @@
                 </div>
 
                 <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
+                <input type="hidden" id="recurring-days" name="recurring-days" value="">
 
                 <div class="form-group">
                   <label for="recurrence-days">Days</label>
