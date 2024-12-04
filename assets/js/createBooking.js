@@ -5,7 +5,7 @@ let currentYear = currentDate.getFullYear();
 let recurringDates = []; // Stores the computed recurring dates
 let manualAdjustments = new Set(); // Tracks manual additions/removals of dates
 let deselectedDates = new Set(); // Manually deselected dates
-
+let highlighted = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     populateCalendar(currentMonth, currentYear);
@@ -35,7 +35,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("booking-form").addEventListener("submit", function (event) {
         const highlightedDates = getHighlightedDates();
+        const recurrenceDays = getRecurrenceDays();
         document.getElementById("highlighted-dates").value = highlightedDates.join(",");
+        document.getElementById("recurring-days").value = recurrenceDays.join(",");
+        // document.getElementById("highlighted-dates").value = highlighted.join(",");
     });
 });
 
@@ -236,11 +239,13 @@ function toggleDateSelection(date) {
             dayElement.classList.remove("highlight");
             manualAdjustments.delete(day);
             recurringDates.pop(day); 
+            //highlighted.pop(date);
         } else {
             // Select the day
             dayElement.classList.add("highlight");
             manualAdjustments.add(day);
-            recurringDates.push(day); // For monthly a day selected on the claendar is part of the recurrence
+            recurringDates.push(day); // For monthly a day selected on the calendar is part of the recurrence
+            //highlighted.push(date);
         }
         updateCalendar();
 
@@ -248,14 +253,18 @@ function toggleDateSelection(date) {
         if (recurringDates.includes(date)) {
             if (deselectedDates.has(date)) {
                 deselectedDates.delete(date); // Undo deselection
+                //highlighted.push(date);
             } else {
                 deselectedDates.add(date); // Deselect
+                //highlighted.push(date);
             }
         } else {
             if (manualAdjustments.has(date)) {
                 manualAdjustments.delete(date); // Undo manual addition
+                //highlighted.pop(date);
             } else {
                 manualAdjustments.add(date); // Add manually
+                //highlighted.push(date);
                 //recurringDates.push(date);
             }
         }
@@ -308,8 +317,21 @@ function clearAllHighlights() {
 }
 
 function getHighlightedDates() {
-    const highlightedDays = document.querySelectorAll(".day.highlight");
-    return Array.from(highlightedDays).map(day => day.getAttribute("data-date"));
+    allHighlightedDates = new Set([
+        ...recurringDates.filter(date => !deselectedDates.has(date)),
+        ...manualAdjustments,
+    ]);
+    return Array.from(allHighlightedDates);
+}
+
+function getRecurrenceDays() {
+    const frequency = document.getElementById("recurring-timeline").value;
+
+    if (frequency === "monthly") {
+        return Array.from(manualAdjustments);
+    } else {
+        return Array.from(document.querySelectorAll("input[name='days[]']:checked")).map(cb => cb.value);
+    }
 }
 
 
