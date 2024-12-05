@@ -177,6 +177,7 @@ function clearAllHighlights() {
     });
   
     selectedDates.clear();
+    sidebarData = {};
     updateSidebar();
 }
 
