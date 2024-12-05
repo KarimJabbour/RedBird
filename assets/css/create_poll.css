@@ -202,7 +202,7 @@ body {
 }
 
 .day:hover {
-    background: #FF702E;
+    background: #fb9482;
     color: white;
 }
 
@@ -210,6 +210,13 @@ body {
     background: transparent;
     box-shadow: none;
     cursor: default;
+}
+
+.day.highlight {
+    background-color: #ff702e;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
 }
 
 /* Selected Day */
@@ -263,11 +270,12 @@ body {
     flex-direction: column;
     align-items: flex-start;
     background: #F2F2F2;
-    padding: 15px;
+    padding: 6px 15px;
     border-radius: 12px;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-left: 12px solid #FF824A;
+    gap: 0px;
 }
 
 .time-card h3 {
@@ -275,9 +283,33 @@ body {
     color: black;
 }
 
-.time-card p {
-    color: black;
-    font-size: 1rem;
+.time-slot-label {
+    display: inline-flex;
+    align-items: center;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 0.5;
+    margin: 0;
+}
+
+.time-slot-label b {
+    margin-right: 5px;
+    line-height: 0.5;
+}
+
+.time-slot {
+   all: unset !important;
+   font-size: 12px;
+   font-family: inherit;
+   color: inherit;
+   cursor: pointer;
+   padding: 0;
+   width: auto;
+   line-height: 0.5;
+}
+
+.time-slot::placeholder {
+    color: #888;
 }
 
 /* .remove-btn {
