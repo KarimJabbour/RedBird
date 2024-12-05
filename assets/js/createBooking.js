@@ -334,6 +334,24 @@ function getRecurrenceDays() {
     }
 }
 
+function toggleRecurrenceDays() {
+    const recurringTimeline = document.getElementById("recurring-timeline").value;
+    const recurrenceDaysGroup = document.getElementById("week-days-form");
+    const dateRange = document.getElementById("date-range");
+
+    if (recurringTimeline === "weekly" || recurringTimeline === "2weekly" || recurringTimeline === "4weekly") {
+        recurrenceDaysGroup.style.display = "block";
+    } else {
+        recurrenceDaysGroup.style.display = "none";
+    }
+
+    if (recurringTimeline !== "non-recurring") {
+        dateRange.style.display = "block";
+    } else {
+        dateRange.style.display = "none";
+    }
+
+  }
 
 
 
