@@ -31,7 +31,7 @@
         </header>
 
         <!-- Main Content -->
-        <form action="#" method="POST" class="poll-form">
+        <form action="createPoll.php" method="POST" class="poll-form" id="poll-form">
           <section class="split-content">
             <!-- Dynamic Sidebar -->
             <div class="dynamic-container">
@@ -94,6 +94,10 @@
                         <label for="poll-close-time">Poll Close Date/Time</label>
                         <input type="text" id="poll-close-time" name="poll-close-time" placeholder="Enter time" onfocus="(this.type='time')" onblur="(this.type='text')">
                     </div>
+                    
+                    <input type="hidden" id="dates-hidden" name="dates" value="">
+                    <input type="hidden" id="start-times-hidden" name="startTimes" value="">
+                    <input type="hidden" id="end-times-hidden" name="endTimes" value="">
 
                     <div class="form-buttons">
                         <button type="submit" class="btn-save">Save</button>

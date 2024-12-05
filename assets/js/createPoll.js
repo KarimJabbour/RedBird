@@ -7,7 +7,34 @@ let sidebarData = {};
 
 document.addEventListener("DOMContentLoaded", function () {
     populateCalendar(currentMonth, currentYear);
+
+    document.getElementById("poll-form").addEventListener("submit", function (event) {
+        //event.preventDefault();
+
+        const timeCardData = Object.keys(sidebarData).map(date => ({
+            date: date,
+            startTime: sidebarData[date]?.startTime || "",
+            endTime: sidebarData[date]?.endTime || ""
+        }));
+    
+        // Populate the hidden inputs
+        const datesInput = document.getElementById("dates-hidden");
+        const startTimesInput = document.getElementById("start-times-hidden");
+        const endTimesInput = document.getElementById("end-times-hidden");
+    
+        datesInput.value = timeCardData.map(entry => entry.date).join(",");
+        startTimesInput.value = timeCardData.map(entry => entry.startTime).join(",");
+        endTimesInput.value = timeCardData.map(entry => entry.endTime).join(",");
+    
+
+        // Log for debugging
+        // console.log("Populated Hidden Inputs:");
+        // console.log("Dates:", datesInput.value);
+        // console.log("Start Times:", startTimesInput.value);
+        // console.log("End Times:", endTimesInput.value);
+    });
 });
+
 
 function populateCalendar(month, year) {
     const calendarGrid = document.getElementById("calendar-grid");
@@ -177,11 +204,22 @@ function clearAllHighlights() {
     });
   
     selectedDates.clear();
-    sidebarData = {};
     updateSidebar();
 }
 
 function clearForm() {
     const form = document.querySelector(".poll-form");
     form.reset();
+
+    console.log(sidebarData);
+
+    const timeCardData = Object.keys(sidebarData).map(date => ({
+        date: date,
+        startTime: sidebarData[date]["startTime"],
+        endTime: sidebarData[date]["endTime"]
+    }));
+
+    const timeCardsInput = document.getElementById("time-cards-hidden");
+    timeCardsInput.value = timeCardData.join(";");
+    console.log("Time Card Data Submitted:", timeCardData.join(';'));
 }
