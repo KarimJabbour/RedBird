@@ -2,32 +2,69 @@
 document.addEventListener('DOMContentLoaded', () => {
     const userId = 1; // Replace with the actual logged-in user's ID
     const bookingContainer = document.querySelector('.bookings .booking-container');
+    const pollsContainer = document.querySelector('.polls .booking-container');
 
+    console.log('Starting fetch');
     fetch(`http://localhost/displayDashboard.php`)
-        .then(response => response.json())
-        .then(data => {
-            // Clear existing bookings
-            bookingContainer.innerHTML = '';
-
-            data.forEach(booking => {
-                const earliestUpcomingDate = getEarliestUpcomingDate(booking.MeetingDates);
-
-                const frequencyAndDays =
-                    booking.RecurrenceFrequency !== 'non-recurring'
-                        ? ` (${formatFrequency(booking.RecurrenceFrequency)}: ${booking.RecurrenceDays})`
-                        : '';
-
-                const bookingRow = document.createElement('div');
-                bookingRow.className = 'booking-row created';
-                bookingRow.innerHTML = `
-                    <div class="column-title">${booking.BookingName}</div>
-                    <div class="column-date"><b>Next Date:</b> ${earliestUpcomingDate} ${frequencyAndDays} </div>
-                    <div class="column-time"><b>Time:</b> ${formatTime(booking.StartTime)} - ${formatTime(booking.EndTime)}</div>
-                `;
-                bookingContainer.appendChild(bookingRow);
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error('Error fetching bookings:', error));
+        .then(data => {
+            console.log("Fetched Data:", data); // Log the response for debugging
+            const bookings = data.bookings || []; 
+            const polls = data.polls || [];
+
+            // Clear existing bookings and polls
+            bookingContainer.innerHTML = '';
+            pollsContainer.innerHTML = '';
+
+            // Display bookings
+            if (bookings.length > 0) {
+                bookings.forEach(booking => {
+                    const earliestUpcomingDate = getEarliestUpcomingDate(booking.MeetingDates);
+
+                    const frequencyAndDays =
+                        booking.RecurrenceFrequency !== 'non-recurring'
+                            ? ` (${formatFrequency(booking.RecurrenceFrequency)}: ${booking.RecurrenceDays})`
+                            : '';
+
+                    const bookingRow = document.createElement('div');
+                    bookingRow.className = 'booking-row created';
+                    bookingRow.innerHTML = `
+                        <div class="column-title">${booking.BookingName}</div>
+                        <div class="column-date"><b>Next Date:</b> ${earliestUpcomingDate} ${frequencyAndDays}</div>
+                        <div class="column-time"><b>Time:</b> ${formatTime(booking.StartTime)} - ${formatTime(booking.EndTime)}</div>
+                    `;
+                    bookingContainer.appendChild(bookingRow);
+                });
+            } else {
+                bookingContainer.innerHTML = '<div class="empty">No bookings created yet</div>';
+            }
+
+            // Display polls
+            if (polls.length > 0) {
+                polls.forEach(poll => {
+                    const pollRow = document.createElement('div');
+                    pollRow.className = 'booking-row created';
+                    pollRow.innerHTML = `
+                        <div class="column-title">${poll.PollName}</div>
+                        <div class="column-date"><b>Preferred Date:</b> ${getFirst(poll.DateOptions)}</div>
+                        <div class="column-time"><b>Preferred Time:</b> ${formatTime(getFirst(poll.StartTimes))} - ${formatTime(getFirst(poll.EndTimes))}</div>
+                    `;
+                    pollsContainer.appendChild(pollRow);
+                });
+            } else {
+                pollsContainer.innerHTML = '<div class="empty">No polls created yet</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            bookingContainer.innerHTML = '<div class="error">Error loading bookings.</div>';
+            pollsContainer.innerHTML = '<div class="error">Error loading polls.</div>';
+        });
 });
 
 function formatDate(dateStr) {
@@ -83,6 +120,15 @@ function getEarliestUpcomingDate(meetingDatesStr) {
 
 function formatFrequency(frequency) {
     return frequency.charAt(0).toUpperCase() + frequency.slice(1).replace(/-/g, ' ');
+}
+
+function getFirst(options) {
+    if (!options) {
+        return 'None';
+    }
+    const optionList = options.split(',');
+    const first = optionList[0].trim().replace(/^"|"$/g, '');
+    return first || 'None';
 }
 
 

@@ -167,6 +167,10 @@ body {
     border-left: 12px solid #FF702E;
 }
 
+.polls .booking-row {
+    border-left: 12px solid #FB9482;
+}
+
 .booking-row:hover {
     transform: translateY(-5px);
 }
@@ -185,6 +189,10 @@ body {
 
 .bookings .column-title {
     color: #FF702E;
+}
+
+.polls .column-title {
+    color: #FB9482;
 }
 
 .bookings-history .column-title {
