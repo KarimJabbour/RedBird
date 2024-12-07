@@ -162,6 +162,7 @@ function showBookingPopup(booking) {
     bookingPopup.style.display = 'flex';
 
     bookingPopup.querySelector(".modal-header h2").textContent = booking.BookingName;
+    bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
     bookingPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${booking.Details}</p>
         <p><b>Location:</b> ${booking.Location}</p>
@@ -297,4 +298,38 @@ function showAlert(message) {
     setTimeout(() => {
         alert.className = alert.className.replace("show", "");
     }, 2500);
+}
+
+function deleteBooking(bookingId) {
+    if (!confirm("Are you sure you want to delete this booking?")) {
+        return; // Exit if the user cancels the action
+    }
+
+    console.log("bookingid"+bookingId);
+
+    fetch('http://localhost/redbird/pages/deleteBooking.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ bookingId })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert("Booking deleted successfully!");
+                location.reload(); // Reload the page to update the booking list
+            } else {
+                alert("Failed to delete booking. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting booking:", error);
+            alert("An error occurred while deleting the booking. Please try again.");
+        });
 }
