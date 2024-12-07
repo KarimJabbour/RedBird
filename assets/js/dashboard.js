@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyContainer = document.querySelector('.bookings-history .booking-container');
 
     console.log('Starting fetch');
-    fetch(`http://localhost/displayDashboard.php`)
+    fetch(`http://localhost/redbird/pages/displayDashboard.php`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const bookingRow = document.createElement('div');
                     bookingRow.className = 'booking-row created';
+                    bookingRow.onclick = () => showPopup(booking);
                     bookingRow.innerHTML = `
                         <div class="column-title">${booking.BookingName}</div>
                         <div class="column-date"><b>Next Date:</b> ${earliestUpcomingDate} ${frequencyAndDays}</div>
@@ -150,5 +151,32 @@ function getFirst(options) {
     return first || 'None';
 }
 
+function closePopup() {
+    const bookingPopup = document.getElementById("booking-details-popup");
+    bookingPopup.style.display = 'none';
+}
+
+function showPopup(booking) {
+    const bookingPopup = document.getElementById("booking-details-popup");
+    bookingPopup.style.display = 'flex';
+
+    bookingPopup.querySelector(".modal-header h2").textContent = booking.BookingName;
+    bookingPopup.querySelector(".modal-body").innerHTML = `
+        <p><b>Details:</b> ${booking.Details}</p>
+        <p><b>Location:</b> ${booking.Location}</p>
+        <p><b>Max Participants:</b> ${booking.MaxAttendees}</p>
+        <p><b>Time Slot:</b> ${booking.TimeSlotLength} minutes</p>
+        <div class="copy-container">
+            <b>Zoom Link:</b>
+            <a href="${booking.MeetingLink}" target="_blank" id="zoom-link">${booking.MeetingLink || "N/A"}</a>
+            <button class="copy-btn" onclick="copyToClipboard('zoom-link')">Copy</button>
+        </div>
+        <div class="copy-container">
+            <b>Booking URL:</b>
+            <a href="${booking.BookingURL}" target="_blank" id="meeting-url">${booking.BookingURL || "N/A"}</a>
+            <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>
+        </div>
+    `;
+}
 
 

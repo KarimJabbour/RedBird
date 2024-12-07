@@ -19,7 +19,7 @@ $userId = -1;
 $conn->query("UPDATE createdBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
 
 // Fetch current bookings and polls
-$sqlBookings = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Details, MaxAttendees, TimeSlotLength, Location
+$sqlBookings = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Details, MaxAttendees, TimeSlotLength, Location, MeetingLink, BookingURL
         FROM createdBookings 
         WHERE UserID = $userId AND Status = 'current'";
 

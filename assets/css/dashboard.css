@@ -77,7 +77,7 @@ body {
 
 /* Modal Container */
 .modal {
-    display: flex;
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -89,18 +89,6 @@ body {
     z-index: 1000;
 }
 
-/* Modal Content */
-.modal-content {
-    background: white;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease;
-}
-
-/* Modal Header */
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -128,6 +116,18 @@ body {
     transform: scale(1.2);
 }
 
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
 /* Modal Body */
 .modal-body p {
     margin: 5px 0;
@@ -136,7 +136,7 @@ body {
 }
 
 .modal-body b {
-    margin: 10px 0;
+    margin: 3px 0;
     font-size: 1rem;
     color: black;
 }
@@ -150,25 +150,13 @@ body {
     text-decoration: underline;
 }
 
-/* Modal Content */
-.modal-content {
-    background: white;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease;
-    max-height: 95vh;
-    overflow-y: auto;
-}
-
 /* Copy Container */
 .copy-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     transition: box-shadow 0.3s ease;
+    gap: 5px;
 }
 
 .copy-container a {
@@ -182,25 +170,6 @@ body {
     display: block;
 }
 
-/* Copy Button */
-.copy-btn {
-    background: #F34F51;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    margin-left: 10px;
-}
-
-.copy-btn:hover {
-    background: #EB0920;
-}
-
-/* Link Styling */
 .copy-container a {
     color: #555;
     text-decoration: none;
@@ -209,6 +178,22 @@ body {
     flex: 1;
 }
 
+/* Copy Button */
+.copy-btn {
+    background: #F34F51;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-left: 10px;
+}
+
+.copy-btn:hover {
+    background: #EB0920;
+}
 
 .meeting-times h3 {
     margin-top: 20px;
@@ -299,6 +284,7 @@ body {
     background: #FF702E;
     color: white;
     border: none;
+    font-weight: bold;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
