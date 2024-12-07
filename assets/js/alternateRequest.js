@@ -25,13 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
         datesInput.value = timeCardData.map(entry => entry.date).join(",");
         startTimesInput.value = timeCardData.map(entry => entry.startTime).join(",");
         endTimesInput.value = timeCardData.map(entry => entry.endTime).join(",");
-    
-
-        // Log for debugging
-        // console.log("Populated Hidden Inputs:");
-        // console.log("Dates:", datesInput.value);
-        // console.log("Start Times:", startTimesInput.value);
-        // console.log("End Times:", endTimesInput.value);
     });
 });
 
