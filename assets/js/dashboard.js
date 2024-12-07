@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = 1; // Replace with the actual logged-in user's ID
     const bookingContainer = document.querySelector('.bookings .booking-container');
     const pollsContainer = document.querySelector('.polls .booking-container');
+    const historyContainer = document.querySelector('.bookings-history .booking-container');
 
     console.log('Starting fetch');
     fetch(`http://localhost/displayDashboard.php`)
@@ -16,10 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Fetched Data:", data); // Log the response for debugging
             const bookings = data.bookings || []; 
             const polls = data.polls || [];
+            const pastBookings = data.pastBookings || [];
 
             // Clear existing bookings and polls
             bookingContainer.innerHTML = '';
             pollsContainer.innerHTML = '';
+            historyContainer.innerHTML = '';
 
             // Display bookings
             if (bookings.length > 0) {
@@ -58,6 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             } else {
                 pollsContainer.innerHTML = '<div class="empty">No polls created yet</div>';
+            }
+
+            // Display past bookings in history
+            if (pastBookings.length > 0) {
+                pastBookings.forEach(booking => {
+                    const bookingRow = document.createElement('div');
+                    bookingRow.className = 'booking-row past';
+                    bookingRow.innerHTML = `
+                        <div class="column-title">${booking.BookingName}</div>
+                        <div class="column-date"><b>End Date:</b> ${booking.EndRecurringDate}</div>
+                        <div class="column-time"><b>Time:</b> ${formatTime(booking.StartTime)} - ${formatTime(booking.EndTime)}</div>
+                    `;
+                    historyContainer.appendChild(bookingRow);
+                });
+            } else {
+                historyContainer.innerHTML = '<div class="empty">No past bookings or polls</div>';
             }
         })
         .catch(error => {

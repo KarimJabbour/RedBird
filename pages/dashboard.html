@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <script src="../assets/js/dashboard.js"></script>
 </head>
+
 <body>
+
     <div class="container">
         <!-- Navigation Bar -->
         <nav class="navbar">
@@ -20,6 +23,78 @@
                 <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
             </ul>
         </nav>
+
+        <!-- Meeting Details Popup -->
+        <div class="modal" id="meeting-details-popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>COMP 307 Office Hours</h2>
+                    <button class="close-btn" onclick="closePopup()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p><b>Details:</b> Help with the project</p>
+                    <p><b>Location:</b> Vybs's Office</p>
+                    <p><b>Max Participants:</b> 20</p>
+                    <p><b>Time Slot:</b> 15 minutes</p>
+                    <div class="copy-container">
+                        <b>Booking URL:</b>
+                        <a href="" target="_blank" id="meeting-url">file:///Volumes/File%20Server/McGill/Fall%202024/COMP%20307/Project/Website/dashboard.html</a>
+                        <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>
+                    </div>
+                    <div class="copy-container">
+                        <b>Zoom Link:</b>
+                        <a href="https://www.cs.mcgill.ca/~jvybihal/index.php" target="_blank" id="zoom-link">https://www.cs.mcgill.ca/~jvybihal/index.php</a>
+                        <button class="copy-btn" onclick="copyToClipboard('zoom-link')">Copy</button>
+                    </div>
+                    <div class="meeting-times">
+                      <h3>Booking Schedule</h3>
+                      <div class="scroll">
+                          <ul class="schedule-list">
+                              <li>
+                                  <div class="day-icon">M</div>
+                                  <div class="time-info">
+                                      <h4>Monday, December 8, 2024</h4>
+                                      <span>2:00 PM - 3:00 PM</span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <div class="day-icon">W</div>
+                                  <div class="time-info">
+                                      <h4>Wednesday, December 10, 2024</h4>
+                                      <span>4:00 PM - 5:00 PM</span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <div class="day-icon">F</div>
+                                  <div class="time-info">
+                                      <h4>Friday, December 13, 2024</h4>
+                                      <span>10:00 AM - 11:00 AM</span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <div class="day-icon">F</div>
+                                  <div class="time-info">
+                                      <h4>Friday, December 21, 2024</h4>
+                                      <span>8:00 AM - 11:00 AM</span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <div class="day-icon">M</div>
+                                  <div class="time-info">
+                                      <h4>Monday, December 23, 2024</h4>
+                                      <span>8:00 AM - 9:00 AM</span>
+                                  </div>
+                              </li>
+                          </ul>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="edit-btn" onclick="openEditPopup()">Edit Booking</button>
+                    <button class="delete-btn" onclick="deleteBooking()">Delete Booking</button>
+                </div>
+            </div>
+        </div>
 
         <!-- Main Content -->
         <main class="main-content">
@@ -64,9 +139,8 @@
                     <img src="Images/icons/polls_plus.png" alt="Create Poll" class="plus">
                 </div>
                 <div class="booking-container">
-                    
+
                 </div>
-                <!-- <div class="empty">No polls created yet</div> -->
             </section>
 
             <section class="column bookings-history">
@@ -74,9 +148,15 @@
                     <h2>Bookings History</h2>
                     <img src="Images/icons/booking_arrow.png" alt="Expand" class="arrow">
                 </div>
+                <div class="booking-container">
+
+                </div>
             </section>
 
         </main>
+
     </div>
+
 </body>
+
 </html>

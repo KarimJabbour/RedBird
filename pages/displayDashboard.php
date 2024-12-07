@@ -15,7 +15,11 @@ if ($conn->connect_error) {
 #$userId = $_GET['userId'];
 $userId = -1;
 
-$sqlBookings = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Location
+// Update status of past bookings
+$conn->query("UPDATE createdBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
+
+// Fetch current bookings and polls
+$sqlBookings = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Details, MaxAttendees, TimeSlotLength, Location
         FROM createdBookings 
         WHERE UserID = $userId AND Status = 'current'";
 
@@ -42,9 +46,24 @@ if ($resultPolls->num_rows > 0) {
 }
 
 
+// Fetch past bookings
+$pastBookingsQuery = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Location
+                      FROM createdBookings 
+                      WHERE UserID = -1 AND Status = 'past'";
+
+$resultPastBookings = $conn->query($pastBookingsQuery);
+
+$pastBookings = [];
+if ($resultPolls->num_rows > 0) {
+    while ($row = $resultPastBookings->fetch_assoc()) {
+        $pastBookings[] = $row;
+    }
+}
+
 $response = [
     'bookings' => $scheduledBookings,
     'polls' => $polls,
+    'pastBookings' => $pastBookings,
 ];
 
 header('Content-Type: application/json');
