@@ -77,7 +77,7 @@ body {
 
 /* Modal Container */
 .modal {
-    display: none;
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -86,7 +86,15 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2;
+}
+
+#booking-details-popup {
+    display: none;
+}
+
+#poll-details-popup {
+    display: flex;
 }
 
 .modal-header {
@@ -96,6 +104,10 @@ body {
     border-bottom: 2px solid #EB0920;
     padding-bottom: 0px;
     margin-bottom: 20px;
+    position: sticky;
+    top: -25px;
+    z-index: 3;
+    background-color: white;
 }
 
 .modal-header h2 {
@@ -272,12 +284,83 @@ body {
     color: #555;
 }
 
+/* Poll Results Container */
+.poll-results {
+    padding-top: 10px;
+    text-align: center;
+}
+
+.poll-results h3 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #FF702E;
+    padding-bottom: 5px;
+}
+
+.poll-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.poll-option {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.poll-label h4 {
+    font-size: 1.1rem;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.poll-label span {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+/* Poll Bar */
+.poll-bar {
+    position: relative;
+    height: 25px;
+    background: #f7f9fc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.poll-bar::before {
+    content: '';
+    display: block;
+    height: 100%;
+    width: var(--bar-width);
+    background: #FFB79B;
+    transition: width 0.3s ease;
+}
+
+.poll-bar span {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: black;
+    font-weight: bold;
+}
+
 /* Modal Footer */
 .modal-footer {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
+
+#booking-details-popup .modal-footer {
+    margin-top: 30px;
+}
+
 
 .edit-btn,
 .delete-btn {
@@ -307,6 +390,35 @@ body {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+/* Copy Alert */
+.copy-alert {
+    visibility: hidden;
+    min-width: 250px;
+    margin: 0 auto;
+    background-color: #f34f51;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    padding: 15px;
+    position: fixed;
+    z-index: 3;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.copy-alert.show {
+    visibility: visible;
+    animation: fadeInOut 2.5s;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    10%, 90% { opacity: 1; }
 }
 
 /* Main Content */

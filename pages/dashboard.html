@@ -24,74 +24,43 @@
             </ul>
         </nav>
 
+        <div class="copy-alert" id="copy-alert"></div>
         <!-- Booking Details Popup -->
         <div class="modal" id="booking-details-popup">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>COMP 307 Office Hours</h2>
-                    <button class="close-btn" onclick="closePopup()">✕</button>
+                    <h2></h2>
+                    <button class="close-btn" onclick="closePopup('booking-details-popup')">✕</button>
                 </div>
                 <div class="modal-body booking">
-                    <p><b>Details:</b> Help with the project</p>
-                    <p><b>Location:</b> Vybs's Office</p>
-                    <p><b>Max Participants:</b> 20</p>
-                    <p><b>Time Slot:</b> 15 minutes</p>
-                    <div class="copy-container">
-                        <b>Booking URL:</b>
-                        <a href="" target="_blank" id="booking-url">file:///Volumes/File%20Server/McGill/Fall%202024/COMP%20307/Project/Website/dashboard.html</a>
-                        <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>
-                    </div>
-                    <div class="copy-container">
-                        <b>Zoom Link:</b>
-                        <a href="https://www.cs.mcgill.ca/~jvybihal/index.php" target="_blank" id="zoom-link">https://www.cs.mcgill.ca/~jvybihal/index.php</a>
-                        <button class="copy-btn" onclick="copyToClipboard('zoom-link')">Copy</button>
-                    </div>
-                    <div class="meeting-times">
-                      <h3>Booking Schedule</h3>
-                      <div class="scroll">
-                          <ul class="schedule-list">
-                              <li>
-                                  <div class="day-icon">M</div>
-                                  <div class="time-info">
-                                      <h4>Monday, December 8, 2024</h4>
-                                      <span>2:00 PM - 3:00 PM</span>
-                                  </div>
-                              </li>
-                              <li>
-                                  <div class="day-icon">W</div>
-                                  <div class="time-info">
-                                      <h4>Wednesday, December 10, 2024</h4>
-                                      <span>4:00 PM - 5:00 PM</span>
-                                  </div>
-                              </li>
-                              <li>
-                                  <div class="day-icon">F</div>
-                                  <div class="time-info">
-                                      <h4>Friday, December 13, 2024</h4>
-                                      <span>10:00 AM - 11:00 AM</span>
-                                  </div>
-                              </li>
-                              <li>
-                                  <div class="day-icon">F</div>
-                                  <div class="time-info">
-                                      <h4>Friday, December 21, 2024</h4>
-                                      <span>8:00 AM - 11:00 AM</span>
-                                  </div>
-                              </li>
-                              <li>
-                                  <div class="day-icon">M</div>
-                                  <div class="time-info">
-                                      <h4>Monday, December 23, 2024</h4>
-                                      <span>8:00 AM - 9:00 AM</span>
-                                  </div>
-                              </li>
-                          </ul>
-                      </div>
-                    </div>
+                    <!-- Filled dynamically -->
                 </div>
                 <div class="modal-footer">
                     <button class="edit-btn" onclick="openEditPopup()">Edit Booking</button>
                     <button class="delete-btn" onclick="deleteBooking()">Delete Booking</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Poll Details Popup -->
+        <div class="modal" id="poll-details-popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>COMP 307 Extra Lecture</h2>
+                    <button class="close-btn" onclick="closePopup('poll-details-popup')">✕</button>
+                </div>
+                <div class="modal-body">
+                    <p><b>Details:</b> Missed lecture recovery</p>
+                    <p><b>Poll Close Date:</b> Friday, December 6, 2024</p>
+                    <div class="poll-results">
+                        <h3>Poll Results</h3>
+                        <ul class="poll-results-list">
+                          <!-- Filled dynamically -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: center">
+                    <button class="delete-btn" onclick="deleteBooking()">Close Poll Submissions</button>
                 </div>
             </div>
         </div>
@@ -120,16 +89,7 @@
                     <img src="Images/icons/booking_plus.png" alt="Create Booking" class="plus">
                 </div>
                 <div class="booking-container">
-                    <div class="booking-row created">
-                        <div class="column-title">Office Hours</div>
-                        <div class="column-date"><b>Date:</b> Every Monday</div>
-                        <div class="column-time"><b>Time:</b> 2:00 PM - 4:00 PM</div>
-                    </div>
-                    <div class="booking-row created">
-                        <div class="column-title">One Time Meeting</div>
-                        <div class="column-date"><b>Date:</b> Nov 28, 2024</div>
-                        <div class="column-time"><b>Time:</b> 10:00 AM - 11:00 AM</div>
-                    </div>
+                  <!-- Filled dynamically -->
                 </div>
             </section>
 
@@ -141,7 +101,6 @@
                 <div class="booking-container">
 
                 </div>
-                <!-- <div class="empty">No polls created yet</div> -->
             </section>
 
             <section class="column bookings-history">

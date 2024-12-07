@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             console.log("Fetched Data:", data); // Log the response for debugging
-            const bookings = data.bookings || []; 
+            const bookings = data.bookings || [];
             const polls = data.polls || [];
             const pastBookings = data.pastBookings || [];
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const bookingRow = document.createElement('div');
                     bookingRow.className = 'booking-row created';
-                    bookingRow.onclick = () => showPopup(booking);
+                    bookingRow.onclick = () => showBookingPopup(booking);
                     bookingRow.innerHTML = `
                         <div class="column-title">${booking.BookingName}</div>
                         <div class="column-date"><b>Next Date:</b> ${earliestUpcomingDate} ${frequencyAndDays}</div>
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function formatDate(dateStr) {
     if (!dateStr) {
-        return null; 
+        return null;
     }
     const [year, month, day] = dateStr.split('-');
     const date = new Date(`${year}-${month}-${day}`);
@@ -113,12 +113,12 @@ function getEarliestUpcomingDate(meetingDatesStr) {
     }
 
     const today = new Date();
-    console.log("Raw Meeting Dates String:", meetingDatesStr);
+    //console.log("Raw Meeting Dates String:", meetingDatesStr);
 
     const meetingDates = meetingDatesStr.split(',').map(dateStr => {
-        console.log("Raw Date Entry:", dateStr);
+        //console.log("Raw Date Entry:", dateStr);
         const [year, month, day] = dateStr.trim().replace(/^"|"$/g, '').split('-').map(Number); // Remove leading and trailing double quotes
-        console.log("Parsed Date Components:", { year, month, day });
+        //console.log("Parsed Date Components:", { year, month, day });
         return new Date(Date.UTC(year, month - 1, day+1)); // Create UTC date
     });
 
@@ -151,12 +151,12 @@ function getFirst(options) {
     return first || 'None';
 }
 
-function closePopup() {
-    const bookingPopup = document.getElementById("booking-details-popup");
-    bookingPopup.style.display = 'none';
+function closePopup(popupID) {
+    const popup = document.getElementById(popupID);
+    popup.style.display = 'none';
 }
 
-function showPopup(booking) {
+function showBookingPopup(booking) {
     const bookingPopup = document.getElementById("booking-details-popup");
     bookingPopup.style.display = 'flex';
 
@@ -176,7 +176,63 @@ function showPopup(booking) {
             <a href="${booking.BookingURL}" target="_blank" id="meeting-url">${booking.BookingURL || "N/A"}</a>
             <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>
         </div>
+        <div class="meeting-times">
+            <h3>Booking Schedule</h3>
+            <div class="scroll">
+                <ul class="schedule-list" id="schedule-list">
+                </ul>
+            </div>
+        </div>
     `;
+
+    // Populate meeting times
+    const scheduleList = document.querySelector(".schedule-list");
+
+    if (booking.MeetingDates.length > 0) {
+        const meetingDates = booking.MeetingDates.trim().replace(/^"|"$/g, '').split(',');
+
+        const startTime = booking.StartTime;
+        const endTime = booking.EndTime;
+
+        meetingDates.forEach(date => {
+
+            const [year, month, day] = date.trim().replace(/^"|"$/g, '').split('-').map(Number);
+            const formattedDate = new Date(year, month - 1, day)
+
+            var dayOfWeek = formattedDate.toLocaleString("en-US", { weekday: "short" });
+            var letterDay = dayOfWeek.charAt(0);
+
+            if (dayOfWeek === 'Tue' || dayOfWeek === 'Thu' || dayOfWeek === 'Sun') {
+                letterDay = dayOfWeek.substring(0,2);
+            }
+
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `
+                <div class="day-icon">${letterDay}</div>
+                <div class="time-info">
+                    <h4>${formattedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</h4>
+                    <span>${formatTime(startTime)} - ${formatTime(endTime)}</span>
+                </div>
+            `;
+            scheduleList.appendChild(listItem);
+        });
+    } else {
+        scheduleList.innerHTML = "<li>No scheduled meetings</li>";
+    }
 }
 
+function copyToClipboard(elementId) {
+    const copyText = document.getElementById(elementId).href;
+    navigator.clipboard.writeText(copyText).then(() => {
+        showAlert("Copied to clipboard!");
+    });
+}
 
+function showAlert(message) {
+    const alert = document.getElementById("copy-alert");
+    alert.textContent = message;
+    alert.className = "copy-alert show";
+    setTimeout(() => {
+        alert.className = alert.className.replace("show", "");
+    }, 2500);
+}

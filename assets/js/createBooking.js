@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("booking-form").addEventListener("submit", function (event) {
-        const highlightedDates = getHighlightedDates();
         const recurrenceDays = getRecurrenceDays();
+        const highlightedDates = getHighlightedDates();
         document.getElementById("highlighted-dates").value = highlightedDates.join(",");
         document.getElementById("recurring-days").value = recurrenceDays.join(",");
         // document.getElementById("highlighted-dates").value = highlighted.join(",");
@@ -317,6 +317,11 @@ function clearAllHighlights() {
 }
 
 function getHighlightedDates() {
+    manualAdjustments.forEach(item => {
+        if (!(item instanceof Date)) {
+            manualAdjustments.delete(item);
+        }
+    });
     allHighlightedDates = new Set([
         ...recurringDates.filter(date => !deselectedDates.has(date)),
         ...manualAdjustments,
