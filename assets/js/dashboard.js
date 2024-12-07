@@ -228,6 +228,7 @@ function showPollPopup(poll) {
     pollPopup.style.display = 'flex';
 
     pollPopup.querySelector(".modal-header h2").textContent = poll.PollName;
+    pollPopup.querySelector(".delete-btn").setAttribute('onclick', `closePoll(${poll.ID})`);
     pollPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${poll.Details}</p>
         <p><b>Poll Close Date:</b> ${poll.PollCloseDateTime}</p>
@@ -331,5 +332,42 @@ function deleteBooking(bookingId) {
         .catch(error => {
             console.error("Error deleting booking:", error);
             alert("An error occurred while deleting the booking. Please try again.");
+        });
+}
+
+
+function closePoll(pollID) {
+    if (!confirm("Are you sure you want to close this poll?")) {
+        return;
+    }
+
+    const closeTime = new Date().toISOString().replace('Z', '');; // Current timestamp
+    console.log("closetime"+closeTime);
+
+    fetch('http://localhost/redbird/pages/closePoll.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pollID, closeTime }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Response from server:", data);
+            if (data.success) {
+                alert("Poll closed successfully!");
+                location.reload();
+            } else {
+                alert("Failed to close poll: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error closing poll:", error);
+            alert("An error occurred while closing the poll. Please try again.");
         });
 }

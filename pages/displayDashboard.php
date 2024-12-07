@@ -32,7 +32,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-$sqlPolls = "SELECT PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
+$sqlPolls = "SELECT ID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
              FROM CreatedPolls 
              WHERE UserID = $userId AND Status = 'current'";
 
