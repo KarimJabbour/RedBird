@@ -94,7 +94,7 @@ body {
 }
 
 #poll-details-popup {
-    display: flex;
+    display: none;
 }
 
 .modal-header {

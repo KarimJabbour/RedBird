@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 polls.forEach(poll => {
                     const pollRow = document.createElement('div');
                     pollRow.className = 'booking-row created';
+                    pollRow.onclick = () => showPollPopup(poll);
                     pollRow.innerHTML = `
                         <div class="column-title">${poll.PollName}</div>
                         <div class="column-date"><b>Preferred Date:</b> ${getFirst(poll.DateOptions)}</div>
@@ -219,6 +220,67 @@ function showBookingPopup(booking) {
     } else {
         scheduleList.innerHTML = "<li>No scheduled meetings</li>";
     }
+}
+
+function showPollPopup(poll) {
+    const pollPopup = document.getElementById("poll-details-popup");
+    pollPopup.style.display = 'flex';
+
+    pollPopup.querySelector(".modal-header h2").textContent = poll.PollName;
+    pollPopup.querySelector(".modal-body").innerHTML = `
+        <p><b>Details:</b> ${poll.Details}</p>
+        <p><b>Poll Close Date:</b> ${poll.PollCloseDateTime}</p>
+        <div class="poll-results">
+            <h3>Poll Results</h3>
+            <ul class="poll-results-list">
+            </ul>
+        </div>
+    `;
+    populatePollResults(poll);
+}
+
+function populatePollResults(poll) {
+    const dates = poll.DateOptions.split(',').map(date => date.trim().replace(/^"|"$/g, ''));
+    const startTimes = poll.StartTimes.split(',').map(time => time.trim().replace(/^"|"$/g, ''));
+    const endTimes = poll.EndTimes.split(',').map(time => time.trim().replace(/^"|"$/g, ''));
+    const voteCounts = poll.VoteCounts.split(',').map(vote => parseInt(vote.trim().replace(/^"|"$/g, ''), 10));
+
+    const maxVotes = Math.max(...voteCounts);
+
+    // Sort the pollData by votes in descending order
+    const pollData = dates.map((date, index) => ({
+        date: date,
+        startTime: startTimes[index],
+        endTime: endTimes[index],
+        votes: voteCounts[index],
+    }));
+    pollData.sort((a, b) => b.votes - a.votes);
+
+    const pollResultsList = document.querySelector('.poll-results-list');
+    pollResultsList.innerHTML = '';
+
+    pollData.forEach(option => {
+        const pollOption = document.createElement('div');
+        pollOption.classList.add('poll-option');
+
+        const pollLabel = document.createElement('div');
+        pollLabel.classList.add('poll-label');
+        pollLabel.innerHTML = `
+            <h4>${formatDate(option.date)}</h4>
+            <span>${formatTime(option.startTime)} - ${formatTime(option.endTime)}</span>
+        `;
+
+        const pollBar = document.createElement('div');
+        pollBar.classList.add('poll-bar');
+        const percentage = (option.votes / maxVotes) * 100;
+        pollBar.style.setProperty('--bar-width', `${percentage}%`);
+        pollBar.innerHTML = `<span>${option.votes} votes</span>`;
+
+        pollOption.appendChild(pollLabel);
+        pollOption.appendChild(pollBar);
+
+        pollResultsList.appendChild(pollOption);
+    });
 }
 
 function copyToClipboard(elementId) {
