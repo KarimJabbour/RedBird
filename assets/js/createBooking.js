@@ -29,16 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
     daySelector.forEach(checkbox => {
         checkbox.addEventListener("change", () => {
             console.log("Day selected/changed:", checkbox.value, checkbox.checked);
+
+            if (!checkbox.checked) {
+                // Clear deselected dates when a recurrence day is unchecked
+                deselectedDates.clear();
+                console.log("Cleared deselectedDates because recurrence day was unchecked.");
+            }
+
             updateCalendar();
         });
     });
+
 
     document.getElementById("booking-form").addEventListener("submit", function (event) {
         const recurrenceDays = getRecurrenceDays();
         const highlightedDates = getHighlightedDates();
         document.getElementById("highlighted-dates").value = highlightedDates.join(",");
         document.getElementById("recurring-days").value = recurrenceDays.join(",");
-        // document.getElementById("highlighted-dates").value = highlighted.join(",");
     });
 });
 
@@ -250,24 +257,37 @@ function toggleDateSelection(date) {
         updateCalendar();
 
     } else {
-        if (recurringDates.includes(date)) {
-            if (deselectedDates.has(date)) {
-                deselectedDates.delete(date); // Undo deselection
-                //highlighted.push(date);
-            } else {
-                deselectedDates.add(date); // Deselect
-                //highlighted.push(date);
-            }
+        if (dayElement.classList.contains("highlight")) {
+            // Deselect the date
+            dayElement.classList.remove("highlight");
+            manualAdjustments.delete(date);
+            deselectedDates.add(date); // Mark explicitly deselected
+            console.log(`Date deselected: ${date}`);
         } else {
-            if (manualAdjustments.has(date)) {
-                manualAdjustments.delete(date); // Undo manual addition
-                //highlighted.pop(date);
-            } else {
-                manualAdjustments.add(date); // Add manually
-                //highlighted.push(date);
-                //recurringDates.push(date);
-            }
+            // Select the date
+            dayElement.classList.add("highlight");
+            manualAdjustments.add(date);
+            deselectedDates.delete(date); // Remove from deselections
+            console.log(`Date selected: ${date}`);
         }
+        // if (recurringDates.includes(date)) {
+        //     if (deselectedDates.has(date)) {
+        //         deselectedDates.delete(date); // Undo deselection
+        //         //highlighted.push(date);
+        //     } else {
+        //         deselectedDates.add(date); // Deselect
+        //         //highlighted.push(date);
+        //     }
+        // } else {
+        //     if (manualAdjustments.has(date)) {
+        //         manualAdjustments.delete(date); // Undo manual addition
+        //         //highlighted.pop(date);
+        //     } else {
+        //         manualAdjustments.add(date); // Add manually
+        //         //highlighted.push(date);
+        //         //recurringDates.push(date);
+        //     }
+        // }
         updateHighlightedDates();
     }
 }
@@ -276,16 +296,20 @@ function updateHighlightedDates() {
     const calendarDays = document.querySelectorAll(".day[data-date]");
     const frequency = document.getElementById("recurring-timeline").value;
 
-    let allHighlightedDates;
+    //let allHighlightedDates;
 
-    if (frequency === "monthly") {
-        allHighlightedDates = new Set(recurringDates);
-    } else {
-        allHighlightedDates = new Set([
-            ...recurringDates.filter(date => !deselectedDates.has(date)), // Exclude deselected recurring dates
-            ...manualAdjustments, // Include manually added dates
-        ]);
-    }
+    // if (frequency === "monthly") {
+    //     allHighlightedDates = new Set(recurringDates);
+    // } else {
+    //     allHighlightedDates = new Set([
+    //         ...recurringDates.filter(date => !deselectedDates.has(date)), // Exclude deselected recurring dates
+    //         ...manualAdjustments, // Include manually added dates
+    //     ]);
+    // }
+
+    let allHighlightedDates = new Set([...recurringDates]);
+    manualAdjustments.forEach(date => allHighlightedDates.add(date));
+    deselectedDates.forEach(date => allHighlightedDates.delete(date));
 
     // Clear existing highlights
     calendarDays.forEach(day => {
@@ -299,6 +323,7 @@ function updateHighlightedDates() {
             day.classList.add("highlight");
         }
     });
+    console.log("Highlighted Dates:", Array.from(allHighlightedDates));
 }
 
 function clearAllHighlights() {
