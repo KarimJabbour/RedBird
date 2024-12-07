@@ -8,9 +8,8 @@ let sidebarData = {};
 document.addEventListener("DOMContentLoaded", function () {
     populateCalendar(currentMonth, currentYear);
 
-    document.getElementById("poll-form").addEventListener("submit", function (event) {
-        //event.preventDefault();
-
+    document.getElementById("alternate-form").addEventListener("submit", function (event) {
+        
         const timeCardData = Object.keys(sidebarData).map(date => ({
             date: date,
             startTime: sidebarData[date]?.startTime || "",
@@ -202,7 +201,7 @@ function clearAllHighlights() {
 }
 
 function clearForm() {
-    const form = document.querySelector(".poll-form");
+    const form = document.querySelector(".alternate-form");
     form.reset();
 
     console.log(sidebarData);
