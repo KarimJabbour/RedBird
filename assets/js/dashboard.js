@@ -413,7 +413,7 @@ function populatePollResults(poll) {
 
         const pollBar = document.createElement('div');
         pollBar.classList.add('poll-bar');
-        const percentage = (option.votes / maxVotes) * 100;
+        const percentage = maxVotes > 0 ? (option.votes / maxVotes) * 100 : 0;
         pollBar.style.setProperty('--bar-width', `${percentage}%`);
         pollBar.innerHTML = `<span>${option.votes} votes</span>`;
 

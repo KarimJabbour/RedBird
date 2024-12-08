@@ -58,7 +58,7 @@
                 <div class="calendar-grid" id="calendar-grid">
                   <!-- Dynamically Generated in JavaScript -->
                 </div>
-                <button class="btn-clear" type="button" onclick="clearAllHighlights()">Clear All Selections</button>
+                <button class="button clear" type="button" onclick="clearAllHighlights()">Clear All Selections</button>
               </div>
             </div>
           </div>
@@ -82,33 +82,6 @@
                 <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
                 <input type="hidden" id="recurring-days" name="recurring-days" value="">
 
-                <div class="form-group" id="week-days-form">
-                  <label for="recurrence-days">Days
-                      <div id="recurrence-days" class="days-picker">
-                          <input type="checkbox" id="day-m" name="days[]" value="M">
-                          <label for="day-m" class="day-option">M</label>
-
-                          <input type="checkbox" id="day-t" name="days[]" value="T">
-                          <label for="day-t" class="day-option">T</label>
-
-                          <input type="checkbox" id="day-w" name="days[]" value="W">
-                          <label for="day-w" class="day-option">W</label>
-
-                          <input type="checkbox" id="day-th" name="days[]" value="Th">
-                          <label for="day-th" class="day-option">Th</label>
-
-                          <input type="checkbox" id="day-f" name="days[]" value="F">
-                          <label for="day-f" class="day-option">F</label>
-
-                          <input type="checkbox" id="day-s" name="days[]" value="S">
-                          <label for="day-s" class="day-option">S</label>
-
-                          <input type="checkbox" id="day-su" name="days[]" value="Su">
-                          <label for="day-su" class="day-option">Su</label>
-                      </div>
-                  </label>
-              </div>
-
               <div id="date-range">
                 <div class="form-group">
                     <label for="start-date">Start Date</label>
@@ -119,7 +92,86 @@
                     <input type="text" id="end-date" name="end-date" placeholder="Last date of the recurrence" onfocus="(this.type='date')" onblur="(this.type='text')" required>
                 </div>
               </div>
-                <p>Click on the calendar to pick dates</p>
+
+              <div class="form-group" id="week-days-form">
+                <label for="recurrence-days">Days
+                    <div id="recurrence-days" class="days-picker">
+                        <input type="checkbox" id="day-m" name="days[]" value="M">
+                        <label for="day-m" class="day-option">M</label>
+
+                        <input type="checkbox" id="day-t" name="days[]" value="T">
+                        <label for="day-t" class="day-option">T</label>
+
+                        <input type="checkbox" id="day-w" name="days[]" value="W">
+                        <label for="day-w" class="day-option">W</label>
+
+                        <input type="checkbox" id="day-th" name="days[]" value="Th">
+                        <label for="day-th" class="day-option">Th</label>
+
+                        <input type="checkbox" id="day-f" name="days[]" value="F">
+                        <label for="day-f" class="day-option">F</label>
+
+                        <input type="checkbox" id="day-s" name="days[]" value="S">
+                        <label for="day-s" class="day-option">S</label>
+
+                        <input type="checkbox" id="day-su" name="days[]" value="Su">
+                        <label for="day-su" class="day-option">Su</label>
+                    </div>
+                  </label>
+                </div>
+
+              <div class="time-range-container" id="time-range-container">
+                  <div class="time-range-entry">
+                      <div class="day-option" id="day-option">
+                          <span>M</span>
+                      </div>
+                      <div class="time-range">
+                        <div class="time-row">
+                            <label class="start-label" for="start-time">Start Time</label>
+                            <label class="end-label" for="end-time">End Time</label>
+                            <button style="visibility: hidden" type="button" class="remove-btn">&times;</button>
+                        </div>
+                        <div class="time-row">
+                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="time-range-entry">
+                      <div class="day-option" id="day-option">
+                          <span>W</span>
+                      </div>
+                      <div class="time-range">
+                        <div class="time-row">
+                            <label class="start-label" for="start-time">Start Time</label>
+                            <label class="end-label" for="end-time">End Time</label>
+                            <button type="button" class="remove-btn">&times;</button>
+                        </div>
+                        <div class="time-row">
+                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="time-range-entry">
+                      <div class="day-option" id="day-option">
+                          <span>Th</span>
+                      </div>
+                      <div class="time-range">
+                        <div class="time-row">
+                            <label class="start-label" for="start-time">Start Time</label>
+                            <label class="end-label" for="end-time">End Time</label>
+                            <button type="button" class="remove-btn">&times;</button>
+                        </div>
+                        <div class="time-row">
+                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <button type="button" class="add-entry-btn" id="add-entry-btn">+ Add Time Range</button>
+              <p class="instructions">Click on the calendar to pick dates</p>
 
           </section>
       </section>
@@ -132,7 +184,7 @@
               <input type="text" id="booking-name" name="booking-name" placeholder="Name your booking" required>
           </div>
 
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="start-time">Start Time</label>
                 <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
             </div>
@@ -140,7 +192,7 @@
             <div class="form-group">
                 <label for="end-time">End Time</label>
                 <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label for="location">Location</label>
@@ -174,7 +226,7 @@
 
             <!-- Buttons -->
             <div class="form-buttons">
-                <button type="submit" class="btn-save">Create Booking</button>
+                <button type="submit" class="button save">Create Booking</button>
             </div>
 
       </section>

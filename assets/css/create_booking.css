@@ -218,6 +218,128 @@ body {
     transform: translateY(-5px);
 }
 
+/* Time Range */
+.time-range-container {
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+#time-range-container {
+  display: block; /* Block */
+}
+
+/* Time Range Entry */
+.time-range-entry {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 15px;
+}
+
+/* Day Option Circle */
+.day-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFCCB3;
+    color: #333;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Time Range Container */
+.time-range {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+/* Time Row */
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.time-row label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    width: 100px;
+    text-align: left;
+}
+
+.end-label {
+  margin-left: auto;
+  padding-left: 15px;
+}
+
+.time-row input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.time-row input:focus {
+    border-color: #FF702E;
+    box-shadow: 0 0 4px rgba(255, 112, 46, 0.3);
+}
+
+.remove-btn {
+    all: unset; /* Reset all default styles */
+    color: #dc3545; /* Red color */
+    font-size: 1.5rem; /* Adjust the size of the symbol */
+    cursor: pointer; /* Pointer cursor for interaction */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px; /* Space between the button and other elements */
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.remove-btn:hover {
+    color: #c82333; /* Darker red on hover */
+    transform: scale(1.2); /* Slightly enlarge on hover */
+}
+
+.time-row .remove-btn {
+    margin-left: auto;
+}
+
+.add-entry-btn {
+    display: block;
+    background: #FF824A;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.add-entry-btn:hover {
+    background: #FE612C;
+}
+
+.instructions {
+    margin-bottom: -10px;
+}
+
 /* Form Section */
 .form-container {
     background: white;
@@ -239,14 +361,14 @@ body {
 }
 
 .booking-form .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column;
 }
 
 .booking-form label {
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 2.5px;
 }
 
 .booking-form input,
@@ -287,6 +409,12 @@ body {
 .days-picker {
     display: flex;
     gap: 10px;
+    margin-bottom: 5px;
+}
+
+#week-days-form {
+  border-bottom: 1px solid darkgray;
+  margin-bottom: 20px;
 }
 
 .day-option {
@@ -314,28 +442,39 @@ body {
     color: white;
 }
 
-.day-option:hover {
+.days-picker .day-option:hover {
     background-color: #fb9482;
 }
 
 /* end khyati */
 
-.btn-save {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  font-weight: bold;
-  font-family: 'Trebuchet MS', 'Helvetica', sans-serif;
+.button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    font-family: 'Trebuchet MS', 'Helvetica', sans-serif;
+    margin-top: 10px;
     background: #FFB79B;
-    color: black;
-    padding: 12px;
-    font-size: 1rem;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
 }
 
-.btn-save:hover {
+.button:hover {
     background: #FF702E;
+}
+
+.save {
+    color: black;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+.clear {
+    color: black;
+    padding: 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
 }

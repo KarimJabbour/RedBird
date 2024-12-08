@@ -12,19 +12,9 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // echo "<h3>Debugging Output:</h3>";
-    // echo "<pre>";
-    // print_r($_POST);
-    // echo "</pre>";
     
     $pollName = htmlspecialchars($_POST['name']);
     $details = htmlspecialchars($_POST['details']);
-    //$timeCardsJson = $_POST['timeCards'] ?? '[]'; // Fallback to empty array if not set
-    //var_dump($_POST['timeCards']);
-
-    // $datesStr = $_POST['dates'] ?? ''; // Comma-separated dates
-    // $startTimesStr = $_POST['startTimes'] ?? ''; // Comma-separated start times
-    // $endTimesStr = $_POST['endTimes'] ?? ''; // Comma-separated end times
 
     $dates = htmlspecialchars($_POST['dates']);
     $dates = '"' . $dates . '"';
@@ -32,39 +22,86 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $startTimes = '"' . $startTimes . '"';
     $endTimes = htmlspecialchars($_POST['endTimes']);
     $endTimes = '"' . $endTimes . '"';
+    //$pollCloseDateTime = htmlspecialchars($_POST['poll-close-time']); //need to figure out a default time stamp maybe not required
+    $pollCloseDateTime = empty($_POST['poll-close-time']) ? null : htmlspecialchars($_POST['poll-close-time']);
 
-    echo $dates;
-    echo $startTimes;
-    echo $endTimes;
-
-    // $timeCards = json_decode($timeCardsJson, true);
-
-    //similar logic for date time options
-    // $meetingDates = htmlspecialchars($_POST['highlighted-dates']);
-    // $meetingDates = '"' . $meetingDates . '"';
-    // echo $meetingDates;
+    echo $pollCloseDateTime;
 
     //placeholder value
     $userId = -1;
     // $dateTimeOptions = '" "';
 
-    $sql = "INSERT INTO CreatedPolls (
-                UserID, 
-                PollName,
-                DateOptions,
-                StartTimes,
-                EndTimes,
-                Details,  
-                Status
-            ) VALUES (
-                '$userId',
-                '$pollName',
-                '$dates',
-                '$startTimes',
-                '$endTimes',
-                '$details',
-                'current'
-            )";
+    $dateTimeOptionsCount = count(explode(',', $dates));
+    $voteCounts = implode(',', array_fill(0, $dateTimeOptionsCount, '0'));
+    $voteCounts = '"' . $voteCounts . '"';
+    echo $dateTimeOptionsCount;
+    echo $voteCounts;
+
+    if ($pollCloseDateTime === null) {
+        $sql = "INSERT INTO CreatedPolls (
+                    UserID, 
+                    PollName,
+                    DateOptions,
+                    StartTimes,
+                    EndTimes,
+                    Details,  
+                    VoteCounts,
+                    Status
+                ) VALUES (
+                    '$userId',
+                    '$pollName',
+                    '$dates',
+                    '$startTimes',
+                    '$endTimes',
+                    '$details',
+                    '$voteCounts',
+                    'current'
+                )";
+    } else {
+        $sql = "INSERT INTO CreatedPolls (
+                    UserID, 
+                    PollName,
+                    DateOptions,
+                    StartTimes,
+                    EndTimes,
+                    Details,  
+                    PollCloseDateTime,
+                    VoteCounts,
+                    Status
+                ) VALUES (
+                    '$userId',
+                    '$pollName',
+                    '$dates',
+                    '$startTimes',
+                    '$endTimes',
+                    '$details',
+                    '$pollCloseDateTime',
+                    '$voteCounts',
+                    'current'
+                )";
+    }
+    
+    // $sql = "INSERT INTO CreatedPolls (
+    //             UserID, 
+    //             PollName,
+    //             DateOptions,
+    //             StartTimes,
+    //             EndTimes,
+    //             Details,  
+    //             PollCloseDateTime,
+    //             VoteCounts,
+    //             Status
+    //         ) VALUES (
+    //             '$userId',
+    //             '$pollName',
+    //             '$dates',
+    //             '$startTimes',
+    //             '$endTimes',
+    //             '$details',
+    //             '$pollCloseDateTime',
+    //             '$voteCounts',
+    //             'current'
+    //         )";
 
 
     if ($conn->query($sql) === TRUE) {
