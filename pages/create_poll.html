@@ -50,8 +50,9 @@
                 </div>
                   <!-- Calendar Grid -->
                   <div class="calendar-grid" id="calendar-grid">
-                      
+                      <!-- Dynamically Generated in JavaScript -->
                   </div>
+                  <button type="button" class="clear-btn" onclick="clearForm()">Clear All Selections</button>
                 </div>
               </div>
             </div>
@@ -61,10 +62,9 @@
 
               <div class="title">
                 <h2>Date/Time Suggestions</h2>
-                <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear</button>
               </div>
                 <div class="time-cards">
-                    
+
                 </div>
 
             </section>
@@ -76,7 +76,7 @@
 
                 <div class="title">
                   <h2>Poll Details</h2>
-                  <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+                  <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear</button>
                 </div>
                     <div class="form-group">
                         <label for="details">Poll Name</label>
@@ -87,14 +87,10 @@
                         <input type="text" id="details" name="details" placeholder="Provide additional information for your attendees (optional)">
                     </div>
                     <div class="form-group">
-                        <label for="poll-close-date">Poll Close Date</label>
-                        <input type="text" id="poll-close-date" name="poll-close-date" placeholder="Enter date" onfocus="(this.type='date')" onblur="(this.type='text')">
-                    </div>
-                    <div class="form-group">
                         <label for="poll-close-time">Poll Close Date/Time</label>
-                        <input type="text" id="poll-close-time" name="poll-close-time" placeholder="Enter time" onfocus="(this.type='time')" onblur="(this.type='text')">
+                        <input type="text" id="poll-close-time" name="poll-close-time" placeholder="Enter the time for when the poll should close and stop accepting answers (optional)" onfocus="(this.type='datetime-local')" onblur="(this.type='text')">
                     </div>
-                    
+
                     <input type="hidden" id="dates-hidden" name="dates" value="">
                     <input type="hidden" id="start-times-hidden" name="startTimes" value="">
                     <input type="hidden" id="end-times-hidden" name="endTimes" value="">

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            console.log("Fetched Data:", data); // Log the response for debugging
+            console.log("Fetched Data:", data);
             const bookings = data.bookings || [];
             const polls = data.polls || [];
             const pastBookings = data.pastBookings || [];
@@ -202,7 +202,19 @@ function showAlternatePopup(request) {
     alternatePopup.querySelector(".modal-header h2").textContent = request.BookingName;
     document.querySelector(".button.decline").addEventListener("click", () => {
         declineAlternateRequest(request.ID);
-    });    
+    });   
+    const acceptButton = alternatePopup.querySelector(".button.accept");
+    acceptButton.style.display = 'none'; // Hide button if no date/time option is selected 
+    acceptButton.onclick = () => {
+        const selectedOption = document.querySelector(".time-item.selected");
+        if (selectedOption) {
+            const date = selectedOption.dataset.date;
+            const startTime = selectedOption.dataset.start;
+            const endTime = selectedOption.dataset.end;
+            const message = document.getElementById("message").value.trim();
+            acceptAlternateRequest(request.ID, { date, startTime, endTime }, message);
+        }
+    };
 
     const requestInfoHTML = `
         <div class="request-info">
@@ -217,9 +229,17 @@ function showAlternatePopup(request) {
     const endTimes = request.EndTimes.split(',').map(time => time.trim().replace(/^"|"$/g, ''));
 
     let timeSuggestionsHTML = dates.map((date, index) => {
+        const [year, month, day] = date.split('-').map(Number);
+        const dateObject = new Date(year, month - 1, day - 1);
+        console.log("full date" + dateObject);
+        const formattedDateObject = dateObject.toISOString().split('T')[0];
+
         return `
             <li>
-                <div class="time-item">
+                <div class="time-item"
+                    data-date="${formattedDateObject}" 
+                    data-start="${startTimes[index]}" 
+                    data-end="${endTimes[index]}">
                     <span>${formatDate(date)}</span>
                     <span>${formatTime(startTimes[index])} - ${formatTime(endTimes[index])}</span>
                 </div>
@@ -248,6 +268,16 @@ function showAlternatePopup(request) {
         </div>
         ${messageFieldHTML}
     `;
+
+    // Attach event listeners to time suggestion items
+    const timeItems = alternatePopup.querySelectorAll(".time-item");
+    timeItems.forEach((item) => {
+        item.addEventListener("click", () => {
+            timeItems.forEach((el) => el.classList.remove("selected")); // Deselect all other time items
+            item.classList.add("selected"); // Select the clicked item
+            acceptButton.style.display = 'block'; // Show the accept button
+        });
+    });
 }
 
 function showBookingPopup(booking, inHistory = false) {
@@ -512,6 +542,39 @@ function declineAlternateRequest(requestID) {
         .catch(error => {
             console.error("Error declining request:", error);
             alert("An error occurred while declining the request. Please try again.");
+        });
+}
+
+function acceptAlternateRequest(alternateRequestID, selectedOption, message) {
+    const payload = {
+        alternateRequestID: alternateRequestID,
+        date: selectedOption.date,
+        startTime: selectedOption.startTime,
+        endTime: selectedOption.endTime,
+        message: message,
+    };
+    console.log(payload);
+
+    fetch("http://localhost/redbird/pages/acceptAlternateRequest.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert("A booking has been created for the alternate request! Optionally, make any adjustments now.");
+                location.reload();
+                //window.location.replace("http://localhost/redbird/pages/editBooking.html");
+            } else {
+                alert("Failed to accept alternate request: " + data.message);
+            }
+        })
+        .catch((error) => {
+            console.error("Error accepting alternate request:", error);
+            alert("An error occurred. Please try again.");
         });
 }
 

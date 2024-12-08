@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alternate Request</title>
-    <link rel="stylesheet" href="../assets/css/alternate_request.css">
+    <title>Alternate</title>
+    <link rel="stylesheet" href="alternate_request.css">
 </head>
 
 <body>
-    <script src="../assets/js/alternateRequest.js"></script>
+    <script src="../assets/js/createPoll.js"></script>
     <div class="container">
 
       <!-- Navigation Bar -->
@@ -31,7 +31,7 @@
         </header>
 
         <!-- Main Content -->
-        <form action="alternateRequest.php" method="POST" class="alternate-form" id="alternate-form">
+        <form action="requestAlternate.php" method="POST" class="alternate-form" id="alternate-form">
           <section class="split-content">
             <!-- Dynamic Sidebar -->
             <div class="dynamic-container">
@@ -83,17 +83,17 @@
                         <input type="text" id="name" name="name" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">McGill Email</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="details">McGill Email</label>
+                        <input type="email" id="details" name="details" required>
                     </div>
                     <div class="form-group">
                         <label for="details">Message</label>
                         <input type="text" id="details" name="details" placeholder="Explain why you need an alternate time." required>
                     </div>
-
-                    <input type="hidden" id="dates-hidden" name="dates" value="">
-                    <input type="hidden" id="start-times-hidden" name="startTimes" value="">
-                    <input type="hidden" id="end-times-hidden" name="endTimes" value="">
+                    <div class="form-group">
+                        <label for="details">Meeting Length</label>
+                        <input type="number" id="details" name="details" required>
+                    </div>
 
                     <div class="form-buttons">
                         <button type="submit" class="btn-submit">Submit</button>
