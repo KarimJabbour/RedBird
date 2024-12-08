@@ -80,7 +80,7 @@ $sqlAlternateRequests = "
     SELECT ar.*, cb.BookingName 
     FROM AlternateRequests ar
     JOIN CreatedBookings cb ON ar.LinkedBookingID = cb.ID
-    WHERE cb.UserID = ?";
+    WHERE cb.UserID = ? AND ar.Status='pending'";
 
 $stmtAlternateRequests = $conn->prepare($sqlAlternateRequests);
 $stmtAlternateRequests->bind_param("i", $userId);

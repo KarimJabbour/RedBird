@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     requestRow.onclick = () => showAlternatePopup(request);
                     requestRow.innerHTML = `
                         <div class="column-title">${request.BookingName}</div>
-                        <div class="column-message"><b>Message:</b> ${request.Details}</div>
+                        <div class="column-message"><b>Reason:</b> ${request.Details}</div>
                     `;
                     alternateRequestsContainer.appendChild(requestRow);
                 });
@@ -198,6 +198,56 @@ function closePopup(popupID) {
 function showAlternatePopup(request) {
     const alternatePopup = document.getElementById("alternate-details-popup");
     alternatePopup.style.display = 'flex';
+
+    alternatePopup.querySelector(".modal-header h2").textContent = request.BookingName;
+    document.querySelector(".button.decline").addEventListener("click", () => {
+        declineAlternateRequest(request.ID);
+    });    
+
+    const requestInfoHTML = `
+        <div class="request-info">
+            <p><b>Requester Name:</b> ${request.FullName}</p>
+            <p><b>Requester Email:</b> ${request.Email}</p>
+            <p><b>Reason:</b> ${request.Details}</p>
+        </div>
+    `;
+
+    const dates = request.DateOptions.split(',').map(date => date.trim().replace(/^"|"$/g, ''));
+    const startTimes = request.StartTimes.split(',').map(time => time.trim().replace(/^"|"$/g, ''));
+    const endTimes = request.EndTimes.split(',').map(time => time.trim().replace(/^"|"$/g, ''));
+
+    let timeSuggestionsHTML = dates.map((date, index) => {
+        return `
+            <li>
+                <div class="time-item">
+                    <span>${formatDate(date)}</span>
+                    <span>${formatTime(startTimes[index])} - ${formatTime(endTimes[index])}</span>
+                </div>
+            </li>
+        `;
+    }).join('');
+
+    timeSuggestionsHTML = `
+        <h3>Time Suggestions</h3>
+        <ul class="times-list">
+            ${timeSuggestionsHTML}
+        </ul>
+    `;
+
+    const messageFieldHTML = `
+        <div class="message-field">
+            <label for="message">Message (Optional):</label>
+            <textarea id="message" name="message" rows="4" placeholder="Add a message for the requester..."></textarea>
+        </div>
+    `;
+
+    alternatePopup.querySelector(".modal-body.alternate").innerHTML = `
+        <div class="request-times">
+            ${requestInfoHTML}
+            ${timeSuggestionsHTML}
+        </div>
+        ${messageFieldHTML}
+    `;
 }
 
 function showBookingPopup(booking, inHistory = false) {
@@ -430,3 +480,38 @@ function closePoll(pollID) {
             alert("An error occurred while closing the poll. Please try again.");
         });
 }
+
+function declineAlternateRequest(requestID) {
+    const message = document.getElementById("message").value.trim(); // Get the optional message
+    if (!confirm("Are you sure you want to decline this request?")) {
+        return;
+    }
+
+    fetch('http://localhost/redbird/pages/declineAlternateRequest.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requestID, status: "declined", message }),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Response from server:", data);
+            if (data.success) {
+                alert("Request declined successfully!");
+                location.reload();
+            } else {
+                alert("Failed to decline request: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error declining request:", error);
+            alert("An error occurred while declining the request. Please try again.");
+        });
+}
+
