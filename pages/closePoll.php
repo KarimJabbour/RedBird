@@ -24,7 +24,7 @@ if (!$pollID || !$closeTime) {
 }
 
 // Update the poll's PollCloseDateTime
-$stmt = $conn->prepare("UPDATE CreatedPolls SET PollCloseDateTime = ? WHERE ID = ?");
+$stmt = $conn->prepare("UPDATE CreatedPolls SET PollCloseDateTime = ?, Status = 'past' WHERE ID = ?");
 if (!$stmt) {
     echo json_encode(["success" => false, "message" => "Failed to prepare statement: " . $conn->error]);
     exit();

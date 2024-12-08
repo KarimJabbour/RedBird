@@ -25,6 +25,7 @@
         </nav>
 
         <div class="copy-alert" id="copy-alert"></div>
+
         <!-- Booking Details Popup -->
         <div class="modal" id="booking-details-popup">
             <div class="modal-content">
@@ -37,7 +38,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="edit-btn" onclick="openEditPopup()">Edit Booking</button>
-                    <button class="delete-btn">Delete Booking</button>
+                    <button class="delete-btn" onclick="deleteBooking()">Delete Booking</button>
                 </div>
             </div>
         </div>
@@ -60,7 +61,49 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="justify-content: center">
-                    <button class="delete-btn">Close Poll Submissions</button>
+                    <button class="delete-btn" onclick="deleteBooking()">Close Poll Submissions</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alternate Requests Popup -->
+        <div class="modal" id="alternate-details-popup">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>COMP 307 Office Hours - Alternative</h2>
+                    <button class="close-btn" onclick="closePopup('alternate-details-popup')">✕</button>
+                </div>
+                <div class="modal-body alternate">
+                    <div class="request-times">
+                        <div class=request-info>
+                            <p><b>Requester Name:</b> Pinkie Pie</p>
+                            <p><b>Requester Email:</b> pinkiepielikescakes@lollipop.com</p>
+                            <p><b>Message:</b> Yap yap yap</p>
+                        </div>
+                        <h3>Time Suggestions</h3>
+                        <ul class="times-list">
+                            <li>
+                                <div class="time-item">
+                                    <span>Monday, December 11, 2024</span>
+                                    <span>10:00 AM - 11:00 AM</span>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="time-item">
+                                    <span>Tuesday, December 12, 2024</span>
+                                    <span>2:00 PM - 3:00 PM</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="message-field">
+                        <label for="message">Message (Optional):</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Add a message for the requester..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="button decline">Decline</button>
+                    <button class="button accept">Accept</button>
                 </div>
             </div>
         </div>
@@ -74,11 +117,7 @@
                   <h2>Pending Requests</h2>
               </div>
               <div class="booking-container">
-                  <div class="booking-row pending">
-                      <div class="column-title">Project Review</div>
-                      <div class="column-date">Nov 28 1:00PM - 2:00PM or</div>
-                      <div class="column-time">Nov 23 11:00AM - 1:00PM</div>
-                  </div>
+                  <!-- Filled dynamically -->
               </div>
           </section>
 
@@ -86,7 +125,7 @@
             <section class="column bookings">
                 <div class="section-title">
                     <h2>Scheduled Bookings</h2>
-                    <img src="Images/icons/booking_plus.png" alt="Create Booking" class="plus">
+                    <img src="Images/icons/FE612C_plus.png" alt="Create Booking" class="plus">
                 </div>
                 <div class="booking-container">
                   <!-- Filled dynamically -->
@@ -96,7 +135,7 @@
             <section class="column polls">
                 <div class="section-title">
                     <h2>Created Polls</h2>
-                    <img src="Images/icons/polls_plus.png" alt="Create Poll" class="plus">
+                    <img src="Images/icons/FF872C_plus.png" alt="Create Poll" class="plus">
                 </div>
                 <div class="booking-container">
 
@@ -105,8 +144,8 @@
 
             <section class="column bookings-history">
                 <div class="section-title">
-                    <h2>Bookings History</h2>
-                    <img src="Images/icons/booking_arrow.png" alt="Expand" class="arrow">
+                    <h2>History</h2>
+                    <img src="Images/icons/FFA12C_arrow.png" alt="Expand" class="arrow">
                 </div>
                 <div class="booking-container">
 

@@ -15,8 +15,9 @@ if ($conn->connect_error) {
 #$userId = $_GET['userId'];
 $userId = -1;
 
-// Update status of past bookings
+// Update status of past bookings and past polls
 $conn->query("UPDATE createdBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
+$conn->query("UPDATE CreatedPolls SET Status = 'past' WHERE Status = 'current' AND PollCloseDateTime < NOW()");
 
 // Fetch current bookings and polls
 $sqlBookings = "SELECT ID, BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTime, EndTime, Details, MaxAttendees, TimeSlotLength, Location, MeetingLink, BookingURL
@@ -54,16 +55,49 @@ $pastBookingsQuery = "SELECT BookingName, RecurrenceFrequency, StartRecurringDat
 $resultPastBookings = $conn->query($pastBookingsQuery);
 
 $pastBookings = [];
-if ($resultPolls->num_rows > 0) {
+if ($resultPastBookings->num_rows > 0) {
     while ($row = $resultPastBookings->fetch_assoc()) {
         $pastBookings[] = $row;
     }
+}
+
+// Fetch past polls
+$pastPollsQuery = "SELECT ID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
+                    FROM CreatedPolls 
+                    WHERE UserID = $userId AND Status = 'past'";
+
+$resultPastPolls = $conn->query($pastPollsQuery);
+
+$pastPolls = [];
+if ($resultPastPolls->num_rows > 0) {
+    while ($row = $resultPastPolls->fetch_assoc()) {
+        $pastPolls[] = $row;
+    }
+}
+
+// Fetch alternate requests for bookings created by the logged-in user
+$sqlAlternateRequests = "
+    SELECT ar.*, cb.BookingName 
+    FROM AlternateRequests ar
+    JOIN CreatedBookings cb ON ar.LinkedBookingID = cb.ID
+    WHERE cb.UserID = ?";
+
+$stmtAlternateRequests = $conn->prepare($sqlAlternateRequests);
+$stmtAlternateRequests->bind_param("i", $userId);
+$stmtAlternateRequests->execute();
+$resultAlternateRequests = $stmtAlternateRequests->get_result();
+
+$alternateRequests = [];
+while ($row = $resultAlternateRequests->fetch_assoc()) {
+    $alternateRequests[] = $row;
 }
 
 $response = [
     'bookings' => $scheduledBookings,
     'polls' => $polls,
     'pastBookings' => $pastBookings,
+    'pastPolls' => $pastPolls,
+    'alternateRequests' => $alternateRequests,
 ];
 
 header('Content-Type: application/json');

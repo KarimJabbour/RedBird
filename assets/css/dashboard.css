@@ -97,6 +97,10 @@ body {
     display: none;
 }
 
+#alternate-details-popup {
+    display: none;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -113,6 +117,8 @@ body {
 .modal-header h2 {
     font-size: 1.8rem;
     color: #333;
+    margin-bottom: 5px;
+    line-height: 1;
 }
 
 .close-btn {
@@ -350,6 +356,101 @@ body {
     font-weight: bold;
 }
 
+/* Request Times Section */
+.request-times h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: #333;
+    border-bottom: 2px solid #FF702E;
+    padding-bottom: 5px;
+}
+
+#alternate-details-popup .modal-header {
+    margin-bottom: 10px;
+}
+
+.request-info {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.times-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.time-item {
+    display: flex;
+    justify-content: space-between;
+    background: #FFB79B;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.time-item:hover {
+    background: #FB9482;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.time-item span {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+#alternate-details-popup .button {
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.accept {
+    background: #28a745;
+    color: white;
+    margin-left: auto;
+}
+
+.accept:hover {
+    background: #218838;
+}
+
+.decline {
+    background: #dc3545;
+    color: white;
+    margin-right: auto;
+}
+
+.decline:hover {
+    background: #c82333;
+}
+
+.message-field {
+    margin-top: 20px;
+}
+
+.message-field label {
+    font-weight: bold;
+    color: #333;
+}
+
+.message-field textarea {
+    margin-top: 5px;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    resize: none;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 /* Modal Footer */
 .modal-footer {
     display: flex;
@@ -360,7 +461,6 @@ body {
 #booking-details-popup .modal-footer {
     margin-top: 30px;
 }
-
 
 .edit-btn,
 .delete-btn {
@@ -446,19 +546,19 @@ body {
 }
 
 .requests .section-title {
-    border-bottom: 3px solid #F34F51;
+    border-bottom: 3px solid #FD3A2D;
 }
 
 .bookings .section-title {
-    border-bottom: 3px solid #FF702E;
+    border-bottom: 3px solid #FE612C;
 }
 
 .polls .section-title {
-    border-bottom: 3px solid #FB9482;
+    border-bottom: 3px solid #FF872C;
 }
 
 .bookings-history .section-title {
-    border-bottom: 3px solid #FFB79B;
+    border-bottom: 3px solid #FFA12C;
 }
 
 .plus {
@@ -506,19 +606,19 @@ body {
 }
 
 .requests .booking-row {
-    border-left: 12px solid #F34F51;
+    border-left: 12px solid #FD3A2D;
 }
 
 .bookings .booking-row {
-    border-left: 12px solid #FF702E;
+    border-left: 12px solid #FE612C;
 }
 
 .polls .booking-row {
-    border-left: 12px solid #FB9482;
+    border-left: 12px solid #FF872C;
 }
 
 .bookings-history .booking-row {
-    border-left: 12px solid #FFB79B;
+    border-left: 12px solid #FFA12C;
 }
 
 .booking-row:hover {
@@ -529,24 +629,23 @@ body {
 .column-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #7A16D5;
     margin-bottom: 5px;
 }
 
 .pending .column-title {
-    color: #F34F51;
+    color: #FD3A2D;
 }
 
 .bookings .column-title {
-    color: #FF702E;
+    color: #FE612C;
 }
 
 .polls .column-title {
-    color: #FB9482;
+    color: #FF872C;
 }
 
 .bookings-history .column-title {
-    color: #FFB79B;
+    color: #FFA12C;
 }
 
 .column-date, .column-time {

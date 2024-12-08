@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingContainer = document.querySelector('.bookings .booking-container');
     const pollsContainer = document.querySelector('.polls .booking-container');
     const historyContainer = document.querySelector('.bookings-history .booking-container');
+    const alternateRequestsContainer = document.querySelector('.requests .booking-container');
+
 
     console.log('Starting fetch');
     fetch(`http://localhost/redbird/pages/displayDashboard.php`)
@@ -18,11 +20,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const bookings = data.bookings || [];
             const polls = data.polls || [];
             const pastBookings = data.pastBookings || [];
+            const pastPolls = data.pastPolls || [];
+            const alternateRequests = data.alternateRequests || [];
 
             // Clear existing bookings and polls
             bookingContainer.innerHTML = '';
             pollsContainer.innerHTML = '';
             historyContainer.innerHTML = '';
+            alternateRequestsContainer.innerHTML = '';
+
+            // Display alternate requests
+            if (alternateRequests.length > 0) {
+                alternateRequests.forEach(request => {
+                    const requestRow = document.createElement('div');
+                    requestRow.className = 'booking-row pending';
+                    requestRow.onclick = () => showAlternatePopup(request);
+                    requestRow.innerHTML = `
+                        <div class="column-title">${request.BookingName}</div>
+                        <div class="column-message"><b>Message:</b> ${request.Details}</div>
+                    `;
+                    alternateRequestsContainer.appendChild(requestRow);
+                });
+            } else {
+                alternateRequestsContainer.innerHTML = '<div class="empty">No alternate requests</div>';
+            }
+
 
             // Display bookings
             if (bookings.length > 0) {
@@ -70,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pastBookings.forEach(booking => {
                     const bookingRow = document.createElement('div');
                     bookingRow.className = 'booking-row past';
+                    bookingRow.onclick = () => showBookingPopup(booking, true);
                     bookingRow.innerHTML = `
                         <div class="column-title">${booking.BookingName}</div>
                         <div class="column-date"><b>End Date:</b> ${booking.EndRecurringDate}</div>
@@ -77,7 +100,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     historyContainer.appendChild(bookingRow);
                 });
-            } else {
+            } 
+            // Display past polls
+            if (pastPolls.length > 0) {
+                pastPolls.forEach(poll => {
+                    const pollRow = document.createElement('div');
+                    pollRow.className = 'booking-row past';
+                    pollRow.onclick = () => showPollPopup(poll, true);
+                    pollRow.innerHTML = `
+                        <div class="column-title">${poll.PollName}</div>
+                        <div class="column-date"><b>Preferred Date:</b> ${getFirst(poll.DateOptions)}</div>
+                        <div class="column-time"><b>Preferred Time:</b> ${formatTime(getFirst(poll.StartTimes))} - ${formatTime(getFirst(poll.EndTimes))}</div>
+                    `;
+                    historyContainer.appendChild(pollRow);
+                });
+            }
+            if (pastBookings.length === 0 && pastPolls.length === 0) {
                 historyContainer.innerHTML = '<div class="empty">No past bookings or polls</div>';
             }
         })
@@ -157,12 +195,17 @@ function closePopup(popupID) {
     popup.style.display = 'none';
 }
 
-function showBookingPopup(booking) {
+function showAlternatePopup(request) {
+    const alternatePopup = document.getElementById("alternate-details-popup");
+    alternatePopup.style.display = 'flex';
+}
+
+function showBookingPopup(booking, inHistory = false) {
     const bookingPopup = document.getElementById("booking-details-popup");
     bookingPopup.style.display = 'flex';
 
     bookingPopup.querySelector(".modal-header h2").textContent = booking.BookingName;
-    bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
+    // bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
     bookingPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${booking.Details}</p>
         <p><b>Location:</b> ${booking.Location}</p>
@@ -221,14 +264,22 @@ function showBookingPopup(booking) {
     } else {
         scheduleList.innerHTML = "<li>No scheduled meetings</li>";
     }
+
+    if (inHistory) {
+        // Disable edit and delete buttons for history
+        bookingPopup.querySelector(".modal-footer").style.display = 'none';
+    } else {
+        // Enable edit and delete buttons for active bookings
+        bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`)
+    }
 }
 
-function showPollPopup(poll) {
+function showPollPopup(poll, inHistory = false) {
     const pollPopup = document.getElementById("poll-details-popup");
     pollPopup.style.display = 'flex';
 
     pollPopup.querySelector(".modal-header h2").textContent = poll.PollName;
-    pollPopup.querySelector(".delete-btn").setAttribute('onclick', `closePoll(${poll.ID})`);
+    // pollPopup.querySelector(".delete-btn").setAttribute('onclick', `closePoll(${poll.ID})`);
     pollPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${poll.Details}</p>
         <p><b>Poll Close Date:</b> ${poll.PollCloseDateTime}</p>
@@ -239,6 +290,14 @@ function showPollPopup(poll) {
         </div>
     `;
     populatePollResults(poll);
+
+    if (inHistory) {
+        // Disable edit and delete buttons for history
+        pollPopup.querySelector(".modal-footer").style.display = 'none';
+    } else {
+        // Enable edit and delete buttons for active bookings
+        pollPopup.querySelector(".delete-btn").setAttribute('onclick', `closePoll(${poll.ID})`);
+    }
 }
 
 function populatePollResults(poll) {
@@ -342,7 +401,7 @@ function closePoll(pollID) {
     }
 
     const closeTime = new Date().toISOString().replace('Z', '');; // Current timestamp
-    console.log("closetime"+closeTime);
+    // console.log("closetime"+closeTime);
 
     fetch('http://localhost/redbird/pages/closePoll.php', {
         method: 'POST',
