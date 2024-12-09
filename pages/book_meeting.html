@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Poll</title>
+    <link rel="stylesheet" href="../assets/css/book_meeting.css">
+</head>
+
+<body>
+    <script src=""></script>
+    <div class="container">
+
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+          <div class="logo">
+              <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
+          </div>
+          <ul class="nav-links">
+              <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
+          </ul>
+      </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>Book a Meeting</h1>
+            <p class="sub-header">Select a date and time to book a meeting.</p>
+        </header>
+
+        <!-- Main Content -->
+        <form action="bookMeeting.php" method="POST" class="booking-form" id="booking-form">
+          <section class="split-content">
+            <!-- Dynamic Sidebar -->
+            <div class="dynamic-container">
+              <div class="dynamic-content" id="dynamic-calendar">
+                <h3>Calendar</h3>
+                <div class="calendar">
+                  <!-- Calendar Header -->
+                  <div class="calendar-header">
+                    <button class="prev-month" type="button">
+                      <img src="Images/icons/FF702E_left_arrow.png" alt="Previous Month" class="arrow" onclick="changeMonth(-1)">
+                    </button>
+                    <div class="month-year" id="month-year"></div>
+                    <button class="next-month" type="button">
+                      <img src="Images/icons/FF702E_right_arrow.png" alt="Next Month" class="arrow" onclick="changeMonth(1)">
+                    </button>
+                </div>
+                  <!-- Calendar Grid -->
+                  <div class="calendar-grid" id="calendar-grid">
+                      <!-- Dynamically Generated in JavaScript -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time Selection -->
+            <section class="form-container time">
+
+              <div class="title">
+                <h2>Time Slot Options</h2>
+              </div>
+              <div class="time-slots-list">
+                  <div class="time-slot-card available">
+                      <h3>9:00 AM - 9:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+                  <div class="time-slot-card unavailable">
+                      <h3>9:30 AM - 10:00 AM</h3>
+                      <p>Status: <span>Booked</span></p>
+                  </div>
+                  <div class="time-slot-card available">
+                      <h3>10:00 AM - 10:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+                  <div class="time-slot-card unavailable">
+                      <h3>10:30 AM - 11:00 AM</h3>
+                      <p>Status: <span>Booked</span></p>
+                  </div>
+                  <div class="time-slot-card available">
+                      <h3>10:00 AM - 10:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+                  <div class="time-slot-card available">
+                      <h3>10:00 AM - 10:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+                  <div class="time-slot-card available">
+                      <h3>10:00 AM - 10:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+                  <div class="time-slot-card available">
+                      <h3>10:00 AM - 10:30 AM</h3>
+                      <p>Status: <span>Available</span></p>
+                  </div>
+              </div>
+
+            </section>
+
+          </section>
+
+            <!-- Booking Details -->
+            <section class="form-container details">
+
+                <div class="title">
+                    <h2>COMP 307 Office Hours</h2>
+                </div>
+                <div>
+                    <div class="info-item">
+                        <h3>Details</h3>
+                        <p>COMP 307 Office hours for help with the project. Please book in advance.</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>Location</h3>
+                        <p>ENGMC323</p>
+                    </div>
+                    <div class="info-item">
+                        <h3>Available Slots</h3>
+                        <p>3/5</p>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn-book">Book Meeting</button>
+                </div>
+
+            </section>
+
+          </form>
+
+    </div>
+
+</body>
+
+</html>

@@ -34,6 +34,67 @@
     <!-- Form Wrapper -->
     <form action="createBooking.php" method="POST" class="booking-form" id="booking-form">
 
+      <!-- Form Section -->
+      <section class="form-container dates">
+          <h2>Booking Dates</h2>
+
+            <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
+            <input type="hidden" id="recurring-days" name="recurring-days" value="">
+            <input type="hidden" id="start-times" name="start-times" value="">
+            <input type="hidden" id="end-times" name="end-times" value="">
+
+          <div class="date-range">
+            <div class="time-row">
+                <label class="frequency-label" for="recurring-timeline">Frequency</label>
+                <label class="start-label" for="start-time">Start Date</label>
+                <label class="end-label" for="end-time">End Date</label>
+                <button style="visibility: hidden" type="button" class="remove-btn">&times;</button>
+            </div>
+            <div class="time-row">
+                <select id="recurring-timeline" name="recurring-timeline" onchange="toggleRecurrenceDays()" required>
+                    <option value="daily">Every Day</option>
+                    <option value="weekly" selected>Every Week</option>
+                    <option value="2weekly">Every 2 Weeks</option>
+                    <option value="4weekly">Every 4 Weeks</option>
+                    <option value="monthly">Every Month</option>
+                    <option value="non-recurring">Non-Recurring</option>
+                </select>
+                <input type="text" id="start-date" name="start-date" placeholder="Start Date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                <input type="text" id="end-date" name="end-date" placeholder="End Date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+            </div>
+          </div>
+
+          <div class="form-group" id="week-days-form">
+            <label for="recurrence-days">Days
+                <div id="recurrence-days" class="days-picker">
+                    <input type="checkbox" id="day-m" name="days[]" value="M">
+                    <label for="day-m" class="day-option">M</label>
+
+                    <input type="checkbox" id="day-t" name="days[]" value="T">
+                    <label for="day-t" class="day-option">T</label>
+
+                    <input type="checkbox" id="day-w" name="days[]" value="W">
+                    <label for="day-w" class="day-option">W</label>
+
+                    <input type="checkbox" id="day-th" name="days[]" value="Th">
+                    <label for="day-th" class="day-option">Th</label>
+
+                    <input type="checkbox" id="day-f" name="days[]" value="F">
+                    <label for="day-f" class="day-option">F</label>
+
+                    <input type="checkbox" id="day-s" name="days[]" value="S">
+                    <label for="day-s" class="day-option">S</label>
+
+                    <input type="checkbox" id="day-su" name="days[]" value="Su">
+                    <label for="day-su" class="day-option">Su</label>
+                </div>
+              </label>
+            </div>
+
+          <p class="instructions">Click on the calendar to pick dates</p>
+
+      </section>
+
       <!-- Main Content -->
       <section class="split-content">
 
@@ -63,117 +124,127 @@
             </div>
           </div>
 
-          <!-- Form Section -->
-          <section class="form-container dates">
-              <h2>Booking Dates</h2>
+          <!-- Time Selection -->
+          <section class="form-container time">
 
-                <div class="form-group">
-                    <label for="recurring-timeline">Frequency</label>
-                    <select id="recurring-timeline" name="recurring-timeline" onchange="toggleRecurrenceDays()" required>
-                        <option value="daily">Every Day</option>
-                        <option value="weekly" selected>Every Week</option>
-                        <option value="2weekly">Every 2 Weeks</option>
-                        <option value="4weekly">Every 4 Weeks</option>
-                        <option value="monthly">Every Month</option>
-                        <option value="non-recurring">Non-Recurring</option>
-                    </select>
+            <div class="title">
+              <h2>Selected Time Slots</h2>
+            </div>
+            <div>
+                <div class="time-row">
+                  <label class="start-label" for="start-time">Default Start Time</label>
+                  <label class="end-label" for="end-time">Default End Time</label>
                 </div>
-
-                <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
-                <input type="hidden" id="recurring-days" name="recurring-days" value="">
-
-              <div id="date-range">
-                <div class="form-group">
-                    <label for="start-date">Start Date</label>
-                    <input type="text" id="start-date" name="start-date" placeholder="First date of the recurrence" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+                <div class="time-row">
+                    <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
+                    <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
                 </div>
-                <div class="form-group">
-                    <label for="end-date">End Date</label>
-                    <input type="text" id="end-date" name="end-date" placeholder="Last date of the recurrence" onfocus="(this.type='date')" onblur="(this.type='text')" required>
-                </div>
-              </div>
-
-              <div class="form-group" id="week-days-form">
-                <label for="recurrence-days">Days
-                    <div id="recurrence-days" class="days-picker">
-                        <input type="checkbox" id="day-m" name="days[]" value="M">
-                        <label for="day-m" class="day-option">M</label>
-
-                        <input type="checkbox" id="day-t" name="days[]" value="T">
-                        <label for="day-t" class="day-option">T</label>
-
-                        <input type="checkbox" id="day-w" name="days[]" value="W">
-                        <label for="day-w" class="day-option">W</label>
-
-                        <input type="checkbox" id="day-th" name="days[]" value="Th">
-                        <label for="day-th" class="day-option">Th</label>
-
-                        <input type="checkbox" id="day-f" name="days[]" value="F">
-                        <label for="day-f" class="day-option">F</label>
-
-                        <input type="checkbox" id="day-s" name="days[]" value="S">
-                        <label for="day-s" class="day-option">S</label>
-
-                        <input type="checkbox" id="day-su" name="days[]" value="Su">
-                        <label for="day-su" class="day-option">Su</label>
+            </div>
+              <div class="time-cards" id="time-cards">
+                  <!-- <div class="time-card">
+                    <h3>Monday, December 9, 2024</h3>
+                    <div>
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
                     </div>
-                  </label>
-                </div>
-
-              <div class="time-range-container" id="time-range-container">
-                  <div class="time-range-entry">
-                      <div class="day-option" id="day-option">
-                          <span>M</span>
-                      </div>
-                      <div class="time-range">
-                        <div class="time-row">
-                            <label class="start-label" for="start-time">Start Time</label>
-                            <label class="end-label" for="end-time">End Time</label>
-                            <button style="visibility: hidden" type="button" class="remove-btn">&times;</button>
-                        </div>
-                        <div class="time-row">
-                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="time-range-entry">
-                      <div class="day-option" id="day-option">
-                          <span>W</span>
-                      </div>
-                      <div class="time-range">
-                        <div class="time-row">
-                            <label class="start-label" for="start-time">Start Time</label>
-                            <label class="end-label" for="end-time">End Time</label>
-                            <button type="button" class="remove-btn">&times;</button>
-                        </div>
-                        <div class="time-row">
-                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="time-range-entry">
-                      <div class="day-option" id="day-option">
-                          <span>Th</span>
-                      </div>
-                      <div class="time-range">
-                        <div class="time-row">
-                            <label class="start-label" for="start-time">Start Time</label>
-                            <label class="end-label" for="end-time">End Time</label>
-                            <button type="button" class="remove-btn">&times;</button>
-                        </div>
-                        <div class="time-row">
-                            <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                            <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                        </div>
-                      </div>
-                  </div>
+                    <div class="time-slot-row">
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <button type="button" class="remove-btn">&times;</button>
+                    </div>
+                    <button type="button" class="add-time-btn">+ Add Time</button>
+                  </div> -->
+                  <!-- <div class="time-card">
+                    <h3>Tuesdays</h3>
+                    <div>
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                    </div>
+                    <div class="time-slot-row">
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <button type="button" class="remove-btn">&times;</button>
+                    </div>
+                    <button type="button" class="add-time-btn">+ Add Time</button>
+                  </div> -->
+                  <!-- <div class="time-card">
+                    <h3>Thursdays</h3>
+                    <div>
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                    </div>
+                    <div class="time-slot-row">
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <button type="button" class="remove-btn">&times;</button>
+                    </div>
+                    <button type="button" class="add-time-btn">+ Add Time</button>
+                  </div> -->
+                  <!-- <div class="time-card">
+                    <h3>Wednesday, December 11, 2024</h3>
+                    <div>
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                    </div>
+                    <div class="time-slot-row">
+                        <label for="start-time-${date}" class="time-slot-label">
+                            <b>Start Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <label for="end-time-${date}" class="time-slot-label">
+                            <b>End Time:</b>
+                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
+                        </label>
+                        <button type="button" class="remove-btn">&times;</button>
+                    </div>
+                    <button type="button" class="add-time-btn">+ Add Time</button>
+                  </div> -->
               </div>
-              <button type="button" class="add-entry-btn" id="add-entry-btn">+ Add Time Range</button>
-              <p class="instructions">Click on the calendar to pick dates</p>
 
           </section>
+
       </section>
 
       <section class="form-container details">
@@ -216,7 +287,7 @@
 
             <div class="form-group">
                 <label for="attachment-link">Attachments</label>
-                <input type="url" id="attachment-link" name="attachment-link" placeholder="Arrachment link (if applicable)">
+                <input type="url" id="attachment-link" name="attachment-link" placeholder="Attachment link (if applicable)">
             </div>
 
             <div class="form-group">

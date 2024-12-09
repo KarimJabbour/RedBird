@@ -49,7 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Display bookings
             if (bookings.length > 0) {
                 bookings.forEach(booking => {
-                    const earliestUpcomingDate = getEarliestUpcomingDate(booking.MeetingDates);
+                    const meetingDates = booking.MeetingDates.trim().replace(/^"|"$/g, '').split(',');
+                    const startTimes = booking.StartTimes.trim().replace(/^"|"$/g, '').split(',');
+                    const endTimes = booking.EndTimes.trim().replace(/^"|"$/g, '').split(',');
+
+                    if (meetingDates.length !== startTimes.length || meetingDates.length !== endTimes.length) {
+                        console.error("Mismatch between MeetingDates, StartTimes, and EndTimes for booking:", booking.BookingName);
+                        return;
+                    }
+
+                    const { earliestDate, startTime, endTime } = getEarliestUpcomingDateWithTimes(meetingDates, startTimes, endTimes);
 
                     const frequencyAndDays =
                         booking.RecurrenceFrequency !== 'non-recurring'
@@ -61,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     bookingRow.onclick = () => showBookingPopup(booking);
                     bookingRow.innerHTML = `
                         <div class="column-title">${booking.BookingName}</div>
-                        <div class="column-date"><b>Next Date:</b> ${earliestUpcomingDate} ${frequencyAndDays}</div>
-                        <div class="column-time"><b>Time:</b> ${formatTime(booking.StartTime)} - ${formatTime(booking.EndTime)}</div>
+                        <div class="column-date"><b>Next Date:</b> ${earliestDate} ${frequencyAndDays}</div>
+                        <div class="column-time"><b>Time:</b> ${formatTime(startTime)} - ${formatTime(endTime)}</div>
                     `;
                     bookingContainer.appendChild(bookingRow);
                 });
@@ -132,7 +141,7 @@ function formatDate(dateStr) {
     }
     const [year, month, day] = dateStr.split('-');
     const date = new Date(`${year}-${month}-${day}`);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 }
 
 function formatTime(timeStr) {
@@ -146,35 +155,31 @@ function formatTime(timeStr) {
     return `${formattedHour}:${minutes} ${period}`;
 }
 
-function getEarliestUpcomingDate(meetingDatesStr) {
-    if (!meetingDatesStr) {
-        return "No upcoming dates";
-    }
+function getEarliestUpcomingDateWithTimes(dates, startTimes, endTimes) {
+    const now = new Date();
 
-    const today = new Date();
-    //console.log("Raw Meeting Dates String:", meetingDatesStr);
+    let earliestDate = null;
+    let earliestStartTime = null;
+    let earliestEndTime = null;
 
-    const meetingDates = meetingDatesStr.split(',').map(dateStr => {
-        //console.log("Raw Date Entry:", dateStr);
-        const [year, month, day] = dateStr.trim().replace(/^"|"$/g, '').split('-').map(Number); // Remove leading and trailing double quotes
-        //console.log("Parsed Date Components:", { year, month, day });
-        return new Date(Date.UTC(year, month - 1, day+1)); // Create UTC date
+    dates.forEach((date, index) => {
+        const [year, month, day] = date.trim().split('-').map(Number);
+        const dateObj = new Date(Date.UTC(year, month - 1, day));
+
+        if (dateObj >= now && (!earliestDate || dateObj < new Date(earliestDate))) {
+            earliestDate = dateObj;
+            earliestStartTime = startTimes[index];
+            earliestEndTime = endTimes[index];
+        }
     });
 
-    const upcomingDates = meetingDates.filter(date => date >= today); // Filter out dates older than today
-    upcomingDates.sort((a, b) => a - b); // Sort in ascending order
-    console.log("Upcoming Dates:", upcomingDates);
-
-    // Return the earliest date or a fallback message
-    if (upcomingDates.length > 0) {
-        return upcomingDates[0].toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-    } else {
-        return "No upcoming dates";
-    }
+    return {
+        earliestDate: earliestDate
+            ? earliestDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+            : null,
+        startTime: earliestStartTime,
+        endTime: earliestEndTime,
+    };
 }
 
 function formatFrequency(frequency) {
@@ -313,18 +318,23 @@ function showBookingPopup(booking, inHistory = false) {
     // Populate meeting times
     const scheduleList = document.querySelector(".schedule-list");
 
-    if (booking.MeetingDates.length > 0) {
+    if (booking.MeetingDates && booking.MeetingDates.trim()) {
         const meetingDates = booking.MeetingDates.trim().replace(/^"|"$/g, '').split(',');
+        const startTimes = booking.StartTimes.trim().replace(/^"|"$/g, '').split(',');
+        const endTimes = booking.EndTimes.trim().replace(/^"|"$/g, '').split(',');
 
-        const startTime = booking.StartTime;
-        const endTime = booking.EndTime;
+        if (meetingDates.length !== startTimes.length || meetingDates.length !== endTimes.length) {
+            console.error("Mismatch between dates and times. Please check the data.");
+            scheduleList.innerHTML = "<li>Error loading schedule</li>";
+            return;
+        }
 
-        meetingDates.forEach(date => {
+        meetingDates.forEach((date, index) => {
 
             const [year, month, day] = date.trim().replace(/^"|"$/g, '').split('-').map(Number);
             const formattedDate = new Date(year, month - 1, day)
 
-            var dayOfWeek = formattedDate.toLocaleString("en-US", { weekday: "short" });
+            const dayOfWeek = formattedDate.toLocaleString("en-US", { weekday: "short", timeZone: "UTC" });
             var letterDay = dayOfWeek.charAt(0);
 
             if (dayOfWeek === 'Tue' || dayOfWeek === 'Thu' || dayOfWeek === 'Sun') {
@@ -335,8 +345,8 @@ function showBookingPopup(booking, inHistory = false) {
             listItem.innerHTML = `
                 <div class="day-icon">${letterDay}</div>
                 <div class="time-info">
-                    <h4>${formattedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</h4>
-                    <span>${formatTime(startTime)} - ${formatTime(endTime)}</span>
+                    <h4>${formattedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: "UTC" })}</h4>
+                    <span>${formatTime(startTimes[index])} - ${formatTime(endTimes[index])}</span>
                 </div>
             `;
             scheduleList.appendChild(listItem);

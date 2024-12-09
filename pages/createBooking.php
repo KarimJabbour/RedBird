@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $frequency = htmlspecialchars($_POST['recurring-timeline']);
     $startDate = htmlspecialchars($_POST['start-date']);
     $endDate = htmlspecialchars($_POST['end-date']);
-    $startTime = htmlspecialchars($_POST['start-time']); // Submitted in 24-hour format
-    $endTime = htmlspecialchars($_POST['end-time']);     // Submitted in 24-hour format
+    // $startTime = htmlspecialchars($_POST['start-time']); // Submitted in 24-hour format
+    // $endTime = htmlspecialchars($_POST['end-time']);     // Submitted in 24-hour format
     $location = htmlspecialchars($_POST['location']);
     $details = htmlspecialchars($_POST['details']);
     // $maxAttendees = htmlspecialchars($_POST['max-attendees']);
@@ -32,6 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $meetingDates = htmlspecialchars($_POST['highlighted-dates']);
     $meetingDates = '"' . $meetingDates . '"';
     echo $meetingDates;
+
+    $startTimes = htmlspecialchars($_POST['start-times']);
+    $endTimes = htmlspecialchars($_POST['end-times']);
+    $startTimes = '"' . $startTimes . '"';
+    $endTimes = '"' . $endTimes . '"';
 
     
     $recurrenceDays = htmlspecialchars($_POST['recurring-days']);
@@ -48,8 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 RecurrenceFrequency, 
                 MeetingDates,
                 RecurrenceDays, 
-                StartTime, 
-                EndTime,
+                StartTimes, 
+                EndTimes,
                 StartRecurringDate, 
                 EndRecurringDate,  
                 Details,
@@ -61,8 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '$frequency',
                 '$meetingDates',
                 '$recurrenceDays',
-                '$startTime',
-                '$endTime',
+                '$startTimes',
+                '$endTimes',
                 '$startDate',
                 '$endDate',
                 '$details',
