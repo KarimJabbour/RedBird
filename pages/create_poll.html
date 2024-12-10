@@ -52,7 +52,7 @@
                   <div class="calendar-grid" id="calendar-grid">
                       <!-- Dynamically Generated in JavaScript -->
                   </div>
-                  <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear All Selections</button>
+                  <button type="button" class="clear-btn" onclick="clearForm()">Clear All Selections</button>
                 </div>
               </div>
             </div>
@@ -64,31 +64,7 @@
                 <h2>Date/Time Suggestions</h2>
               </div>
                 <div class="time-cards">
-                  <div class="time-card">
-                    <h3>Monday, December 9, 2024</h3>
-                    <div>
-                        <label for="start-time-${date}" class="time-slot-label">
-                            <b>Start Time:</b>
-                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
-                        </label>
-                        <label for="end-time-${date}" class="time-slot-label">
-                            <b>End Time:</b>
-                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
-                        </label>
-                    </div>
-                    <div class="time-slot-row">
-                        <label for="start-time-${date}" class="time-slot-label">
-                            <b>Start Time:</b>
-                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
-                        </label>
-                        <label for="end-time-${date}" class="time-slot-label">
-                            <b>End Time:</b>
-                            <input type="time" class="time-slot" id="start-time-${date}" data-date="${date}" required>
-                        </label>
-                        <button type="button" class="remove-btn">&times;</button>
-                    </div>
-                    <button type="button" class="add-time-btn">+ Add Time</button>
-                  </div>
+
                 </div>
 
             </section>
@@ -100,7 +76,7 @@
 
                 <div class="title">
                   <h2>Poll Details</h2>
-                  <button type="button" class="clear-btn" onclick="clearForm()">Clear</button>
+                  <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear</button>
                 </div>
                     <div class="form-group">
                         <label for="details">Poll Name</label>
