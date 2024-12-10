@@ -59,14 +59,16 @@ $details = $originalBooking['Details'];
 $meetingLink = $originalBooking['MeetingLink'];
 
 // Insert the new alternate booking
-$stmt = $conn->prepare("INSERT INTO CreatedBookings (UserID, BookingName, RecurrenceFrequency, MeetingDates, RecurrenceDays, StartTime, EndTime, StartRecurringDate, EndRecurringDate, Details, MeetingLink, Status) 
+$stmt = $conn->prepare("INSERT INTO CreatedBookings (UserID, BookingName, RecurrenceFrequency, MeetingDates, RecurrenceDays, StartTimes, EndTimes, StartRecurringDate, EndRecurringDate, Details, MeetingLink, Status) 
                         VALUES (?, ?,'non-recurring', ?, '', ?, ?, ?, ?, ?, ?, 'current')");
 
 $startDate = $date;
 $endDate = $date;
+$startTimes = '"' . $startTime . '"';
+$endTimes = '"' . $endTime . '"';
 $date = '"' . $date . '"';
 
-$stmt->bind_param("issssssss", $userID, $alternateBookingName, $date, $startTime, $endTime, $startDate, $endDate, $details, $meetingLink);
+$stmt->bind_param("issssssss", $userID, $alternateBookingName, $date, $startTimes, $endTimes, $startDate, $endDate, $details, $meetingLink);
 
 if (!$stmt->execute()) {
     echo json_encode(["success" => false, "message" => "Failed to create alternate booking: " . $stmt->error]);
