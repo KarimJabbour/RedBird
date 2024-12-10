@@ -245,6 +245,9 @@ function generateRecurrenceTimeCards(recurrenceDays) {
         title.textContent = `${day}`;
         timeCard.appendChild(title);
 
+        const timeSlotRow = document.createElement("div");
+        timeSlotRow.classList.add("time-slot-row");
+
         // Start Time input
         const startTimeLabel = document.createElement("label");
         startTimeLabel.classList.add("time-slot-label");
@@ -252,7 +255,7 @@ function generateRecurrenceTimeCards(recurrenceDays) {
             <b>Start Time:</b>
             <input type="time" class="time-slot start-time" data-day="${day}" required>
         `;
-        timeCard.appendChild(startTimeLabel);
+        timeSlotRow.appendChild(startTimeLabel);
 
         // End Time input
         const endTimeLabel = document.createElement("label");
@@ -261,7 +264,8 @@ function generateRecurrenceTimeCards(recurrenceDays) {
             <b>End Time:</b>
             <input type="time" class="time-slot end-time" data-day="${day}" required>
         `;
-        timeCard.appendChild(endTimeLabel);
+        timeSlotRow.appendChild(endTimeLabel);
+        timeCard.appendChild(timeSlotRow);
 
         // Add button for additional slots (optional)
         const addButton = document.createElement("button");
@@ -294,6 +298,9 @@ function generateManualTimeCard(date) {
     title.textContent = formattedDate; // Display the date as the title
     timeCard.appendChild(title);
 
+    const timeSlotRow = document.createElement("div");
+    timeSlotRow.classList.add("time-slot-row");
+
     // Start Time input
     const startTimeLabel = document.createElement("label");
     startTimeLabel.classList.add("time-slot-label");
@@ -301,7 +308,7 @@ function generateManualTimeCard(date) {
         <b>Start Time:</b>
         <input type="time" class="time-slot start-time" data-date="${date}" required>
     `;
-    timeCard.appendChild(startTimeLabel);
+    timeSlotRow.appendChild(startTimeLabel);
 
     // End Time input
     const endTimeLabel = document.createElement("label");
@@ -310,7 +317,8 @@ function generateManualTimeCard(date) {
         <b>End Time:</b>
         <input type="time" class="time-slot end-time" data-date="${date}" required>
     `;
-    timeCard.appendChild(endTimeLabel);
+    timeSlotRow.appendChild(endTimeLabel);
+    timeCard.appendChild(timeSlotRow);
 
     // Add button for additional slots (optional)
     const addButton = document.createElement("button");
@@ -335,8 +343,11 @@ function generateMonthlyTimeCard(dayOfMonth) {
 
     // Card title
     const title = document.createElement("h3");
-    title.textContent = `Day ${dayOfMonth}`; // Title shows the day of the month
+    title.textContent = `Day ${dayOfMonth} (Monthly)`; // Title shows the day of the month
     timeCard.appendChild(title);
+
+    const timeSlotRow = document.createElement("div");
+    timeSlotRow.classList.add("time-slot-row");
 
     // Start Time input
     const startTimeLabel = document.createElement("label");
@@ -345,7 +356,7 @@ function generateMonthlyTimeCard(dayOfMonth) {
         <b>Start Time:</b>
         <input type="time" class="time-slot start-time" data-day="${dayOfMonth}" required>
     `;
-    timeCard.appendChild(startTimeLabel);
+    timeSlotRow.appendChild(startTimeLabel);
 
     // End Time input
     const endTimeLabel = document.createElement("label");
@@ -354,7 +365,8 @@ function generateMonthlyTimeCard(dayOfMonth) {
         <b>End Time:</b>
         <input type="time" class="time-slot end-time" data-day="${dayOfMonth}" required>
     `;
-    timeCard.appendChild(endTimeLabel);
+    timeSlotRow.appendChild(endTimeLabel);
+    timeCard.appendChild(timeSlotRow);
 
     // Add button for additional slots (optional)
     const addButton = document.createElement("button");
@@ -402,7 +414,19 @@ function addTimeSlot(timeCard, day) {
     });
     timeSlotRow.appendChild(removeButton);
 
-    timeCard.appendChild(timeSlotRow);
+    // Insert the new row before the "+ Add Time" button
+    const addTimeButton = timeCard.querySelector(".add-time-btn");
+    timeCard.insertBefore(timeSlotRow, addTimeButton);
+
+    // Apply default times to the new row
+    const defaultStartTime = document.getElementById("start-time").value;
+    const defaultEndTime = document.getElementById("end-time").value;
+
+    const startInput = timeSlotRow.querySelector(".start-time");
+    const endInput = timeSlotRow.querySelector(".end-time");
+
+    if (defaultStartTime) startInput.value = defaultStartTime;
+    if (defaultEndTime) endInput.value = defaultEndTime;
 }
 
 function updateTimeCards() {
