@@ -1,5 +1,6 @@
 <?php
-
+require_once '../includes/auth.php'; // Ensure the user is logged in
+$userId = $_SESSION['user_id'];
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -13,7 +14,7 @@ if ($conn->connect_error) {
 
 // Get UserID from request (e.g., passed via GET method)
 #$userId = $_GET['userId'];
-$userId = -1;
+// $userId = -1;
 
 // Update status of past bookings and past polls
 $conn->query("UPDATE createdBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
