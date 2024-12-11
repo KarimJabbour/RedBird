@@ -1,4 +1,7 @@
 <?php
+require_once '../includes/auth.php'; // Ensure the user is logged in
+$userId = $_SESSION['user_id'];
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -32,12 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // echo $startTimes;
     // echo $endTimes;
 
-    //placeholder value
-    $userId = -1;
     $linkedBookingID = 38; //replace with booking id of booking associated with alternate request
     // $dateTimeOptions = '" "';
 
     $sql = "INSERT INTO AlternateRequests (
+                UserID,
                 FullName,
                 Email,
                 Details,
@@ -46,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 StartTimes,
                 EndTimes
             ) VALUES (
+                '$userId',
                 '$name',
                 '$email',
                 '$details',

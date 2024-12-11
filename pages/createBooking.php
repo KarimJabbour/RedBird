@@ -1,4 +1,7 @@
 <?php
+require_once '../includes/auth.php'; // Ensure the user is logged in
+$userId = $_SESSION['user_id'];
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -42,8 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recurrenceDays = htmlspecialchars($_POST['recurring-days']);
     echo "RecurrenceDays: " . $recurrenceDays;
 
-    //placeholder value
-    $userId = -1;
     //$meetingDates = '" "';
     //$recurrenceDays = " ";
 

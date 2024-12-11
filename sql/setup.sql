@@ -8,10 +8,10 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE bookings (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_email VARCHAR(255),
-    details TEXT NOT NULL,
-    time DATETIME NOT NULL,
-    FOREIGN KEY (user_email) REFERENCES users(email)
-);
+-- CREATE TABLE bookings (
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     user_email VARCHAR(255),
+--     details TEXT NOT NULL,
+--     time DATETIME NOT NULL,
+--     FOREIGN KEY (user_email) REFERENCES users(email)
+-- );

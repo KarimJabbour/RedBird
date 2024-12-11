@@ -2,48 +2,75 @@
 session_start();
 require_once '../includes/db.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+$error = '';
+
+if (!$conn) {
+    die('Database connection failed: ' . mysqli_connect_error());
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    if ($email && $password) {
-        // Check if the user exists in the database
-        $stmt = $conn->prepare('SELECT * FROM users WHERE email = ?');
-        $stmt->bind_param('s', $email);
+    if (empty($email) || empty($password)) {
+        $error = 'Email and password are required.';
+    } else {
+        $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+        if (!$stmt) {
+            die('Query preparation failed: ' . $conn->error);
+        }
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
 
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-
-            // Verify password
-            if (password_verify($password, $user['password'])) {
-                // Regenerate session ID to prevent session fixation
-                session_regenerate_id();
-
-                // Store user data in session
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['email'] = $user['email'];
-
-                // Redirect to the dashboard
-                header('Location: dashboard.php');
-                exit;
-            } else {
-                $error = 'Invalid credentials.';
-            }
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            header("Location: dashboard.html");
+            exit;
         } else {
-            $error = 'User not found.';
+            $error = 'Invalid email or password.';
         }
-    } else {
-        $error = 'Please provide a valid email and password.';
     }
 }
 ?>
 
-<h2>Login</h2>
-<form method="POST">
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-</form>
-<?php if (isset($error)) echo "<p>$error</p>"; ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../assets/css/login.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="Images/logo.png" alt="Logo" class="logo-img">RedBird Roster
+        </div>
+    </nav>
+    <div class="login-container">
+        <div class="form-container">
+            <h1>Login</h1>
+            <form action="login.php" method="POST">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="btn-submit">Login</button>
+                </div>
+                <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+                <p class="links">
+                    <a href="register.php">Register</a> | <a href="#">Forgot Password?</a>
+                </p>
+            </form>
+
+        </div>
+    </div>
+</body>
+</html>
