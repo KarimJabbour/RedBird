@@ -1,147 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Booking</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/create_booking.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create Booking</title>
-  <link rel="stylesheet" href="../assets/css/create_booking.css">
-</head>
+  <body>
+    <script src="../assets/js/createBooking.js"></script>
 
-<body>
-
-  <script src="../assets/js/createBooking.js"></script>
-
-  <div class="container">
-
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <div class="logo">
-        <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
-      </div>
-      <ul class="nav-links">
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="#" class="active">Create Booking</a></li>
-        <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
-      </ul>
-    </nav>
-
-    <header class="header">
+    <div class="container">
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+        <div class="logo">
+          <img
+            src="Images/logo.png"
+            alt="RedBird Logo"
+            class="logo-img"
+          />RedBird Roster
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a
+              href="dashboard.html"
+              class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>"
+            >
+              <i class="fas fa-tachometer-alt"></i> &nbsp;Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="create_booking.html" class="active">
+              <i class="fas fa-calendar-plus"></i> &nbsp; Create Booking
+            </a>
+          </li>
+          <li>
+            <a
+              href="user_settings.php"
+              class="<?= basename($_SERVER['PHP_SELF']) == 'user_settings.php' ? 'active' : '' ?>"
+            >
+              <i class="fas fa-user-cog"></i> &nbsp; User Settings
+            </a>
+          </li>
+          <li>
+            <a href="logout.php" class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i> &nbsp;Logout
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <header class="header">
         <h1>Create a New Booking</h1>
-        <p class="sub-header">Pick a time and date from the calendar and configure the meeting details.</p>
-    </header>
+        <p class="sub-header">
+          Pick a time and date from the calendar and configure the meeting
+          details.
+        </p>
+      </header>
 
-    <!-- Form Wrapper -->
-    <form action="createBooking.php" method="POST" class="booking-form" id="booking-form">
-
-      <!-- Form Section -->
-      <section class="form-container dates">
+      <!-- Form Wrapper -->
+      <form
+        action="createBooking.php"
+        method="POST"
+        class="booking-form"
+        id="booking-form"
+      >
+        <!-- Form Section -->
+        <section class="form-container dates">
           <h2>Booking Dates</h2>
 
-            <input type="hidden" id="highlighted-dates" name="highlighted-dates" value="">
-            <input type="hidden" id="recurring-days" name="recurring-days" value="">
-            <input type="hidden" id="start-times" name="start-times" value="">
-            <input type="hidden" id="end-times" name="end-times" value="">
+          <input
+            type="hidden"
+            id="highlighted-dates"
+            name="highlighted-dates"
+            value=""
+          />
+          <input
+            type="hidden"
+            id="recurring-days"
+            name="recurring-days"
+            value=""
+          />
+          <input type="hidden" id="start-times" name="start-times" value="" />
+          <input type="hidden" id="end-times" name="end-times" value="" />
 
           <div class="date-range">
             <div class="time-row">
-                <label class="frequency-label" for="recurring-timeline">Frequency</label>
-                <label class="start-label" for="start-time">Start Date</label>
-                <label class="end-label" for="end-time">End Date</label>
-                <button style="visibility: hidden" type="button" class="remove-btn">&times;</button>
+              <label class="frequency-label" for="recurring-timeline"
+                >Frequency</label
+              >
+              <label class="start-label" for="start-time">Start Date</label>
+              <label class="end-label" for="end-time">End Date</label>
+              <button
+                style="visibility: hidden"
+                type="button"
+                class="remove-btn"
+              >
+                &times;
+              </button>
             </div>
             <div class="time-row">
-                <select id="recurring-timeline" name="recurring-timeline" onchange="toggleRecurrenceDays()" required>
-                    <option value="daily">Every Day</option>
-                    <option value="weekly" selected>Every Week</option>
-                    <option value="2weekly">Every 2 Weeks</option>
-                    <option value="4weekly">Every 4 Weeks</option>
-                    <option value="monthly">Every Month</option>
-                    <option value="non-recurring">Non-Recurring</option>
-                </select>
-                <input type="text" id="start-date" name="start-date" placeholder="Start Date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
-                <input type="text" id="end-date" name="end-date" placeholder="End Date" onfocus="(this.type='date')" onblur="(this.type='text')" required>
+              <select
+                id="recurring-timeline"
+                name="recurring-timeline"
+                onchange="toggleRecurrenceDays()"
+                required
+              >
+                <option value="daily">Every Day</option>
+                <option value="weekly" selected>Every Week</option>
+                <option value="2weekly">Every 2 Weeks</option>
+                <option value="4weekly">Every 4 Weeks</option>
+                <option value="monthly">Every Month</option>
+                <option value="non-recurring">Non-Recurring</option>
+              </select>
+              <input
+                type="text"
+                id="start-date"
+                name="start-date"
+                placeholder="Start Date"
+                onfocus="(this.type='date')"
+                onblur="(this.type='text')"
+                required
+              />
+              <input
+                type="text"
+                id="end-date"
+                name="end-date"
+                placeholder="End Date"
+                onfocus="(this.type='date')"
+                onblur="(this.type='text')"
+                required
+              />
             </div>
           </div>
 
           <div class="form-group" id="week-days-form">
-            <label for="recurrence-days">Days
-                <div id="recurrence-days" class="days-picker">
-                    <input type="checkbox" id="day-m" name="days[]" value="M">
-                    <label for="day-m" class="day-option">M</label>
+            <label for="recurrence-days"
+              >Days
+              <div id="recurrence-days" class="days-picker">
+                <input type="checkbox" id="day-m" name="days[]" value="M" />
+                <label for="day-m" class="day-option">M</label>
 
-                    <input type="checkbox" id="day-t" name="days[]" value="T">
-                    <label for="day-t" class="day-option">T</label>
+                <input type="checkbox" id="day-t" name="days[]" value="T" />
+                <label for="day-t" class="day-option">T</label>
 
-                    <input type="checkbox" id="day-w" name="days[]" value="W">
-                    <label for="day-w" class="day-option">W</label>
+                <input type="checkbox" id="day-w" name="days[]" value="W" />
+                <label for="day-w" class="day-option">W</label>
 
-                    <input type="checkbox" id="day-th" name="days[]" value="Th">
-                    <label for="day-th" class="day-option">Th</label>
+                <input type="checkbox" id="day-th" name="days[]" value="Th" />
+                <label for="day-th" class="day-option">Th</label>
 
-                    <input type="checkbox" id="day-f" name="days[]" value="F">
-                    <label for="day-f" class="day-option">F</label>
+                <input type="checkbox" id="day-f" name="days[]" value="F" />
+                <label for="day-f" class="day-option">F</label>
 
-                    <input type="checkbox" id="day-s" name="days[]" value="S">
-                    <label for="day-s" class="day-option">S</label>
+                <input type="checkbox" id="day-s" name="days[]" value="S" />
+                <label for="day-s" class="day-option">S</label>
 
-                    <input type="checkbox" id="day-su" name="days[]" value="Su">
-                    <label for="day-su" class="day-option">Su</label>
-                </div>
-              </label>
-            </div>
+                <input type="checkbox" id="day-su" name="days[]" value="Su" />
+                <label for="day-su" class="day-option">Su</label>
+              </div>
+            </label>
+          </div>
 
           <p class="instructions">Click on the calendar to pick dates</p>
+        </section>
 
-      </section>
-
-      <!-- Main Content -->
-      <section class="split-content">
-
+        <!-- Main Content -->
+        <section class="split-content">
           <!-- Dynamic Sidebar -->
           <div class="dynamic-container">
             <div class="dynamic-content" id="dynamic-calendar">
               <h3>Calendar</h3>
               <div class="calendar">
-
                 <!-- Calendar Header -->
                 <div class="calendar-header">
-                    <button class="prev-month" type="button">
-                      <img src="Images/icons/FF702E_left_arrow.png" alt="Previous Month" class="arrow" onclick="changeMonth(-1)">
-                    </button>
-                    <div class="month-year" id="month-year"></div>
-                    <button class="next-month" type="button">
-                      <img src="Images/icons/FF702E_right_arrow.png" alt="Next Month" class="arrow" onclick="changeMonth(1)">
-                    </button>
+                  <button class="prev-month" type="button">
+                    <img
+                      src="Images/icons/FF702E_left_arrow.png"
+                      alt="Previous Month"
+                      class="arrow"
+                      onclick="changeMonth(-1)"
+                    />
+                  </button>
+                  <div class="month-year" id="month-year"></div>
+                  <button class="next-month" type="button">
+                    <img
+                      src="Images/icons/FF702E_right_arrow.png"
+                      alt="Next Month"
+                      class="arrow"
+                      onclick="changeMonth(1)"
+                    />
+                  </button>
                 </div>
 
                 <!-- Calendar Grid -->
                 <div class="calendar-grid" id="calendar-grid">
                   <!-- Dynamically Generated in JavaScript -->
                 </div>
-                <button class="button clear" type="button" onclick="clearAllHighlights()">Clear All Selections</button>
+                <button
+                  class="button clear"
+                  type="button"
+                  onclick="clearAllHighlights()"
+                >
+                  Clear All Selections
+                </button>
               </div>
             </div>
           </div>
 
           <!-- Time Selection -->
           <section class="form-container time">
-
             <div class="title">
               <h2>Selected Time Slots</h2>
             </div>
             <div>
-                <div class="time-row">
-                  <label class="start-label" for="start-time">Default Start Time</label>
-                  <label class="end-label" for="end-time">Default End Time</label>
-                </div>
-                <div class="time-row">
-                    <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                    <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
-                </div>
+              <div class="time-row">
+                <label class="start-label" for="start-time"
+                  >Default Start Time</label
+                >
+                <label class="end-label" for="end-time">Default End Time</label>
+              </div>
+              <div class="time-row">
+                <input
+                  type="text"
+                  id="start-time"
+                  name="start-time"
+                  placeholder="Start Time"
+                  onfocus="(this.type='time')"
+                  onblur="(this.type='text')"
+                  required
+                />
+                <input
+                  type="text"
+                  id="end-time"
+                  name="end-time"
+                  placeholder="End Time"
+                  onfocus="(this.type='time')"
+                  onblur="(this.type='text')"
+                  required
+                />
+              </div>
             </div>
-              <div class="time-cards" id="time-cards">
-                  <!-- <div class="time-card">
+            <div class="time-cards" id="time-cards">
+              <!-- <div class="time-card">
                     <h3>Monday, December 9, 2024</h3>
                     <div>
                         <label for="start-time-${date}" class="time-slot-label">
@@ -166,7 +270,7 @@
                     </div>
                     <button type="button" class="add-time-btn">+ Add Time</button>
                   </div> -->
-                  <!-- <div class="time-card">
+              <!-- <div class="time-card">
                     <h3>Tuesdays</h3>
                     <div>
                         <label for="start-time-${date}" class="time-slot-label">
@@ -191,7 +295,7 @@
                     </div>
                     <button type="button" class="add-time-btn">+ Add Time</button>
                   </div> -->
-                  <!-- <div class="time-card">
+              <!-- <div class="time-card">
                     <h3>Thursdays</h3>
                     <div>
                         <label for="start-time-${date}" class="time-slot-label">
@@ -216,7 +320,7 @@
                     </div>
                     <button type="button" class="add-time-btn">+ Add Time</button>
                   </div> -->
-                  <!-- <div class="time-card">
+              <!-- <div class="time-card">
                     <h3>Wednesday, December 11, 2024</h3>
                     <div>
                         <label for="start-time-${date}" class="time-slot-label">
@@ -241,21 +345,25 @@
                     </div>
                     <button type="button" class="add-time-btn">+ Add Time</button>
                   </div> -->
-              </div>
-
+            </div>
           </section>
+        </section>
 
-      </section>
-
-      <section class="form-container details">
+        <section class="form-container details">
           <h2>Booking Details</h2>
 
           <div class="form-group">
-              <label for="booking-name">Booking Name</label>
-              <input type="text" id="booking-name" name="booking-name" placeholder="Name your booking" required>
+            <label for="booking-name">Booking Name</label>
+            <input
+              type="text"
+              id="booking-name"
+              name="booking-name"
+              placeholder="Name your booking"
+              required
+            />
           </div>
 
-            <!-- <div class="form-group">
+          <!-- <div class="form-group">
                 <label for="start-time">Start Time</label>
                 <input type="text" id="start-time" name="start-time" placeholder="Start Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
             </div>
@@ -265,46 +373,75 @@
                 <input type="text" id="end-time" name="end-time" placeholder="End Time" onfocus="(this.type='time')" onblur="(this.type='text')" required>
             </div> -->
 
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" placeholder="Enter the meeting location" required>
-            </div>
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              placeholder="Enter the meeting location"
+              required
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="details">Additional Details</label>
-                <input type="text" id="details" name="details" placeholder="Provide additional information to your attendees (optional)">
-            </div>
+          <div class="form-group">
+            <label for="details">Additional Details</label>
+            <input
+              type="text"
+              id="details"
+              name="details"
+              placeholder="Provide additional information to your attendees (optional)"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="max-attendees">Max Attendees</label>
-                <input type="number" id="max-attendees" name="max-attendees" min="1" placeholder="Max number of attendees (optional)">
-            </div>
+          <div class="form-group">
+            <label for="max-attendees">Max Attendees</label>
+            <input
+              type="number"
+              id="max-attendees"
+              name="max-attendees"
+              min="1"
+              placeholder="Max number of attendees (optional)"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="time-slot">Time Slot Length</label>
-                <input type="number" id="time-slot" name="time-slot" min="5" placeholder="Length of time slot for each student (optional)">
-            </div>
+          <div class="form-group">
+            <label for="time-slot">Time Slot Length</label>
+            <input
+              type="number"
+              id="time-slot"
+              name="time-slot"
+              min="5"
+              placeholder="Length of time slot for each student (optional)"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="attachment-link">Attachments</label>
-                <input type="url" id="attachment-link" name="attachment-link" placeholder="Attachment link (if applicable)">
-            </div>
+          <div class="form-group">
+            <label for="attachment-link">Attachments</label>
+            <input
+              type="url"
+              id="attachment-link"
+              name="attachment-link"
+              placeholder="Attachment link (if applicable)"
+            />
+          </div>
 
-            <div class="form-group">
-                <label for="meeting-link">Zoom Link</label>
-                <input type="url" id="meeting-link" name="meeting-link" placeholder="Meeting link (if applicable)">
-            </div>
+          <div class="form-group">
+            <label for="meeting-link">Zoom Link</label>
+            <input
+              type="url"
+              id="meeting-link"
+              name="meeting-link"
+              placeholder="Meeting link (if applicable)"
+            />
+          </div>
 
-            <!-- Buttons -->
-            <div class="form-buttons">
-                <button type="submit" class="button save">Create Booking</button>
-            </div>
-
-      </section>
-    </form>
-
-  </div>
-
-</body>
-
+          <!-- Buttons -->
+          <div class="form-buttons">
+            <button type="submit" class="button save">Create Booking</button>
+          </div>
+        </section>
+      </form>
+    </div>
+  </body>
 </html>

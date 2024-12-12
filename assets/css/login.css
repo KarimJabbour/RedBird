@@ -10,10 +10,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #eb0920;
+  background: #eb0920;
   color: white;
-  padding: 15px;
+  padding: 7.5px 7.5px;
   border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logo {

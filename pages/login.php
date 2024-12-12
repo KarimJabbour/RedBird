@@ -2,11 +2,17 @@
 session_start();
 require_once '../includes/users_db.php';
 
+// Check if user is already logged in
+if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+    header('Location: dashboard.html');
+    exit;
+}
 $error = '';
 
 if (!$conn) {
     die('Database connection failed: ' . mysqli_connect_error());
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
@@ -51,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </nav>
     <div class="login-container">
         <div class="form-container">
-            <h1>Login</h1>
+        <img src="Images/logo.png" alt="Logo" class="dialog-logo" style="display: block; margin: 0 auto 20px; width: 80px; height: auto;">
+        <h1>Login</h1>
             <form action="login.php" method="POST">
                 <div class="form-group">
                     <label for="email">Email:</label>
@@ -66,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
                 <p class="links">
-                    <a href="register.php">Register</a> | <a href="#">Forgot Password?</a>
+                    <a href="register.php">No account?: Register Here</a>
                 </p>
             </form>
 

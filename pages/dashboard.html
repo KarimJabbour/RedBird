@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard - RedBird Roster</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="../assets/css/dashboard.css" />
     <script src="../assets/js/dashboard.js"></script>
   </head>
@@ -20,23 +24,31 @@
           />RedBird Roster
         </div>
         <ul class="nav-links">
-          <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="#">Create Booking</a></li>
-          <!-- <li>
-            <a href="#"
-              ><img
-                src="Images/icons/user-icon.png"
-                alt="User Icon"
-                class="user-icon"
-            /></a>
-          </li> -->
           <li>
-            <a href="user_settings.php"
-              ><img
-                src="Images/icons/user-icon.png"
-                alt="User Icon"
-                class="user-icon"
-            /></a>
+            <a href="dashboard.html" class="active">
+              <i class="fas fa-tachometer-alt"></i> &nbsp;Dashboard
+            </a>
+          </li>
+          <li>
+            <a
+              href="create_booking.html"
+              class="<?= basename($_SERVER['PHP_SELF']) == 'create_booking.php' ? 'active' : '' ?>"
+            >
+              <i class="fas fa-calendar-plus"></i> &nbsp; Create Booking
+            </a>
+          </li>
+          <li>
+            <a
+              href="user_settings.php"
+              class="<?= basename($_SERVER['PHP_SELF']) == 'user_settings.php' ? 'active' : '' ?>"
+            >
+              <i class="fas fa-user-cog"></i> &nbsp; User Settings
+            </a>
+          </li>
+          <li>
+            <a href="logout.php" class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i> &nbsp;Logout
+            </a>
           </li>
         </ul>
       </nav>

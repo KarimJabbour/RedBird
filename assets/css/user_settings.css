@@ -1,21 +1,44 @@
-/* Body and Navbar */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: linear-gradient(135deg, #f7f9fc, #e9eef5);
   font-family: "Arial", "Helvetica", sans-serif;
   color: #333;
-  margin: 0;
-  padding: 0;
+  min-height: 100%;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="checkbox"],
+select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #eb0920;
+  background: #eb0920;
   color: white;
-  padding: 15px;
+  padding: 7.5px 7.5px;
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -49,12 +72,15 @@ body {
 
 /* Main Content */
 .container {
-  max-width: 800px;
-  margin: 0 auto;
+  /* max-width: 800px; */
+  /* margin: 0 auto;
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .page-title {

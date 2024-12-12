@@ -1,8 +1,12 @@
 <?php
-error_reporting(E_ALL); // Report all errors
-ini_set('display_errors', 1); // Display errors on the page
 session_start();
 require_once '../includes/users_db.php';
+
+// Check if user is already logged in
+if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+    header('Location: dashboard.html');
+    exit;
+}
 
 $error = '';
 $success = '';
@@ -16,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $default_location = trim($_POST['default_location']);
     $notifications_enabled = isset($_POST['notifications_enabled']) ? 1 : 0;
 
-    // Validate all fields
+    // Validation and Registration Logic
     if (empty($email) || empty($password) || empty($confirm_password) || empty($full_name) || empty($role)) {
         $error = 'All fields are required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -28,25 +32,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/', $password)) {
         $error = 'Password must be at least 8 characters, include an uppercase letter, a lowercase letter, and a number.';
     } else {
-        // Insert user into the database
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("
-            INSERT INTO users (email, password, full_name, role, default_location, notifications_enabled) 
-            VALUES (?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->bind_param('sssssi', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled);
-
-        if ($stmt->execute()) {
-            $success = 'Registration successful! Please log in.';
-        } else {
-            $error = 'An error occurred. Please try again.';
-        }
-
+        // Check if the email is already registered
+        $stmt = $conn->prepare("SELECT id FROM Users WHERE email = ?");
+        $stmt->bind_param('s', $email);
+        $stmt->execute();
+        $stmt->bind_result($existing_user_id);
+        $stmt->fetch();
         $stmt->close();
+
+        if ($existing_user_id) {
+            $error = 'Email is already registered. Please log in.';
+        } else {
+            // Register new user
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $conn->prepare("
+                INSERT INTO users (email, password, full_name, role, default_location, notifications_enabled) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->bind_param('sssssi', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled);
+
+            if ($stmt->execute()) {
+                $_SESSION['user_id'] = $conn->insert_id;
+                header('Location: dashboard.html');
+                exit;
+            } else {
+                $error = 'An error occurred. Please try again.';
+            }
+
+            $stmt->close();
+        }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,6 +72,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Register</title>
     <link rel="stylesheet" href="../assets/css/register.css">
     <script>
+        // function showStep2() {
+        //     document.getElementById('step1').style.display = 'none';
+        //     document.getElementById('step2').style.display = 'block';
+        // }
+
+        // function goBackToStep1() {
+        //     document.getElementById('step2').style.display = 'none';
+        //     document.getElementById('step1').style.display = 'block';
+        // }
+        function validateStep1() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirm_password').value.trim();
+
+            // Email Validation
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@(?:mail\.)?mcgill\.ca$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid McGill email address.');
+                return false;
+            }
+
+            // Password Validation
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                alert('Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, and a number.');
+                return false;
+            }
+
+            // Confirm Password Validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return false;
+            }
+
+            // If all validations pass
+            showStep2();
+            return true;
+        }
+
         function showStep2() {
             document.getElementById('step1').style.display = 'none';
             document.getElementById('step2').style.display = 'block';
@@ -64,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.getElementById('step2').style.display = 'none';
             document.getElementById('step1').style.display = 'block';
         }
+
     </script>
 </head>
 <body>
@@ -74,7 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </nav>
     <div class="register-container">
         <div class="form-container">
-            <h1>Register</h1>
+        <img src="Images/logo.png" alt="Logo" class="dialog-logo" style="display: block; margin: 0 auto 20px; width: 80px; height: auto;">
+        <h1>Register</h1>
             <?php if ($error): ?>
                 <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
             <?php elseif ($success): ?>
@@ -96,8 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="password" id="confirm_password" name="confirm_password" required>
                     </div>
                     <div class="form-buttons">
-                        <button type="button" class="btn-submit" onclick="showStep2()">Next</button>
-                    </div>
+                        <button type="button" class="btn-submit" onclick="validateStep1()">Next</button>
+                    </div> 
                 </div>
 
                 <!-- Step 2 -->
