@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../includes/db.php';
+require_once '../includes/users_db.php';
 
 $error = '';
 $success = '';
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Password must be at least 8 characters, include an uppercase letter, a lowercase letter, and a number.';
     } else {
         // Check for duplicate email
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM Users WHERE email = ?");
         $stmt->bind_param('s', $email);
         $stmt->execute();
         $stmt->bind_result($count);

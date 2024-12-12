@@ -1,0 +1,145 @@
+/* Body and Navbar */
+body {
+  background: linear-gradient(135deg, #f7f9fc, #e9eef5);
+  font-family: "Arial", "Helvetica", sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #eb0920;
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logo-img {
+  width: 40px;
+  margin-right: 10px;
+}
+
+.nav-links li {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.nav-links li a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.nav-links li a.active,
+.nav-links li a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Main Content */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.page-title {
+  color: #eb0920;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.user-info p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+/* Form Styling */
+.form-container {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select,
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+input:focus,
+select:focus {
+  border-color: #eb0920;
+  box-shadow: 0 0 5px rgba(235, 9, 32, 0.3);
+  outline: none;
+}
+
+.btn {
+  background-color: #eb0920;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.btn:hover {
+  background-color: #c2081b;
+}
+
+.btn-submit {
+  background-color: #eb0920;
+  color: white;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  transition: background 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: #c2081b;
+}
+
+/* Unavailability List */
+#unavailability-list {
+  margin-top: 15px;
+}
+
+#unavailability-list div {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

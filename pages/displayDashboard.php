@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once '../includes/auth.php'; // Ensure the user is logged in
 $userId = $_SESSION['user_id'];
 $servername = "localhost";
@@ -100,6 +103,10 @@ $response = [
     'pastPolls' => $pastPolls,
     'alternateRequests' => $alternateRequests,
 ];
+if (empty($response)) {
+    echo json_encode(['error' => 'No data found']);
+    exit;
+}
 
 header('Content-Type: application/json');
 echo json_encode($response);

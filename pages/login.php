@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../includes/db.php';
+require_once '../includes/users_db.php';
 
 $error = '';
 
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($email) || empty($password)) {
         $error = 'Email and password are required.';
     } else {
-        $stmt = $conn->prepare("SELECT id, password FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, password FROM Users WHERE email = ?");
         if (!$stmt) {
             die('Query preparation failed: ' . $conn->error);
         }
