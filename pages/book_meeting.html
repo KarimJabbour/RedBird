@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Poll</title>
+    <title>Book Meeting</title>
     <link rel="stylesheet" href="../assets/css/book_meeting.css">
 </head>
 
 <body>
-    <script src=""></script>
+    <script src="../assets/js/bookMeeting.js"></script>
     <div class="container">
 
       <!-- Navigation Bar -->
@@ -60,39 +60,8 @@
               <div class="title">
                 <h2>Time Slot Options</h2>
               </div>
-              <div class="time-slots-list">
-                  <div class="time-slot-card available">
-                      <h3>9:00 AM - 9:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
-                  <div class="time-slot-card unavailable">
-                      <h3>9:30 AM - 10:00 AM</h3>
-                      <p>Status: <span>Booked</span></p>
-                  </div>
-                  <div class="time-slot-card available">
-                      <h3>10:00 AM - 10:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
-                  <div class="time-slot-card unavailable">
-                      <h3>10:30 AM - 11:00 AM</h3>
-                      <p>Status: <span>Booked</span></p>
-                  </div>
-                  <div class="time-slot-card available">
-                      <h3>10:00 AM - 10:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
-                  <div class="time-slot-card available">
-                      <h3>10:00 AM - 10:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
-                  <div class="time-slot-card available">
-                      <h3>10:00 AM - 10:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
-                  <div class="time-slot-card available">
-                      <h3>10:00 AM - 10:30 AM</h3>
-                      <p>Status: <span>Available</span></p>
-                  </div>
+              <div class="time-slots-list" id="time-slots-list">
+                  <!-- Dynamically Populated -->
               </div>
 
             </section>
@@ -102,21 +71,21 @@
             <!-- Booking Details -->
             <section class="form-container details">
 
-                <div class="title">
+                <div class="title" id="booking-title">
                     <h2>COMP 307 Office Hours</h2>
                 </div>
                 <div>
-                    <div class="info-item">
+                    <div class="info-item" id="booking-details">
                         <h3>Details</h3>
                         <p>COMP 307 Office hours for help with the project. Please book in advance.</p>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item" id="booking-location">
                         <h3>Location</h3>
                         <p>ENGMC323</p>
                     </div>
                     <div class="info-item">
                         <h3>Available Slots</h3>
-                        <p>3/5</p>
+                        <p id="available-slots">3/5</p>
                     </div>
                 </div>
 

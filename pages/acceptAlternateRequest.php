@@ -75,12 +75,18 @@ if (!$stmt->execute()) {
     exit();
 }
 
+$newBookingId = $conn->insert_id;
+
 // Update the status of the alternate request to 'accepted'
 $stmt = $conn->prepare("UPDATE AlternateRequests SET Status = 'accepted', ResponseMessage = ? WHERE ID = ?");
 $stmt->bind_param("si", $message, $alternateRequestID);
 
 if ($stmt->execute()) {
-    echo json_encode(["success" => true, "message" => "Booking has been created for alternate request. Optionally, make any adjustments now."]);
+    echo json_encode([
+        "success" => true, 
+        "message" => "Booking has been created for alternate request. Optionally, make any adjustments now.",
+        "bookingId" => $newBookingId,
+    ]);
 } else {
     echo json_encode(["success" => false, "message" => "Failed to update alternate request: " . $stmt->error]);
 }

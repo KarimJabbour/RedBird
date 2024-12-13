@@ -1,6 +1,14 @@
 <?php
-require_once '../includes/auth.php'; // Ensure the user is logged in
-$userId = $_SESSION['user_id'];
+// require_once '../includes/auth.php'; // Ensure the user is logged in
+// $userId = $_SESSION['user_id'];
+
+// if (!isset($_SESSION['user_id'])) {
+//     // Redirect to the login page with an optional return URL
+//     $returnUrl = urlencode("http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+//     echo "<p>You are not logged in. <a href='login.php?return_url={$returnUrl}'>Click here to log in</a> or continue as a guest.</p>";
+// }
+
+$userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : -1; //public users should be allowed to book meetings/request alternate times
 
 $servername = "localhost";
 $username = "root";
@@ -15,10 +23,6 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // echo "<h3>Debugging Output:</h3>";
-    // echo "<pre>";
-    // print_r($_POST);
-    // echo "</pre>";
     
     $name = htmlspecialchars($_POST['name']);
     $email = $_POST['email'];
@@ -35,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // echo $startTimes;
     // echo $endTimes;
 
-    $linkedBookingID = 38; //replace with booking id of booking associated with alternate request
+    $linkedBookingID = 70; //replace with booking id of booking associated with alternate request
     // $dateTimeOptions = '" "';
 
     $sql = "INSERT INTO AlternateRequests (

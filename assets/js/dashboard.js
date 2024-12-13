@@ -291,20 +291,29 @@ function showBookingPopup(booking, inHistory = false) {
 
     bookingPopup.querySelector(".modal-header h2").textContent = booking.BookingName;
     // bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
+    const formatParameter = (param) => (param === -1 || param === "-1" ? "" : param);
     bookingPopup.querySelector(".modal-body").innerHTML = `
-        <p><b>Details:</b> ${booking.Details}</p>
-        <p><b>Location:</b> ${booking.Location}</p>
-        <p><b>Max Participants:</b> ${booking.MaxAttendees}</p>
-        <p><b>Time Slot:</b> ${booking.TimeSlotLength} minutes</p>
+        <p><b>Details:</b> ${formatParameter(booking.Details) || "None"}</p>
+    <p><b>Location:</b> ${formatParameter(booking.Location) || "Undecided"}</p>
+    <p><b>Max Participants:</b> ${formatParameter(booking.MaxAttendees) || "N/A"}</p>
+    <p><b>Time Slot:</b> ${formatParameter(booking.TimeSlotLength) ? `${formatParameter(booking.TimeSlotLength)} minutes` : "N/A"}</p>
         <div class="copy-container">
             <b>Zoom Link:</b>
-            <a href="${booking.MeetingLink}" target="_blank" id="zoom-link">${booking.MeetingLink || "N/A"}</a>
-            <button class="copy-btn" onclick="copyToClipboard('zoom-link')">Copy</button>
+            ${
+                formatParameter(booking.MeetingLink)
+                    ? `<a href="${formatParameter(booking.MeetingLink)}" target="_blank" id="zoom-link">${formatParameter(booking.MeetingLink)}</a>
+                    <button class="copy-btn" onclick="copyToClipboard('zoom-link')">Copy</button>`
+                    : "N/A"
+            }
         </div>
         <div class="copy-container">
             <b>Booking URL:</b>
-            <a href="${booking.BookingURL}" target="_blank" id="meeting-url">${booking.BookingURL || "N/A"}</a>
-            <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>
+            ${
+                formatParameter(booking.BookingURL)
+                    ? `<a href="${formatParameter(booking.BookingURL)}" target="_blank" id="meeting-url">${formatParameter(booking.BookingURL)}</a>
+                    <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>`
+                    : "N/A"
+            }
         </div>
         <div class="meeting-times">
             <h3>Booking Schedule</h3>
@@ -361,6 +370,7 @@ function showBookingPopup(booking, inHistory = false) {
     } else {
         // Enable edit and delete buttons for active bookings
         bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`)
+        bookingPopup.querySelector(".edit-btn").setAttribute('onclick', `editBooking(${booking.ID})`)
     }
 }
 
@@ -371,8 +381,8 @@ function showPollPopup(poll, inHistory = false) {
     pollPopup.querySelector(".modal-header h2").textContent = poll.PollName;
     // pollPopup.querySelector(".delete-btn").setAttribute('onclick', `closePoll(${poll.ID})`);
     pollPopup.querySelector(".modal-body").innerHTML = `
-        <p><b>Details:</b> ${poll.Details}</p>
-        <p><b>Poll Close Date:</b> ${poll.PollCloseDateTime}</p>
+        <p><b>Details:</b> ${poll.Details || "None"}</p>
+        <p><b>Poll Close Date:</b> ${poll.PollCloseDateTime ? poll.PollCloseDateTime : "No date set yet"}</p>
         <div class="poll-results">
             <h3>Poll Results</h3>
             <ul class="poll-results-list">
@@ -484,6 +494,14 @@ function deleteBooking(bookingId) {
         });
 }
 
+function editBooking(bookingId) {
+    if (!confirm("Are you sure you want to edit this booking?")) {
+        return; // Exit if the user cancels the action
+    }
+    console.log("Redirecting to edit booking page with bookingId:", bookingId);
+    window.location.replace(`http://localhost/redbird/pages/edit_booking.html?bookingId=${bookingId}`);
+}
+
 
 function closePoll(pollID) {
     if (!confirm("Are you sure you want to close this poll?")) {
@@ -575,9 +593,10 @@ function acceptAlternateRequest(alternateRequestID, selectedOption, message) {
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
+                const bookingId = data.bookingId;
                 alert("A booking has been created for the alternate request! Optionally, make any adjustments now.");
                 location.reload();
-                //window.location.replace("http://localhost/redbird/pages/editBooking.html");
+                window.location.replace(`http://localhost/redbird/pages/edit_booking.html?bookingId=${bookingId}`);
             } else {
                 alert("Failed to accept alternate request: " + data.message);
             }

@@ -201,10 +201,10 @@ body {
     transition: transform 0.2s, background 0.3s;
 }
 
-.day:hover {
+/* .day:hover {
     background: #fb9482;
     color: white;
-}
+} */
 
 .day.empty {
     background: transparent;
@@ -223,6 +223,12 @@ body {
     background: #FF702E;
     color: white;
     transform: translateY(-5px);
+}
+
+.day.selected-date {
+    background-color: #EB0920;
+    color: white;
+    transition: background-color 0.3s ease;
 }
 
 /* Time Slots */
