@@ -12,7 +12,7 @@ $startTime = $_POST['start_time'];
 $endTime = $_POST['end_time'];
 
 // Update default location
-$stmt = $conn->prepare("UPDATE users SET default_location = ?, status = ? WHERE id = ?");
+$stmt = $conn->prepare("UPDATE Users SET default_location = ?, status = ? WHERE id = ?");
 $stmt->bind_param("ssi", $defaultLocation, $status, $userId);
 $stmt->execute();
 $stmt->close();

@@ -14,7 +14,7 @@ $success = '';
 
 // Fetch user data
 try {
-    $stmt = $conn->prepare("SELECT email, full_name, role, default_location, notifications_enabled FROM users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT email, full_name, role, default_location, notifications_enabled FROM Users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     $stmt->bind_result($email, $full_name, $role, $default_location, $notifications_enabled);
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $notifications_enabled = isset($_POST['notifications_enabled']) ? 1 : 0;
 
     try {
-        $stmt = $conn->prepare("UPDATE users SET full_name = ?, role = ?, default_location = ?, notifications_enabled = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE Users SET full_name = ?, role = ?, default_location = ?, notifications_enabled = ? WHERE id = ?");
         $stmt->bind_param("sssii", $full_name, $role, $default_location, $notifications_enabled, $user_id);
         $stmt->execute();
         $stmt->close();

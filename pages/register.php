@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Register new user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("
-                INSERT INTO users (email, password, full_name, role, default_location, notifications_enabled) 
+                INSERT INTO Users (email, password, full_name, role, default_location, notifications_enabled) 
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
             $stmt->bind_param('sssssi', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled);

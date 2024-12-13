@@ -10,7 +10,7 @@ CREATE TABLE Users (
     notifications_enabled BOOLEAN DEFAULT TRUE);
 
 -- Insert sample users into the 'users' table
-INSERT INTO users (email, password, full_name, role, default_location, created_at, notifications_enabled)
+INSERT INTO Users (email, password, full_name, role, default_location, created_at, notifications_enabled)
 VALUES
 ('alice@mail.mcgill.ca', 'password123', 'Alice Johnson', 'Student', 'Downtown Campus', NOW(), TRUE),
 ('bob@mail.mcgill.ca', 'securepass456', 'Bob Smith', 'Professor', 'Main Campus', NOW(), TRUE),
