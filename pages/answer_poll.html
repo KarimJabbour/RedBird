@@ -1,102 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Answer Poll</title>
-    <link rel="stylesheet" href="../assets/css/answer_poll.css">
-</head>
+    <link rel="stylesheet" href="../assets/css/answer_poll.css" />
+  </head>
 
-<body>
-    <script src="../assets/js/answerPoll.js"></script>
+  <body>
     <div class="container">
-
       <!-- Navigation Bar -->
       <nav class="navbar">
-          <div class="logo">
-              <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
-          </div>
-          <ul class="nav-links">
-              <!-- <li><a href="#" class="active">Dashboard</a></li>
-              <li><a href="create_booking.html">Create Booking</a></li> -->
-              <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
-          </ul>
+        <div class="logo">
+          <img
+            src="Images/logo.png"
+            alt="RedBird Logo"
+            class="logo-img"
+          />RedBird Roster
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a href="#"
+              ><img
+                src="Images/icons/user-icon.png"
+                alt="User Icon"
+                class="user-icon"
+            /></a>
+          </li>
+        </ul>
       </nav>
 
-        <!-- Header -->
-        <header class="header">
-            <h1>Pick Some Times</h1>
-            <p class="sub-header">Pick all the time slots that you're available for.</p>
-        </header>
+      <!-- Header -->
+      <header class="header">
+        <h1>Pick Some Times</h1>
+        <p class="sub-header">
+          Pick all the time slots that you're available for.
+        </p>
+      </header>
 
-        <div class="main-content">
+      <div class="main-content">
+        <form
+          action="updateVoteCounts.php"
+          method="POST"
+          class="answer-poll"
+          id="answer-poll"
+        >
+          <input type="hidden" name="pollID" id="pollID" value="" />
+          <div class="poll-card">
+            <div class="poll-details">
+              <h2></h2>
+              <p><b>Details:</b> <span id="poll-details"></span></p>
+              <p><b>Answer By:</b> <span id="poll-close-date"></span></p>
+            </div>
+          </div>
+          <!-- Enhanced Time Selector -->
+          <div class="time-selector">
+            <h2>Select Dates and Times</h2>
+            <div class="timeline"></div>
+          </div>
 
-            <form action="updateVoteCounts.php" method="POST" class="answer-poll" id="answer-poll">
-
-                <div class="poll-card">
-                    <!-- Poll Details -->
-                    <div class="poll-details">
-                        <h2>COMP 307 Extra Lecture</h2>
-                        <p><b>Details:</b> Missed lecture recovery</p>
-                        <p><b>Answer By:</b> Friday, December 6, 2024</p>
-                    </div>
-                </div>
-
-                <!-- Enhanced Time Selector -->
-                <div class="time-selector">
-                    <h2>Select Dates and Times</h2>
-                    <div class="timeline">
-                        <div class="date-group">
-                            <div class="date-bubble">
-                                <h4>Monday, December 11</h4>
-                            </div>
-                            <div class="time-options">
-                                <div class="time-circle">
-                                    <span>2:00 PM <br> - <br> 3:00 PM<span>
-                                </div>
-                                <div class="time-circle">
-                                    <span>2:00 PM</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="date-group">
-                            <div class="date-bubble">
-                                <h4>Tuesday, December 12</h4>
-                            </div>
-                            <div class="time-options">
-                                <div class="time-circle">
-                                    <span>10:00 AM</span>
-                                </div>
-                                <div class="time-circle">
-                                    <span>4:00 PM</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="submit-container">
-                    <button class="submit-btn">Submit</button>
-                </div>
-
-            </form>
-        </div>
-
+          <!-- Submit Button -->
+          <div class="submit-container">
+            <button class="submit-btn" type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <script>
-    const timeCircles = document.querySelectorAll('.time-circle');
-
-timeCircles.forEach(circle => {
-    circle.addEventListener('click', () => {
-        // Toggle the selected class
-        circle.classList.toggle('selected');
-    });
-});
-    </script>
-
-</body>
-
+    <script src="../assets/js/answerPoll.js"></script>
+  </body>
 </html>

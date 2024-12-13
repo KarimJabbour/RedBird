@@ -13,12 +13,15 @@ if ($conn->connect_error) {
     exit();
 }
 
-$data = json_decode(file_get_contents('php://input'), true);
-$pollID = $data['pollID'];
-$selectedOptions = $data['selectedOptions'];
+$pollID = $_POST['pollID'] ?? null;
+if (!$pollID) {
+    echo json_encode(["success" => false, "message" => "Invalid poll ID"]);
+    exit();
+}
 
-if (!$pollID || empty($selectedOptions)) {
-    echo json_encode(["success" => false, "message" => "Invalid poll ID or selections"]);
+$selectedOptions = json_decode($_POST['selectedOptions'], true);
+if (!$selectedOptions) {
+    echo json_encode(["success" => false, "message" => "Invalid selections"]);
     exit();
 }
 
