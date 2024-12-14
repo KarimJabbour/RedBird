@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //$meetingDates = '" "';
     //$recurrenceDays = " ";
 
-    $sql = "INSERT INTO createdBookings (
+    $sql = "INSERT INTO CreatedBookings (
                 UserID, 
                 BookingName,
                 RecurrenceFrequency, 

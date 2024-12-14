@@ -23,7 +23,7 @@ if (!$bookingId) {
 }
 
 // Prepare the SQL statement to delete the booking
-$stmt = $conn->prepare("DELETE FROM createdBookings WHERE ID = ?");
+$stmt = $conn->prepare("DELETE FROM CreatedBookings WHERE ID = ?");
 $stmt->bind_param("i", $bookingId);
 
 if ($stmt->execute()) {

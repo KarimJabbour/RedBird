@@ -52,10 +52,10 @@ INSERT INTO `AlternateRequests` (`ID`, `FullName`, `Email`, `Details`, `LinkedBo
 -- --------------------------------------------------------
 
 --
--- Table structure for table `createdBookings`
+-- Table structure for table `CreatedBookings`
 --
 
-CREATE TABLE `createdBookings` (
+CREATE TABLE `CreatedBookings` (
   `ID` int(11) NOT NULL,
   `UserID` int(11) NOT NULL,
   `BookingName` varchar(30) NOT NULL,
@@ -79,10 +79,10 @@ CREATE TABLE `createdBookings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `createdBookings`
+-- Dumping data for table `CreatedBookings`
 --
 
-INSERT INTO `createdBookings` (`ID`, `UserID`, `BookingName`, `RecurrenceFrequency`, `MeetingDates`, `RecurrenceDays`, `StartTimes`, `EndTimes`, `RecurrenceStartTimes`, `RecurrenceEndTimes`, `StartRecurringDate`, `EndRecurringDate`, `Details`, `MaxAttendees`, `TimeSlotLength`, `Location`, `MeetingLink`, `BookingURL`, `Attachments`, `Status`) VALUES
+INSERT INTO `CreatedBookings` (`ID`, `UserID`, `BookingName`, `RecurrenceFrequency`, `MeetingDates`, `RecurrenceDays`, `StartTimes`, `EndTimes`, `RecurrenceStartTimes`, `RecurrenceEndTimes`, `StartRecurringDate`, `EndRecurringDate`, `Details`, `MaxAttendees`, `TimeSlotLength`, `Location`, `MeetingLink`, `BookingURL`, `Attachments`, `Status`) VALUES
 (1, 4, '', 'weekly', '\"04-11-2024,11-11-2024,18-11-2024\"', 'M', '17:00', '', NULL, NULL, '2024-11-04', '2024-11-18', '', 5, 10, 'McConnell 320', '', '-1', '', 'past'),
 (2, 1, 'Office Hours', 'Weekly', '\"08-11-2024,15-11-2024\"', 'F', '4:00PM', '5:30PM', NULL, NULL, '2024-11-08', '2024-11-15', '', 4, 15, 'Trottier 3120', '', '-1', '', 'past'),
 (3, 1, 'One-Time Meeting', '', '\"17-11-2024\"', '', '6:00PM', '7:00PM', NULL, NULL, '2024-11-17', '2024-11-17', '', 1, 8, 'Leacock 26', '', '-1', '', 'past'),
@@ -141,9 +141,9 @@ ALTER TABLE `AlternateRequests`
   ADD PRIMARY KEY (`ID`);
 
 --
--- Indexes for table `createdBookings`
+-- Indexes for table `CreatedBookings`
 --
-ALTER TABLE `createdBookings`
+ALTER TABLE `CreatedBookings`
   ADD PRIMARY KEY (`ID`);
 
 --
@@ -163,9 +163,9 @@ ALTER TABLE `AlternateRequests`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `createdBookings`
+-- AUTO_INCREMENT for table `CreatedBookings`
 --
-ALTER TABLE `createdBookings`
+ALTER TABLE `CreatedBookings`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --

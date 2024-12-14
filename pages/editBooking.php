@@ -16,7 +16,7 @@ if ($conn->connect_error) {
 if (isset($_GET['bookingId'])) {
     $bookingId = intval($_GET['bookingId']);
 
-    $stmt = $conn->prepare("SELECT * FROM createdBookings WHERE ID = ?");
+    $stmt = $conn->prepare("SELECT * FROM CreatedBookings WHERE ID = ?");
     $stmt->bind_param("i", $bookingId);
 
     $stmt->execute();

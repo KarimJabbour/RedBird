@@ -18,7 +18,7 @@ if ($conn->connect_error) {
 
 $bookingId = 58; //Replace this with the actual ID from the URL
 
-$sql = "SELECT BookingName, MeetingDates, StartTimes, EndTimes, Details, Location FROM createdBookings WHERE ID = ?";
+$sql = "SELECT BookingName, MeetingDates, StartTimes, EndTimes, Details, Location FROM CreatedBookings WHERE ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $bookingId);
 

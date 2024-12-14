@@ -20,12 +20,12 @@ if ($conn->connect_error) {
 // $userId = -1;
 
 // Update status of past bookings and past polls
-$conn->query("UPDATE createdBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
+$conn->query("UPDATE CreatedBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
 $conn->query("UPDATE CreatedPolls SET Status = 'past' WHERE Status = 'current' AND PollCloseDateTime < NOW()");
 
 // Fetch current bookings and polls
 $sqlBookings = "SELECT ID, BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, StartTimes, EndTimes, RecurrenceDays, Details, MaxAttendees, TimeSlotLength, Location, MeetingLink, BookingURL
-        FROM createdBookings 
+        FROM CreatedBookings 
         WHERE UserID = $userId AND Status = 'current'";
 
 $result = $conn->query($sqlBookings);
@@ -53,7 +53,7 @@ if ($resultPolls->num_rows > 0) {
 
 // Fetch past bookings
 $pastBookingsQuery = "SELECT BookingName, RecurrenceFrequency, StartRecurringDate, EndRecurringDate, MeetingDates, RecurrenceDays, StartTimes, EndTimes, Location
-                      FROM createdBookings 
+                      FROM CreatedBookings 
                       WHERE UserID = -1 AND Status = 'past'";
 
 $resultPastBookings = $conn->query($pastBookingsQuery);
