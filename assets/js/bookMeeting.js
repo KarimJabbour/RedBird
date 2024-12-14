@@ -124,14 +124,12 @@ function highlightAvailableDates(availableDates) {
   });
 }
 
+let selectedSlot = null;
+
 function displayTimeForDate(selectedDate) {
   const timeOptionsContainer = document.getElementById("time-slots-list");
   timeOptionsContainer.innerHTML = "";
 
-  const calendarDays = document.querySelectorAll(".day[data-date]");
-  calendarDays.forEach((day) => {
-    day.classList.remove("selected-date");
-  });
   const selectedDayElement = document.querySelector(
     `.day[data-date='${selectedDate}']`
   );
@@ -156,8 +154,65 @@ function displayTimeForDate(selectedDate) {
     statusParagraph.innerHTML = `Status: <span>Available</span>`;
     timeSlotCard.appendChild(statusParagraph);
 
+    timeSlotCard.addEventListener("click", function () {
+      selectTimeSlot(selectedDate, startTimes[index], endTimes[index]);
+    });
+
     timeOptionsContainer.appendChild(timeSlotCard);
   });
+}
+
+function selectTimeSlot(date, startTime, endTime) {
+  const timeSlotCards = document.querySelectorAll(".time-slot-card");
+  timeSlotCards.forEach((card) => card.classList.remove("selected"));
+
+  const selectedSlotCard = [...timeSlotCards].find((card) => {
+    return card.querySelector("h3").textContent === `${startTime} - ${endTime}`;
+  });
+
+  if (selectedSlotCard) {
+    selectedSlotCard.classList.add("selected");
+  }
+
+  selectedSlot = { date, startTime, endTime };
+
+  const detailsElement = document.getElementById("booking-details");
+  const selectedDetails = `
+        <strong>Selected Date:</strong> ${date} <br>
+        <strong>Selected Time:</strong> ${startTime} - ${endTime}
+    `;
+  detailsElement.querySelector("p").innerHTML = selectedDetails;
+
+  console.log(`Selected time slot:`, selectedSlot);
+}
+
+function bookMeeting() {
+  if (!selectedSlot) {
+    alert("Please select a time slot before booking.");
+    return;
+  }
+
+  console.log("Booking meeting for:", selectedSlot);
+
+  fetch("bookMeeting.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(selectedSlot),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Failed to book meeting.");
+      return response.json();
+    })
+    .then((data) => {
+      alert("Meeting successfully booked!");
+      console.log("Booking response:", data);
+    })
+    .catch((error) => {
+      alert("Error booking meeting.");
+      console.error("Booking error:", error);
+    });
 }
 
 function changeMonth(direction) {
