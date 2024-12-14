@@ -16,7 +16,14 @@ if ($conn->connect_error) {
     exit();
 }
 
-$bookingId = 58; //Replace this with the actual ID from the URL
+// Get the booking ID from the URL and ensure it's a valid integer
+if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
+    $bookingId = intval($_GET['id']); // Convert it to an integer
+} else {
+    http_response_code(400); // Bad Request
+    echo json_encode(["error" => "Invalid or missing booking ID"]);
+    exit();
+}
 
 $sql = "SELECT BookingName, MeetingDates, StartTimes, EndTimes, Details, Location FROM CreatedBookings WHERE ID = ?";
 $stmt = $conn->prepare($sql);
