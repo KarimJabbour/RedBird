@@ -359,6 +359,9 @@ function showBookingPopup(booking, inHistory = false) {
   // bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
   const formatParameter = (param) =>
     param === -1 || param === "-1" ? "" : param;
+
+  const baseURL = "http://localhost/RedBird/pages/book_meeting.html";
+
   bookingPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${formatParameter(booking.Details) || "None"}</p>
     <p><b>Location:</b> ${formatParameter(booking.Location) || "Undecided"}</p>
@@ -386,15 +389,12 @@ function showBookingPopup(booking, inHistory = false) {
         <div class="copy-container">
             <b>Booking URL:</b>
             ${
-              formatParameter(booking.BookingURL)
-                ? `<a href="${formatParameter(
-                    booking.BookingURL
-                  )}" target="_blank" id="meeting-url">${formatParameter(
-                    booking.BookingURL
-                  )}</a>
+              booking.ID
+                ? `<a href="http://localhost/RedBird/pages/book_meeting.html?id=${booking.ID}" target="_blank" id="meeting-url">http://localhost/RedBird/pages/book_meeting.html?id=${booking.ID}</a>
                     <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>`
                 : "N/A"
             }
+            
         </div>
         <div class="meeting-times">
             <h3>Booking Schedule</h3>
