@@ -5,7 +5,7 @@ $userId = $_SESSION['user_id'];
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "Bookings";
+$dbname ="fall2024-comp307-kjabbo2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

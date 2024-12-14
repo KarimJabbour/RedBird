@@ -3,12 +3,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'Bookings';
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "fall2024-comp307-kjabbo2";
 
-$conn = new mysqli($host, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     http_response_code(500);

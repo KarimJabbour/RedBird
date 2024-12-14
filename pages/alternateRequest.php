@@ -13,7 +13,7 @@ $userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : -1; //pub
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "Bookings";
+$dbname = "fall2024-comp307-kjabbo2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
