@@ -319,6 +319,11 @@ body {
     background: #ffece5;
 }
 
+.time-slot-card.selected {
+    border-color: #EB0920;
+    background: #ffdbce;
+}
+
 /* Unavailable Slot Styling */
 .time-slot-card.unavailable {
     border-color: #ddd;
@@ -352,6 +357,17 @@ body {
     margin-bottom: 20px;
     display: flex;
     flex-direction: column;
+}
+
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 40%;
+    text-align: right;
 }
 
 /* Booking Info */
