@@ -39,6 +39,34 @@ if (!$selectedOptions) {
     exit();
 }
 
+// Check if the user has already voted in this poll
+$stmt = $conn->prepare("SELECT ID FROM PollVotes WHERE PollID = ? AND UserID = ?");
+$stmt->bind_param("ii", $pollID, $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    // User has already voted: Update their entry in PollVotes
+    $existingVoteID = $result->fetch_assoc()['ID'];
+
+    $meetingDatesJson = json_encode(array_column($selectedOptions, 'date'));
+    $startTimesJson = json_encode(array_column($selectedOptions, 'startTime'));
+    $endTimesJson = json_encode(array_column($selectedOptions, 'endTime'));
+
+    $stmt = $conn->prepare("UPDATE PollVotes SET MeetingDates = ?, StartTimes = ?, EndTimes = ? WHERE ID = ?");
+    $stmt->bind_param("sssi", $meetingDatesJson, $startTimesJson, $endTimesJson, $existingVoteID);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Your vote has been updated successfully"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Failed to update your vote: " . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conn->close();
+    exit();
+}
+
 // Retrieve the current VoteCounts
 $stmt = $conn->prepare("SELECT DateOptions, StartTimes, VoteCounts FROM CreatedPolls WHERE ID = ?");
 $stmt->bind_param("i", $pollID);
