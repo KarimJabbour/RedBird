@@ -192,22 +192,52 @@ function bookMeeting() {
     return;
   }
 
-  console.log("Booking meeting for:", selectedSlot);
+  // Retrieve the bookingId from the URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookingId = urlParams.get("id"); // Extracts the 'id' from the URL
 
-  fetch("bookMeeting.php", {
+  if (!bookingId) {
+    alert("Booking ID is missing in the URL.");
+    return;
+  }
+
+  //   const requestData = {
+  //     booking_id: bookingId,
+  //     MeetingDates: selectedSlot.date,
+  //     StartTimes: selectedSlot.startTime,
+  //     EndTimes: selectedSlot.endTime,
+  //   };
+  const requestData = {
+    booking_id: bookingId,
+    MeetingDates: JSON.stringify([selectedSlot.date]), // Convert date array to JSON
+    StartTimes: JSON.stringify([selectedSlot.startTime]), // Convert start times to JSON
+    EndTimes: JSON.stringify([selectedSlot.endTime]), // Convert end times to JSON
+  };
+
+  console.log("Booking meeting with data:", requestData);
+
+  fetch("updateBookingParticipant.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(selectedSlot),
+    credentials: "include",
+    body: JSON.stringify(requestData),
   })
     .then((response) => {
-      if (!response.ok) throw new Error("Failed to book meeting.");
+      if (!response.ok) {
+        throw new Error("Failed to book meeting.");
+      }
       return response.json();
     })
     .then((data) => {
-      alert("Meeting successfully booked!");
-      console.log("Booking response:", data);
+      if (data.success) {
+        alert("Meeting successfully booked!");
+        console.log("Booking response:", data);
+      } else {
+        alert("Error booking meeting: " + (data.error || "Unknown error"));
+        console.error("Server error:", data);
+      }
     })
     .catch((error) => {
       alert("Error booking meeting.");

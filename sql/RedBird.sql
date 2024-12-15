@@ -197,4 +197,27 @@ VALUES
 ('carol@mail.mcgill.ca', 'qwerty789', 'Carol White', 'TA', 'Engineering Building', NOW(), FALSE),
 ('dave@mail.mcgill.ca', 'mypassword321', 'Dave Brown', 'Student', NULL, NOW(), TRUE),
 ('eve@mail.mcgill.ca', 'letmein654', 'Eve Green', 'Professor', 'Law Library', NOW(), FALSE);
+
+
+CREATE TABLE BookingParticipants (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    BookingID INT NOT NULL,
+    UserID INT NOT NULL,
+    `MeetingDates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`MeetingDates`)),
+    `StartTimes` longtext NOT NULL,
+    `EndTimes` longtext NOT NULL,
+    FOREIGN KEY (BookingID) REFERENCES CreatedBookings(ID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE PollVotes (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    PollID INT NOT NULL,
+    UserID INT NOT NULL,
+    FOREIGN KEY (PollID) REFERENCES CreatedPolls(ID) ON DELETE CASCADE,
+    FOREIGN KEY (UserID) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+
+
 COMMIT;
