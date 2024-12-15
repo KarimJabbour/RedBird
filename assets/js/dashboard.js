@@ -170,10 +170,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      bookingContainer.innerHTML =
-        '<div class="error">Error loading bookings.</div>';
-      pollsContainer.innerHTML =
-        '<div class="error">Error loading polls.</div>';
+      window.location.replace("http://localhost/RedBird/pages/login.php");
+      // bookingContainer.innerHTML =
+      //   '<div class="error">Error loading bookings.</div>';
+      // pollsContainer.innerHTML =
+      //   '<div class="error">Error loading polls.</div>';
     });
 });
 

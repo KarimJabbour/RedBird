@@ -14,15 +14,16 @@ $success = '';
 
 // Fetch user data
 try {
-    $stmt = $conn->prepare("SELECT email, full_name, role, default_location, notifications_enabled FROM Users WHERE id = ?");
+    $stmt = $conn->prepare("SELECT email, full_name, role, default_location, notifications_enabled, mcgillID FROM Users WHERE id = ?");
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
-    $stmt->bind_result($email, $full_name, $role, $default_location, $notifications_enabled);
+    $stmt->bind_result($email, $full_name, $role, $default_location, $notifications_enabled, $mcgillID);
     $stmt->fetch();
     $stmt->close();
 } catch (Exception $e) {
     $error = "Error loading user data: " . $e->getMessage();
 }
+
 
 // Handle form submission to update user data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,10 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role = $_POST['role'];
     $default_location = trim($_POST['default_location']);
     $notifications_enabled = isset($_POST['notifications_enabled']) ? 1 : 0;
+    $mcgillID = trim($_POST['mcgillID']);
 
     try {
-        $stmt = $conn->prepare("UPDATE Users SET full_name = ?, role = ?, default_location = ?, notifications_enabled = ? WHERE id = ?");
-        $stmt->bind_param("sssii", $full_name, $role, $default_location, $notifications_enabled, $user_id);
+        $stmt = $conn->prepare("UPDATE Users SET full_name = ?, role = ?, default_location = ?, notifications_enabled = ?, mcgillID = ? WHERE id = ?");
+        $stmt->bind_param("sssisi", $full_name, $role, $default_location, $notifications_enabled, $mcgillID, $user_id);
         $stmt->execute();
         $stmt->close();
         $success = "Settings updated successfully!";
@@ -41,6 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Error updating settings: " . $e->getMessage();
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -121,6 +124,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="checkbox" id="notifications_enabled" name="notifications_enabled" <?= $notifications_enabled ? 'checked' : '' ?>>
                     Enable Notifications
                 </label>
+            </div>
+            <div class="form-group">
+                <label for="mcgillID">McGill ID:</label>
+                <input type="text" id="mcgillID" name="mcgillID" value="<?= htmlspecialchars($mcgillID) ?>" required>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn-submit">Save Changes</button>

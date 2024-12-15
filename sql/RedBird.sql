@@ -189,6 +189,9 @@ CREATE TABLE Users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     notifications_enabled BOOLEAN DEFAULT TRUE);
 
+ALTER TABLE Users
+ADD COLUMN mcgillID VARCHAR(20) NULL;
+
 -- Insert sample users into the 'users' table
 INSERT INTO Users (email, password, full_name, role, default_location, created_at, notifications_enabled)
 VALUES
@@ -202,7 +205,10 @@ VALUES
 CREATE TABLE BookingParticipants (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     BookingID INT NOT NULL,
-    UserID INT NOT NULL,
+    UserID INT NULL,
+    Email VARCHAR(255) NULL,
+    McGillID VARCHAR(255) NULL,
+    FullName VARCHAR(255) NULL,
     `MeetingDates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`MeetingDates`)),
     `StartTimes` longtext NOT NULL,
     `EndTimes` longtext NOT NULL,

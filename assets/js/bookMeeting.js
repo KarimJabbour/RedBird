@@ -9,7 +9,38 @@ let availability = {};
 document.addEventListener("DOMContentLoaded", function () {
   populateCalendar(currentMonth, currentYear);
   getDates();
+  loadUserDetails();
 });
+
+function loadUserDetails() {
+  fetch("../includes/user_data.php", {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    credentials: "include",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+      return response.json();
+    })
+    .then((userDetails) => {
+      if (userDetails.error) {
+        console.error("Error fetching user details:", userDetails.error);
+        return;
+      }
+
+      // Populate the HTML elements with user details
+      document.getElementById("fullname").value = userDetails.full_name || "";
+      document.getElementById("mcgillemail").value = userDetails.email || "";
+      document.getElementById("mcgillid").value = userDetails.mcgillID || "";
+    })
+    .catch((error) => {
+      console.error("Error loading user details:", error);
+    });
+}
 
 function getDates() {
   fetchAvailableDates()
@@ -131,7 +162,7 @@ function displayTimeForDate(selectedDate) {
   timeOptionsContainer.innerHTML = "";
 
   const calendarDays = document.querySelectorAll(".day[data-date]");
-  calendarDays.forEach(day => {
+  calendarDays.forEach((day) => {
     day.classList.remove("selected-date");
   });
   const selectedDayElement = document.querySelector(
@@ -203,6 +234,13 @@ function bookMeeting() {
     alert("Please fill out your personal details before booking.");
     return;
   }
+  const validEmail = /@(mail\.mcgill\.ca|mcgill\.ca)$/;
+  if (!validEmail.test(email)) {
+    alert(
+      "Please enter a valid McGill email address ending with @mail.mcgill.ca or @mcgill.ca."
+    );
+    return;
+  }
 
   // Retrieve the bookingId from the URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -213,11 +251,15 @@ function bookMeeting() {
     return;
   }
 
+  // Include the user's details in the request data
   const requestData = {
     booking_id: bookingId,
-    MeetingDates: JSON.stringify([selectedSlot.date]), // Convert date array to JSON
-    StartTimes: JSON.stringify([selectedSlot.startTime]), // Convert start times to JSON
-    EndTimes: JSON.stringify([selectedSlot.endTime]), // Convert end times to JSON
+    MeetingDates: JSON.stringify([selectedSlot.date]),
+    StartTimes: JSON.stringify([selectedSlot.startTime]),
+    EndTimes: JSON.stringify([selectedSlot.endTime]),
+    full_name: fullname,
+    email: email,
+    mcgill_id: mcgillid,
   };
 
   console.log("Booking meeting with data:", requestData);
