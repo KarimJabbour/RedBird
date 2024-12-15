@@ -214,6 +214,9 @@ CREATE TABLE PollVotes (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     PollID INT NOT NULL,
     UserID INT NOT NULL,
+    `MeetingDates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`MeetingDates`)),
+    `StartTimes` longtext NOT NULL,
+    `EndTimes` longtext NOT NULL,
     FOREIGN KEY (PollID) REFERENCES CreatedPolls(ID) ON DELETE CASCADE,
     FOREIGN KEY (UserID) REFERENCES Users(id) ON DELETE CASCADE
 );

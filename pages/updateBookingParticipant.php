@@ -8,13 +8,6 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// // Validate POST parameters
-// if (!isset($_POST['booking_id'], $_POST['MeetingDates'], $_POST['StartTimes'], $_POST['EndTimes'])) {
-//     http_response_code(400); // Bad Request
-//     echo json_encode(["error" => "Missing parameters."]);
-//     exit;
-//}
-
 $userId = intval($_SESSION['user_id']);
 
 $inputData = json_decode(file_get_contents("php://input"), true);

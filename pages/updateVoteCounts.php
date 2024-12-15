@@ -1,5 +1,17 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 header('Content-Type: application/json');
+require_once '../includes/auth.php'; // Ensure the user is logged in
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401); // Unauthorized
+    echo json_encode(["error" => "User not logged in."]);
+    exit;
+}
 
 $servername = "localhost";
 $username = "root";
@@ -13,7 +25,9 @@ if ($conn->connect_error) {
     exit();
 }
 
-$pollID = $_POST['pollID'] ?? null;
+$pollID = intval($_POST['pollID']) ?? null;
+$userId = intval($_SESSION['user_id']);
+
 if (!$pollID) {
     echo json_encode(["success" => false, "message" => "Invalid poll ID"]);
     exit();
@@ -41,6 +55,11 @@ $dateOptions = explode(',', trim($poll['DateOptions'], '"'));
 $startTimes = explode(',', trim($poll['StartTimes'], '"'));
 $voteCounts = explode(',', trim($poll['VoteCounts'], '"'));
 
+// Prepare data for PollVotes table
+$meetingDates = [];
+$startTimesData = [];
+$endTimesData = [];
+
 // Update the vote counts
 foreach ($selectedOptions as $option) {
     $dateIndex = array_search($option['date'], $dateOptions);
@@ -48,6 +67,11 @@ foreach ($selectedOptions as $option) {
 
     if ($dateIndex !== false && $timeIndex !== false && $dateIndex === $timeIndex) {
         $voteCounts[$timeIndex] = intval($voteCounts[$timeIndex]) + 1;
+
+        // Prepare data for PollVotes table
+        $meetingDates[] = $option['date'];
+        $startTimesData[] = $option['startTime'];
+        $endTimesData[] = $option['endTime'];
     }
 }
 
@@ -56,10 +80,24 @@ $newVoteCounts = implode(',', $voteCounts);
 $stmt = $conn->prepare("UPDATE CreatedPolls SET VoteCounts = ? WHERE ID = ?");
 $stmt->bind_param("si", $newVoteCounts, $pollID);
 
-if ($stmt->execute()) {
-    echo json_encode(["success" => true, "message" => "Vote counts updated successfully"]);
-} else {
+if (!$stmt->execute()) {
     echo json_encode(["success" => false, "message" => "Failed to update vote counts: " . $stmt->error]);
+    exit();
+}
+
+// Insert into PollVotes table
+$meetingDatesJson = json_encode($meetingDates);
+$startTimesJson = json_encode($startTimesData);
+$endTimesJson = json_encode($endTimesData);
+$stmt = $conn->prepare("INSERT INTO PollVotes (PollID, UserID, MeetingDates, StartTimes, EndTimes) VALUES (?, ?, ?, ?, ?)");
+if (!$stmt->bind_param("iisss", $pollID, $userId, $meetingDatesJson, $startTimesJson, $endTimesJson)) {
+    error_log("Bind failed: " . $stmt->error);
+    exit();
+}
+if ($stmt->execute()) {
+    echo json_encode(["success" => true, "message" => "Vote counts and poll votes updated successfully"]);
+} else {
+    echo json_encode(["success" => false, "message" => "Failed to insert poll votes: " . $stmt->error]);
 }
 
 $stmt->close();

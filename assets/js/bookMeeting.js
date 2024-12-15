@@ -201,12 +201,6 @@ function bookMeeting() {
     return;
   }
 
-  //   const requestData = {
-  //     booking_id: bookingId,
-  //     MeetingDates: selectedSlot.date,
-  //     StartTimes: selectedSlot.startTime,
-  //     EndTimes: selectedSlot.endTime,
-  //   };
   const requestData = {
     booking_id: bookingId,
     MeetingDates: JSON.stringify([selectedSlot.date]), // Convert date array to JSON
@@ -234,6 +228,7 @@ function bookMeeting() {
       if (data.success) {
         alert("Meeting successfully booked!");
         console.log("Booking response:", data);
+        window.location.href = "/RedBird/pages/dashboard.html";
       } else {
         alert("Error booking meeting: " + (data.error || "Unknown error"));
         console.error("Server error:", data);

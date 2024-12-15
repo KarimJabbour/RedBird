@@ -4,8 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
+    // Extract pollID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const pollID = urlParams.get("pollID");
+
+    if (!pollID) {
+      alert("Poll ID is missing!");
+      return;
+    }
+
     // Create a FormData object to get form inputs
     const formData = new FormData(form);
+
+    // Add pollID explicitly to FormData
+    formData.append("pollID", pollID);
 
     // Collect selected time options
     const selectedOptions = [];
@@ -20,12 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add selected options to formData as a JSON string
     formData.append("selectedOptions", JSON.stringify(selectedOptions));
 
+    // Debugging: Log the FormData content
     console.log("Form Data:");
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value}`);
     }
 
-    // Proceed with form submission or AJAX request
+    // Send data to the server
     fetch("updateVoteCounts.php", {
       method: "POST",
       body: formData,
@@ -34,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         if (data.success) {
           alert("Vote counts updated successfully!");
+          window.location.href = "/RedBird/pages/dashboard.html";
         } else {
           alert(data.message || "Failed to update vote counts.");
         }
@@ -44,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // Extract pollID from the URL
+  // Fetch poll data from the backend
   const urlParams = new URLSearchParams(window.location.search);
   const pollID = urlParams.get("pollID");
 
@@ -53,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Fetch poll data from the backend
   fetch(`fetchPollData.php?pollID=${pollID}`)
     .then((response) => response.json())
     .then((data) => {
@@ -121,11 +134,3 @@ function populateTimeOptions(poll) {
     timeline.appendChild(dateGroup);
   });
 }
-
-const timeCircles = document.querySelectorAll(".time-circle");
-timeCircles.forEach((circle) => {
-  circle.addEventListener("click", () => {
-    // Toggle the selected class
-    circle.classList.toggle("selected");
-  });
-});
