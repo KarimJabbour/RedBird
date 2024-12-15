@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.success) {
           alert("Vote counts updated successfully!");
           window.location.href = "/RedBird/pages/dashboard.html";
+        } else if (data.duplicate) {
+          alert("You can only vote once.");
+          window.location.href = "/RedBird/pages/dashboard.html";
         } else {
           alert(data.message || "Failed to update vote counts.");
         }

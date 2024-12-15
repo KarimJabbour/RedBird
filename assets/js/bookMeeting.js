@@ -130,6 +130,10 @@ function displayTimeForDate(selectedDate) {
   const timeOptionsContainer = document.getElementById("time-slots-list");
   timeOptionsContainer.innerHTML = "";
 
+  const calendarDays = document.querySelectorAll(".day[data-date]");
+  calendarDays.forEach(day => {
+    day.classList.remove("selected-date");
+  });
   const selectedDayElement = document.querySelector(
     `.day[data-date='${selectedDate}']`
   );
@@ -189,6 +193,14 @@ function selectTimeSlot(date, startTime, endTime) {
 function bookMeeting() {
   if (!selectedSlot) {
     alert("Please select a time slot before booking.");
+    return;
+  }
+
+  const fullname = document.getElementById("fullname").value;
+  const email = document.getElementById("mcgillemail").value;
+  const mcgillid = document.getElementById("mcgillid").value;
+  if (!email || !mcgillid || !fullname) {
+    alert("Please fill out your personal details before booking.");
     return;
   }
 
