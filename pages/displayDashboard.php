@@ -1,16 +1,19 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php"); // Redirect to login
-    exit;
-}
+
 require_once '../includes/auth.php'; // Ensure the user is logged in
 $userId = $_SESSION['user_id'];
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname ="fall2024-comp307-kjabbo2";
+
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401); // Send 401 Unauthorized status code
+    echo json_encode(['error' => 'User not authenticated']);
+    exit;
+}
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

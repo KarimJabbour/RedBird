@@ -21,6 +21,15 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then((data) => {
       console.log("Fetched Data:", data);
+      if (data.error) {
+        console.error("Error from server:", data.error);
+        if (data.error === "User not authenticated") {
+          window.location.replace("http://localhost/redbird/pages/login.php");
+        } else {
+          alert("An error occurred: " + data.error);
+        }
+        return;
+      }
       const bookings = data.bookings || [];
       const polls = data.polls || [];
       const pastBookings = data.pastBookings || [];
