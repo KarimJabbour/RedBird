@@ -46,21 +46,8 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-    // User has already voted: Update their entry in PollVotes
-    $existingVoteID = $result->fetch_assoc()['ID'];
-
-    $meetingDatesJson = json_encode(array_column($selectedOptions, 'date'));
-    $startTimesJson = json_encode(array_column($selectedOptions, 'startTime'));
-    $endTimesJson = json_encode(array_column($selectedOptions, 'endTime'));
-
-    $stmt = $conn->prepare("UPDATE PollVotes SET MeetingDates = ?, StartTimes = ?, EndTimes = ? WHERE ID = ?");
-    $stmt->bind_param("sssi", $meetingDatesJson, $startTimesJson, $endTimesJson, $existingVoteID);
-
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Your vote has been updated successfully"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Failed to update your vote: " . $stmt->error]);
-    }
+    // User has already voted: Return an error
+    echo json_encode(["duplicate" => true, "message" => "You cannot vote more than once."]);
 
     $stmt->close();
     $conn->close();
@@ -123,7 +110,7 @@ if (!$stmt->bind_param("iisss", $pollID, $userId, $meetingDatesJson, $startTimes
     exit();
 }
 if ($stmt->execute()) {
-    echo json_encode(["success" => true, "message" => "Vote counts and poll votes updated successfully"]);
+    echo json_encode(["success" => true, "message" => "You have successfully voted."]);
 } else {
     echo json_encode(["success" => false, "message" => "Failed to insert poll votes: " . $stmt->error]);
 }
