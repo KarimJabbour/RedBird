@@ -23,6 +23,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
 
+    // Log the input properly
+    if (is_array($data)) {
+        error_log("Array: Raw JSON input: " . json_encode($data));
+    } else {
+        error_log("Raw JSON input: " . $input);
+    }
+
     // Validate JSON decoding
     if ($data === null) {
         http_response_code(400);
@@ -30,17 +37,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Extract email, hashed poll ID, and vote details from JSON data
+    // Extract email and hashed poll ID from JSON data
     $email = htmlspecialchars($data['email'] ?? '');
     $hashedPollID = $data['pollID'] ?? '';
-    $meetingDates = $data['MeetingDates'] ?? [];
-    $startTimes = $data['StartTimes'] ?? [];
-    $endTimes = $data['EndTimes'] ?? [];
 
     // Validate required fields
-    if (empty($email) || empty($hashedPollID) || empty($meetingDates) || empty($startTimes) || empty($endTimes)) {
+    if (empty($email) || empty($hashedPollID)) {
         http_response_code(400);
-        echo "Missing required fields.";
+        echo "Missing required fields: email or hashed poll ID.";
         exit;
     }
 
@@ -61,65 +65,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Find the UserID using the email
-    $sql = "SELECT id FROM Users WHERE email = ?";
+    // Fetch participant vote details from the PollVotes table
+    $sql = "SELECT * FROM PollVotes WHERE PollID = ? AND Email = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
+    $stmt->bind_param("is", $pollID, $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $userID = $row['id'];
-    } else {
-        http_response_code(400);
-        error_log("Invalid email provided: $email");
-        echo "Invalid user email.";
-        exit;
-    }
+        $participantDetails = $result->fetch_assoc();
 
-    // Insert vote into PollVotes table
-    $meetingDatesJson = json_encode($meetingDates);
-    $startTimesJson = json_encode($startTimes);
-    $endTimesJson = json_encode($endTimes);
+        // Decode JSON fields
+        $meetingDates = json_decode($participantDetails['MeetingDates'], true);
+        $startTimes = json_decode($participantDetails['StartTimes'], true);
+        $endTimes = json_decode($participantDetails['EndTimes'], true);
 
-    $sql = "INSERT INTO PollVotes (PollID, UserID, MeetingDates, StartTimes, EndTimes) VALUES (?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisss", $pollID, $userID, $meetingDatesJson, $startTimesJson, $endTimesJson);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("Invalid JSON for participant details: " . json_last_error_msg());
+            http_response_code(500);
+            echo "Invalid participant data.";
+            exit();
+        }
 
-    if ($stmt->execute()) {
-        echo "Vote recorded successfully.";
+        // Format details for email
+        $meetingDatesString = is_array($meetingDates) ? implode(', ', $meetingDates) : $meetingDates;
+        $startTimesString = is_array($startTimes) ? implode(', ', $startTimes) : $startTimes;
+        $endTimesString = is_array($endTimes) ? implode(', ', $endTimes) : $endTimes;
 
-        $emailContentPlain = "Your vote for the poll has been recorded successfully.\n\n" .
-            "Poll ID: $pollID\n" .
-            "Meeting Dates: " . implode(', ', $meetingDates) . "\n" .
-            "Start Times: " . implode(', ', $startTimes) . "\n" .
-            "End Times: " . implode(', ', $endTimes) . "\n";
+        $fullName = $participantDetails['FullName'] ?? 'N/A';
+        $mcgillID = $participantDetails['McGillID'] ?? 'N/A';
 
-        $emailContentHtml = "<strong>Your vote for the poll has been recorded successfully.</strong><br><br>" .
+        // Prepare email content
+        $emailContentPlain = "Poll vote details:\n\n" .
+            "Name: $fullName\n" .
+            "McGill ID: $mcgillID\n" .
+            "Email: $email\n" .
+            "Meeting Dates: $meetingDatesString\n" .
+            "Start Times: $startTimesString\n" .
+            "End Times: $endTimesString\n";
+
+        $emailContentHtml = "<strong>Poll Vote Details:</strong><br><br>" .
             "<ul>" .
-            "<li><strong>Poll ID:</strong> $pollID</li>" .
-            "<li><strong>Meeting Dates:</strong> " . implode(', ', $meetingDates) . "</li>" .
-            "<li><strong>Start Times:</strong> " . implode(', ', $startTimes) . "</li>" .
-            "<li><strong>End Times:</strong> " . implode(', ', $endTimes) . "</li>" .
+            "<li><strong>Name:</strong> $fullName</li>" .
+            "<li><strong>McGill ID:</strong> $mcgillID</li>" .
+            "<li><strong>Email:</strong> $email</li>" .
+            "<li><strong>Meeting Dates:</strong> $meetingDatesString</li>" .
+            "<li><strong>Start Times:</strong> $startTimesString</li>" .
+            "<li><strong>End Times:</strong> $endTimesString</li>" .
             "</ul>";
 
+        // Send email using SendGrid
         $sendgridEmail = new \SendGrid\Mail\Mail();
         $sendgridEmail->setFrom("redbirdnotifs@gmail.com", "RedBird Notifications");
-        $sendgridEmail->setSubject("Poll Vote Confirmation");
+        $sendgridEmail->setSubject("Poll Vote Details");
         $sendgridEmail->addTo($email);
         $sendgridEmail->addContent("text/plain", $emailContentPlain);
         $sendgridEmail->addContent("text/html", $emailContentHtml);
 
+        // Replace with your valid SendGrid API key
         $sendgrid = new \SendGrid("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");
 
         try {
             $response = $sendgrid->send($sendgridEmail);
             if ($response->statusCode() == 202) {
-                echo "Confirmation email sent successfully.";
+                echo "Email sent successfully.";
             } else {
-                error_log("Failed to send confirmation email. Response code: " . $response->statusCode());
-                echo "Failed to send confirmation email. Response code: " . $response->statusCode();
+                error_log("Failed to send email. Response code: " . $response->statusCode());
+                echo "Failed to send email. Response code: " . $response->statusCode();
                 print_r($response->body());
             }
         } catch (Exception $e) {
@@ -127,8 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo 'Caught exception: ' . $e->getMessage();
         }
     } else {
-        http_response_code(500);
-        echo "Failed to record the vote.";
+        echo "No vote details found for the poll.";
     }
 
     $stmt->close();
@@ -137,4 +148,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
-?>

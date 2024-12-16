@@ -1,22 +1,15 @@
 <?php
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
-require_once '../includes/auth.php'; // Ensure the user is logged in
-
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401); // Unauthorized
-    echo json_encode(["error" => "User not logged in."]);
-    exit;
-}
 
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname ="fall2024-comp307-kjabbo2";
+$dbname = "fall2024-comp307-kjabbo2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -25,11 +18,19 @@ if ($conn->connect_error) {
     exit();
 }
 
+// Decode the input data
+$inputData = json_decode(file_get_contents("php://input"), true);
 
-$pollID = $_POST['pollID'] ?? null;
+if (!$inputData) {
+    http_response_code(400);
+    echo json_encode(["success" => false, "message" => "Invalid JSON payload."]);
+    exit();
+}
+
+$pollID = $inputData['pollID'] ?? null;
 
 if (!$pollID) {
-    echo json_encode(["success" => false, "message" => "Invalid poll ID"]);
+    echo json_encode(["success" => false, "message" => "Invalid poll ID."]);
     exit();
 }
 
@@ -40,40 +41,35 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo json_encode(["success" => false, "message" => "Poll not found"]);
+    echo json_encode(["success" => false, "message" => "Poll not found."]);
     exit();
 }
 
 $pollID = $result->fetch_assoc()['ID'];
 
+// Retrieve input form user data
+$userId = $_SESSION['user_id'] ?? null;
+$fullName = $inputData['fullname'] ?? null;
+$email = $inputData['email'] ?? null;
+$mcgillID = $inputData['mcgillid'] ?? null;
+$selectedOptions = $inputData['selectedOptions'] ?? [];
 
-
-$userId = intval($_SESSION['user_id']);
-
-if (!$pollID) {
-    echo json_encode(["success" => false, "message" => "Invalid poll ID"]);
-    exit();
-}
-
-$selectedOptions = json_decode($_POST['selectedOptions'], true);
 if (!$selectedOptions) {
-    echo json_encode(["success" => false, "message" => "Invalid selections"]);
+    echo json_encode(["success" => false, "message" => "No options selected."]);
     exit();
 }
 
-// Check if the user has already voted in this poll
-$stmt = $conn->prepare("SELECT ID FROM PollVotes WHERE PollID = ? AND UserID = ?");
-$stmt->bind_param("ii", $pollID, $userId);
-$stmt->execute();
-$result = $stmt->get_result();
+// Check if the user has already voted
+if ($userId) {
+    $stmt = $conn->prepare("SELECT ID FROM PollVotes WHERE PollID = ? AND UserID = ?");
+    $stmt->bind_param("ii", $pollID, $userId);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    // User has already voted: Return an error
-    echo json_encode(["duplicate" => true, "message" => "You cannot vote more than once."]);
-
-    $stmt->close();
-    $conn->close();
-    exit();
+    if ($result->num_rows > 0) {
+        echo json_encode(["duplicate" => true, "message" => "You cannot vote more than once."]);
+        exit();
+    }
 }
 
 // Retrieve the current VoteCounts
@@ -83,7 +79,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows === 0) {
-    echo json_encode(["success" => false, "message" => "Poll not found"]);
+    echo json_encode(["success" => false, "message" => "Poll not found."]);
     exit();
 }
 
@@ -126,11 +122,15 @@ if (!$stmt->execute()) {
 $meetingDatesJson = json_encode($meetingDates);
 $startTimesJson = json_encode($startTimesData);
 $endTimesJson = json_encode($endTimesData);
-$stmt = $conn->prepare("INSERT INTO PollVotes (PollID, UserID, MeetingDates, StartTimes, EndTimes) VALUES (?, ?, ?, ?, ?)");
-if (!$stmt->bind_param("iisss", $pollID, $userId, $meetingDatesJson, $startTimesJson, $endTimesJson)) {
-    error_log("Bind failed: " . $stmt->error);
-    exit();
+
+if ($userId) {
+    $stmt = $conn->prepare("INSERT INTO PollVotes (PollID, UserID, FullName, Email, McGillID, MeetingDates, StartTimes, EndTimes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iissssss", $pollID, $userId, $fullName, $email, $mcgillID, $meetingDatesJson, $startTimesJson, $endTimesJson);
+}else {
+    $stmt = $conn->prepare("INSERT INTO PollVotes (PollID, FullName, Email, McGillID, MeetingDates, StartTimes, EndTimes) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issssss", $pollID, $fullName, $email, $mcgillID, $meetingDatesJson, $startTimesJson, $endTimesJson);
 }
+
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "You have successfully voted."]);
 } else {

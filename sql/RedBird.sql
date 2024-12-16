@@ -221,7 +221,10 @@ CREATE TABLE BookingParticipants (
 CREATE TABLE PollVotes (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     PollID INT NOT NULL,
-    UserID INT NOT NULL,
+    UserID INT NULL,
+    Email VARCHAR(255) NULL,
+    McGillID VARCHAR(255) NULL,
+    FullName VARCHAR(255) NULL,
     `MeetingDates` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`MeetingDates`)),
     `StartTimes` longtext NOT NULL,
     `EndTimes` longtext NOT NULL,

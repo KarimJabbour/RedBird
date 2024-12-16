@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  preloadUserDetails();
   const form = document.getElementById("answer-poll");
 
   form.addEventListener("submit", (event) => {
@@ -16,9 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Create a FormData object to get form inputs
     const formData = new FormData(form);
 
-    // Add pollID explicitly to FormData
-    formData.append("pollID", pollID);
-
     // Collect selected time options
     const selectedOptions = [];
     document.querySelectorAll(".time-circle.selected").forEach((circle) => {
@@ -29,63 +27,61 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Add selected options to formData as a JSON string
-    formData.append("selectedOptions", JSON.stringify(selectedOptions));
-
-    // Debugging: Log the FormData content
-    console.log("Form Data:");
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+    if (selectedOptions.length === 0) {
+      alert("Please select at least one time slot.");
+      return;
     }
 
-    // Send data to the server
+    // Prepare JSON data for submission
+    const requestData = {
+      pollID: pollID,
+      fullname: formData.get("fullname"),
+      email: formData.get("mcgillemail"),
+      mcgillid: formData.get("mcgillid"),
+      selectedOptions: selectedOptions,
+    };
+
+    // Validate email format
+    const validEmail = /@(mail\.mcgill\.ca|mcgill\.ca)$/;
+    if (!validEmail.test(requestData.email)) {
+      alert(
+        "Please enter a valid McGill email address ending with @mail.mcgill.ca or @mcgill.ca."
+      );
+      return;
+    }
+
+    // Submit data to the backend
     fetch("updateVoteCounts.php", {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          alert("Vote counts updated successfully!");
+          alert("Vote submitted successfully!");
 
-          // Call the email script after votes are successfully updated
-          const emailData = new FormData();
-          emailData.append("pollID", pollID);
-          emailData.append("email", formData.get("email"));
-
-          fetch("http://localhost/RedBird/mail/sendPollReservation.php", {
-            method: "POST",
-            body: emailData,
-          })
-            .then((emailResponse) => emailResponse.json())
-            .then((emailData) => {
-              if (emailData.success) {
-                alert("Email sent successfully!");
-              } else {
-                alert("Failed to send email: " + emailData.message);
-              }
-            })
-            .catch((error) => {
-              console.error("Error sending email:", error);
-              alert("An error occurred while sending the email.");
-            });
-
-          // Redirect to dashboard after everything is done
-          window.location.href = "/RedBird/pages/dashboard.html";
+          // Send confirmation email
+          return sendConfirmationEmail(requestData.email, pollID);
         } else if (data.duplicate) {
           alert("You can only vote once.");
-          window.location.href = "/RedBird/pages/dashboard.html";
         } else {
-          alert(data.message || "Failed to update vote counts.");
+          alert(data.message || "Failed to submit your vote.");
         }
       })
+      .then(() => {
+        // Redirect to dashboard after successful submission
+        window.location.href = "/RedBird/pages/dashboard.html";
+      })
       .catch((error) => {
-        console.error("Error updating vote counts:", error);
+        console.error("Error submitting vote:", error);
         alert("An error occurred. Please try again.");
       });
   });
 
-  // Fetch poll data from the backend
+  // Fetch poll details and populate UI
   const urlParams = new URLSearchParams(window.location.search);
   const pollID = urlParams.get("pollID");
 
@@ -121,6 +117,70 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Preload user details if logged in
+function preloadUserDetails() {
+  fetch("../includes/user_data.php", {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    credentials: "include",
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+      return response.json();
+    })
+    .then((userDetails) => {
+      if (userDetails.error) {
+        console.error("Error fetching user details:", userDetails.error);
+        return;
+      }
+
+      // Populate the HTML elements with user details
+      document.getElementById("fullname").value = userDetails.full_name || "";
+      document.getElementById("mcgillemail").value = userDetails.email || "";
+      document.getElementById("mcgillid").value = userDetails.mcgillID || "";
+    })
+    .catch((error) => {
+      console.error("Error loading user details:", error);
+    });
+}
+
+// Send confirmation email
+function sendConfirmationEmail(email, pollID) {
+  const emailData = {
+    email: email,
+    pollID: pollID,
+  };
+
+  return fetch("../mail/sendPollReservation.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(emailData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to send confirmation email.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.success) {
+        alert("Confirmation email sent successfully!");
+      } else {
+        alert("Failed to send confirmation email.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error sending confirmation email:", error);
+    });
+}
+
+// Populate time options dynamically
 function populateTimeOptions(poll) {
   const timeline = document.querySelector(".timeline");
   timeline.innerHTML = ""; // Clear existing content
@@ -161,3 +221,44 @@ function populateTimeOptions(poll) {
     timeline.appendChild(dateGroup);
   });
 }
+
+// function populateTimeOptions(poll) {
+//   const timeline = document.querySelector(".timeline");
+//   timeline.innerHTML = ""; // Clear existing content
+
+//   const dateOptions = poll.DateOptions;
+//   const startTimes = poll.StartTimes;
+//   const endTimes = poll.EndTimes;
+
+//   dateOptions.forEach((date, index) => {
+//     const dateGroup = document.createElement("div");
+//     dateGroup.classList.add("date-group");
+
+//     const dateBubble = document.createElement("div");
+//     dateBubble.classList.add("date-bubble");
+//     dateBubble.innerHTML = `<h4>${new Date(date).toLocaleDateString("en-US", {
+//       weekday: "long",
+//       month: "long",
+//       day: "numeric",
+//     })}</h4>`;
+//     dateGroup.appendChild(dateBubble);
+
+//     const timeOptions = document.createElement("div");
+//     timeOptions.classList.add("time-options");
+
+//     const timeCircle = document.createElement("div");
+//     timeCircle.classList.add("time-circle");
+//     timeCircle.dataset.date = date;
+//     timeCircle.dataset.start = startTimes[index];
+//     timeCircle.dataset.end = endTimes[index];
+//     timeCircle.innerHTML = `<span>${startTimes[index]}<br> - <br>${endTimes[index]}</span>`;
+//     timeOptions.appendChild(timeCircle);
+
+//     timeCircle.addEventListener("click", () => {
+//       timeCircle.classList.toggle("selected");
+//     });
+
+//     dateGroup.appendChild(timeOptions);
+//     timeline.appendChild(dateGroup);
+//   });
+// }
