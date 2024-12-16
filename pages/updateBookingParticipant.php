@@ -9,14 +9,6 @@ if (!$inputData) {
     exit;
 }
 
-$bookingId = intval($inputData['booking_id']);
-$meetingDates = $inputData['MeetingDates'];
-$startTimes = $inputData['StartTimes'];
-$endTimes = $inputData['EndTimes'];
-$fullName = $inputData['full_name'] ?? null;
-$email = $inputData['email'] ?? null;
-$mcgillID = $inputData['mcgill_id'] ?? null;
-
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -29,6 +21,24 @@ if ($conn->connect_error) {
     echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
     exit();
 }
+
+$stmt = $conn->prepare("SELECT ID FROM CreatedBookings WHERE hashedID = ?");
+$stmt->bind_param("s", $inputData['booking_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    http_response_code(404); // Not Found
+    echo json_encode(["error" => "Booking not found"]);
+    exit();
+}
+$bookingId = $result->fetch_assoc()['ID'];
+$meetingDates = $inputData['MeetingDates'];
+$startTimes = $inputData['StartTimes'];
+$endTimes = $inputData['EndTimes'];
+$fullName = $inputData['full_name'] ?? null;
+$email = $inputData['email'] ?? null;
+$mcgillID = $inputData['mcgill_id'] ?? null;
+
 
 // Determine if a UserID exists (session login)
 $userId = $_SESSION['user_id'] ?? null;

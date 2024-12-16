@@ -57,6 +57,7 @@ INSERT INTO `AlternateRequests` (`ID`, `FullName`, `Email`, `Details`, `LinkedBo
 
 CREATE TABLE `CreatedBookings` (
   `ID` int(11) NOT NULL,
+  'hashedID' VARCHAR(255),
   `UserID` int(11) NOT NULL,
   `BookingName` varchar(30) NOT NULL,
   `RecurrenceFrequency` varchar(20) NOT NULL,

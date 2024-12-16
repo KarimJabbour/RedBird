@@ -370,8 +370,6 @@ function showBookingPopup(booking, inHistory = false) {
   const formatParameter = (param) =>
     param === -1 || param === "-1" ? "" : param;
 
-  const baseURL = "http://localhost/RedBird/pages/book_meeting.html";
-
   bookingPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${formatParameter(booking.Details) || "None"}</p>
     <p><b>Location:</b> ${formatParameter(booking.Location) || "Undecided"}</p>
@@ -400,7 +398,7 @@ function showBookingPopup(booking, inHistory = false) {
             <b>Booking URL:</b>
             ${
               booking.ID
-                ? `<a href="http://localhost/RedBird/pages/book_meeting.html?id=${booking.ID}" target="_blank" id="meeting-url">http://localhost/RedBird/pages/book_meeting.html?id=${booking.ID}</a>
+                ? `<a href="http://localhost/RedBird/pages/book_meeting.html?id=${booking.hashedID}" target="_blank" id="meeting-url">http://localhost/RedBird/pages/book_meeting.html?id=${booking.ID}</a>
                     <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>`
                 : "N/A"
             }

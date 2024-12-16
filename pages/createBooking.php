@@ -5,7 +5,7 @@ $userId = $_SESSION['user_id'];
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname ="fall2024-comp307-kjabbo2";
+$dbname = "fall2024-comp307-kjabbo2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -15,38 +15,25 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $bookingName = htmlspecialchars($_POST['booking-name']);
     $frequency = htmlspecialchars($_POST['recurring-timeline']);
     $startDate = htmlspecialchars($_POST['start-date']);
     $endDate = htmlspecialchars($_POST['end-date']);
-    // $startTime = htmlspecialchars($_POST['start-time']); // Submitted in 24-hour format
-    // $endTime = htmlspecialchars($_POST['end-time']);     // Submitted in 24-hour format
     $location = htmlspecialchars($_POST['location']);
     $details = htmlspecialchars($_POST['details']);
-    // $maxAttendees = htmlspecialchars($_POST['max-attendees']);
-    // $timeSlotLength = htmlspecialchars($_POST['time-slot']);
-    // $attachmentLink = htmlspecialchars($_POST['attachment-link']);
-    // $meetingLink = htmlspecialchars($_POST['meeting-link']);
 
     $selectedDays = isset($_POST['days']) ? $_POST['days'] : [];
     $recurrenceDays = implode(",", $selectedDays);
 
     $meetingDates = htmlspecialchars($_POST['highlighted-dates']);
     $meetingDates = '"' . $meetingDates . '"';
-    echo $meetingDates;
 
     $startTimes = htmlspecialchars($_POST['start-times']);
     $endTimes = htmlspecialchars($_POST['end-times']);
     $startTimes = '"' . $startTimes . '"';
     $endTimes = '"' . $endTimes . '"';
 
-    
     $recurrenceDays = htmlspecialchars($_POST['recurring-days']);
-    echo "RecurrenceDays: " . $recurrenceDays;
-
-    //$meetingDates = '" "';
-    //$recurrenceDays = " ";
 
     $sql = "INSERT INTO CreatedBookings (
                 UserID, 
@@ -76,15 +63,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'current'
             )";
 
-
     if ($conn->query($sql) === TRUE) {
-        // Redirect to dashboard if booking was successful
-        echo '<script>
-            setTimeout(function() {
+        // Get the ID of the last inserted row
+        $lastId = $conn->insert_id;
+
+        // Generate the hashed ID based on the numeric ID
+        $hashedID = hash('sha256', $lastId);
+
+        // Update the `hashedID` in the database
+        $updateSql = "UPDATE CreatedBookings SET hashedID = ? WHERE ID = ?";
+        $stmt = $conn->prepare($updateSql);
+        $stmt->bind_param("si", $hashedID, $lastId);
+
+        if ($stmt->execute()) {
+            echo '<script>
+                setTimeout(function() {
                     window.location.href = "dashboard.html";
                 }, 0);
             </script>';
-    
+        } else {
+            echo "Failed to update hashed ID.";
+        }
     } else {
         echo "Booking failed! Try again";
         echo "Error: " . $sql . "<br>" . $conn->error;
@@ -101,12 +100,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             </script>';
     }
-
-}
-else {
+} else {
     echo "Booking failed! Try again";
 }
 
 $conn->close();
- 
 ?>

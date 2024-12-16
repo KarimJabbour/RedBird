@@ -16,14 +16,33 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Get the booking ID from the URL and ensure it's a valid integer
-if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
-    $bookingId = intval($_GET['id']); // Convert it to an integer
+// Get the hashed ID from the URL
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $hashedID = $_GET['id']; // Use the hashed ID directly
 } else {
     http_response_code(400); // Bad Request
     echo json_encode(["error" => "Invalid or missing booking ID"]);
     exit();
 }
+
+$sql = "SELECT ID FROM CreatedBookings WHERE hashedID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $hashedID);
+
+if (!$stmt->execute()) {
+    echo json_encode(["error" => "Failed to fetch booking ID: " . $stmt->error]);
+    exit();
+}
+
+$result = $stmt->get_result();
+if ($result->num_rows === 0) {
+    http_response_code(404); // Not Found
+    echo json_encode(["error" => "Booking not found"]);
+    exit();
+}
+
+$bookingId = $result->fetch_assoc()['ID']; // Get the real ID
+
 
 $sql = "SELECT BookingName, MeetingDates, StartTimes, EndTimes, Details, Location FROM CreatedBookings WHERE ID = ?";
 $stmt = $conn->prepare($sql);
