@@ -10,8 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const alternateRequestsContainer = document.querySelector(
     ".requests .booking-container"
   );
+  const otherBookingsContainer = document.querySelector(
+    ".other-bookings .booking-container"
+  );
 
-  console.log("Starting fetch");
   fetch(`http://localhost/redbird/pages/displayDashboard.php`)
     .then((response) => {
       if (!response.ok) {
@@ -20,172 +22,188 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      console.log("Fetched Data:", data);
-      if (data.error) {
-        console.error("Error from server:", data.error);
-        if (data.error === "User not authenticated") {
-          window.location.replace("http://localhost/redbird/pages/login.php");
-        } else {
-          alert("An error occurred: " + data.error);
-        }
-        return;
-      }
       const bookings = data.bookings || [];
       const polls = data.polls || [];
       const pastBookings = data.pastBookings || [];
       const pastPolls = data.pastPolls || [];
       const alternateRequests = data.alternateRequests || [];
+      const reservedBookings = data.reservedBookings || [];
 
-      // Clear existing bookings and polls
+      // Clear containers
       bookingContainer.innerHTML = "";
       pollsContainer.innerHTML = "";
       historyContainer.innerHTML = "";
       alternateRequestsContainer.innerHTML = "";
+      otherBookingsContainer.innerHTML = "";
 
-      // Display alternate requests
-      if (alternateRequests.length > 0) {
-        alternateRequests.forEach((request) => {
-          const requestRow = document.createElement("div");
-          requestRow.className = "booking-row pending";
-          requestRow.onclick = () => showAlternatePopup(request);
-          requestRow.innerHTML = `
-                        <div class="column-title">${request.BookingName}</div>
-                        <div class="column-message"><b>Reason:</b> ${request.Details}</div>
-                    `;
-          alternateRequestsContainer.appendChild(requestRow);
-        });
-      } else {
-        alternateRequestsContainer.innerHTML =
-          '<div class="empty">No alternate requests</div>';
-      }
+      // Handle Alternate Requests
+      displayAlternateRequests(alternateRequests, alternateRequestsContainer);
 
-      // Display bookings
-      if (bookings.length > 0) {
-        bookings.forEach((booking) => {
-          const meetingDates = booking.MeetingDates.trim()
-            .replace(/^"|"$/g, "")
-            .split(",");
-          const startTimes = booking.StartTimes.trim()
-            .replace(/^"|"$/g, "")
-            .split(",");
-          const endTimes = booking.EndTimes.trim()
-            .replace(/^"|"$/g, "")
-            .split(",");
+      // Handle Bookings
+      displayBookings(bookings, bookingContainer);
 
-          if (
-            meetingDates.length !== startTimes.length ||
-            meetingDates.length !== endTimes.length
-          ) {
-            console.error(
-              "Mismatch between MeetingDates, StartTimes, and EndTimes for booking:",
-              booking.BookingName
-            );
-            return;
-          }
+      // Handle Polls
+      displayPolls(polls, pollsContainer);
 
-          const { earliestDate, startTime, endTime } =
-            getEarliestUpcomingDateWithTimes(
-              meetingDates,
-              startTimes,
-              endTimes
-            );
+      // Handle Past Bookings and Polls
+      displayPastBookingsAndPolls(pastBookings, pastPolls, historyContainer);
 
-          const frequencyAndDays =
-            booking.RecurrenceFrequency !== "non-recurring"
-              ? ` (${formatFrequency(booking.RecurrenceFrequency)}: ${
-                  booking.RecurrenceDays
-                })`
-              : "";
-
-          const bookingRow = document.createElement("div");
-          bookingRow.className = "booking-row created";
-          bookingRow.onclick = () => showBookingPopup(booking);
-          bookingRow.innerHTML = `
-                        <div class="column-title">${booking.BookingName}</div>
-                        <div class="column-date"><b>Next Date:</b> ${earliestDate} ${frequencyAndDays}</div>
-                        <div class="column-time"><b>Time:</b> ${formatTime(
-                          startTime
-                        )} - ${formatTime(endTime)}</div>
-                    `;
-          bookingContainer.appendChild(bookingRow);
-        });
-      } else {
-        bookingContainer.innerHTML =
-          '<div class="empty">No bookings created yet</div>';
-      }
-
-      // Display polls
-      if (polls.length > 0) {
-        polls.forEach((poll) => {
-          const pollRow = document.createElement("div");
-          pollRow.className = "booking-row created";
-          pollRow.onclick = () => showPollPopup(poll);
-          pollRow.innerHTML = `
-                        <div class="column-title">${poll.PollName}</div>
-                        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
-                          poll.DateOptions
-                        )}</div>
-                        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
-                          getFirst(poll.StartTimes)
-                        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
-                    `;
-          pollsContainer.appendChild(pollRow);
-        });
-      } else {
-        pollsContainer.innerHTML =
-          '<div class="empty">No polls created yet</div>';
-      }
-
-      // Display past bookings in history
-      if (pastBookings.length > 0) {
-        pastBookings.forEach((booking) => {
-          const bookingRow = document.createElement("div");
-          bookingRow.className = "booking-row past";
-          bookingRow.onclick = () => showBookingPopup(booking, true);
-          bookingRow.innerHTML = `
-                        <div class="column-title">${booking.BookingName}</div>
-                        <div class="column-date"><b>End Date:</b> ${
-                          booking.EndRecurringDate
-                        }</div>
-                        <div class="column-time"><b>Time:</b> ${formatTime(
-                          booking.StartTime
-                        )} - ${formatTime(booking.EndTime)}</div>
-                    `;
-          historyContainer.appendChild(bookingRow);
-        });
-      }
-      // Display past polls
-      if (pastPolls.length > 0) {
-        pastPolls.forEach((poll) => {
-          const pollRow = document.createElement("div");
-          pollRow.className = "booking-row past";
-          pollRow.onclick = () => showPollPopup(poll, true);
-          pollRow.innerHTML = `
-                        <div class="column-title">${poll.PollName}</div>
-                        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
-                          poll.DateOptions
-                        )}</div>
-                        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
-                          getFirst(poll.StartTimes)
-                        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
-                    `;
-          historyContainer.appendChild(pollRow);
-        });
-      }
-      if (pastBookings.length === 0 && pastPolls.length === 0) {
-        historyContainer.innerHTML =
-          '<div class="empty">No past bookings or polls</div>';
-      }
+      // Handle Reserved Bookings
+      displayReservedBookings(reservedBookings, otherBookingsContainer);
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
-      window.location.replace("http://localhost/RedBird/pages/login.php");
-      // bookingContainer.innerHTML =
-      //   '<div class="error">Error loading bookings.</div>';
-      // pollsContainer.innerHTML =
-      //   '<div class="error">Error loading polls.</div>';
     });
 });
+
+function displayAlternateRequests(alternateRequests, container) {
+  if (alternateRequests.length > 0) {
+    alternateRequests.forEach((request) => {
+      const requestRow = document.createElement("div");
+      requestRow.className = "booking-row pending";
+      requestRow.onclick = () => showAlternatePopup(request);
+      requestRow.innerHTML = `
+        <div class="column-title">${request.BookingName}</div>
+        <div class="column-message"><b>Reason:</b> ${request.Details}</div>
+      `;
+      container.appendChild(requestRow);
+    });
+  } else {
+    container.innerHTML = '<div class="empty">No alternate requests</div>';
+  }
+}
+
+function displayBookings(bookings, container) {
+  if (bookings.length > 0) {
+    bookings.forEach((booking) => {
+      const { earliestDate, startTime, endTime } =
+        getEarliestUpcomingDateWithTimes(
+          booking.MeetingDates.trim().replace(/^"|"$/g, "").split(","),
+          booking.StartTimes.trim().replace(/^"|"$/g, "").split(","),
+          booking.EndTimes.trim().replace(/^"|"$/g, "").split(",")
+        );
+      const frequencyAndDays =
+        booking.RecurrenceFrequency !== "non-recurring"
+          ? ` (${formatFrequency(booking.RecurrenceFrequency)}: ${
+              booking.RecurrenceDays
+            })`
+          : "";
+      const bookingRow = document.createElement("div");
+      bookingRow.className = "booking-row created";
+      bookingRow.onclick = () => showBookingPopup(booking);
+      bookingRow.innerHTML = `
+        <div class="column-title">${booking.BookingName}</div>
+        <div class="column-date"><b>Next Date:</b> ${earliestDate} ${frequencyAndDays}</div>
+        <div class="column-time"><b>Time:</b> ${formatTime(
+          startTime
+        )} - ${formatTime(endTime)}</div>
+      `;
+      container.appendChild(bookingRow);
+    });
+  } else {
+    container.innerHTML = '<div class="empty">No bookings created yet</div>';
+  }
+}
+
+function displayPolls(polls, container) {
+  if (polls.length > 0) {
+    polls.forEach((poll) => {
+      const pollRow = document.createElement("div");
+      pollRow.className = "booking-row created";
+      pollRow.onclick = () => showPollPopup(poll);
+      pollRow.innerHTML = `
+        <div class="column-title">${poll.PollName}</div>
+        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
+          poll.DateOptions
+        )}</div>
+        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
+          getFirst(poll.StartTimes)
+        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
+      `;
+      container.appendChild(pollRow);
+    });
+  } else {
+    container.innerHTML = '<div class="empty">No polls created yet</div>';
+  }
+}
+
+function displayPastBookingsAndPolls(pastBookings, pastPolls, container) {
+  if (pastBookings.length > 0 || pastPolls.length > 0) {
+    pastBookings.forEach((booking) => {
+      const bookingRow = document.createElement("div");
+      bookingRow.className = "booking-row past";
+      bookingRow.onclick = () => showBookingPopup(booking, true);
+      bookingRow.innerHTML = `
+        <div class="column-title">${booking.BookingName}</div>
+        <div class="column-date"><b>End Date:</b> ${
+          booking.EndRecurringDate
+        }</div>
+        <div class="column-time"><b>Time:</b> ${formatTime(
+          booking.StartTime
+        )} - ${formatTime(booking.EndTime)}</div>
+      `;
+      container.appendChild(bookingRow);
+    });
+    pastPolls.forEach((poll) => {
+      const pollRow = document.createElement("div");
+      pollRow.className = "booking-row past";
+      pollRow.onclick = () => showPollPopup(poll, true);
+      pollRow.innerHTML = `
+        <div class="column-title">${poll.PollName}</div>
+        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
+          poll.DateOptions
+        )}</div>
+        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
+          getFirst(poll.StartTimes)
+        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
+      `;
+      container.appendChild(pollRow);
+    });
+  } else {
+    container.innerHTML = '<div class="empty">No past bookings or polls</div>';
+  }
+}
+
+function displayReservedBookings(reservedBookings, container) {
+  if (reservedBookings.length > 0) {
+    reservedBookings.forEach((booking) => {
+      const meetingDates = JSON.parse(booking.MeetingDates || "[]");
+      const startTimes = JSON.parse(booking.StartTimes || "[]");
+      const endTimes = JSON.parse(booking.EndTimes || "[]");
+
+      const bookingRow = document.createElement("div");
+      bookingRow.className = "booking-row reserved";
+      bookingRow.innerHTML = `
+        <div class="column-title">${
+          booking.BookingName || "Unnamed Booking"
+        }</div>
+        <div class="meeting-dates">
+          ${
+            meetingDates.length > 0
+              ? meetingDates
+                  .map(
+                    (date, index) => `
+                    <div class="meeting-item">
+                      <b>Date:</b> <span>${date}</span>
+                      <br/>
+                      <b>Time:</b> <span>${startTimes[index] || "TBD"} - ${
+                      endTimes[index] || "TBD"
+                    }</span>
+                    </div>
+                  `
+                  )
+                  .join("")
+              : '<div class="empty">No meetings scheduled</div>'
+          }
+        </div>
+      `;
+      container.appendChild(bookingRow);
+    });
+  } else {
+    container.innerHTML =
+      '<div class="empty">No reserved bookings available</div>';
+  }
+}
 
 function formatDate(dateStr) {
   if (!dateStr) {

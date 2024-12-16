@@ -567,6 +567,10 @@ body {
   border-bottom: 3px solid #fe612c;
 }
 
+.other-bookings .section-title {
+  border-bottom: 3px solid #fe612c;
+}
+
 .polls .section-title {
   border-bottom: 3px solid #ff872c;
 }
@@ -680,4 +684,57 @@ body {
 
 .logout-btn:hover {
   background-color: #c2081b;
+}
+
+.plus {
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.plus:hover {
+  transform: scale(1.1); /* Slightly enlarge the icon */
+  box-shadow: 0 0 10px rgba(255, 135, 44, 0.8); /* Orange glow */
+}
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 135, 44, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 135, 44, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 135, 44, 0.4);
+  }
+}
+
+.plus:hover {
+  animation: glow 1.5s infinite;
+}
+.booking-row.reserved {
+  background: #fef3e6;
+  border-left: 12px solid #fe612c;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.booking-row.reserved:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.booking-row.reserved .column-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fe612c;
+  margin-bottom: 10px;
+}
+
+.booking-row.reserved .column-date,
+.booking-row.reserved .column-time {
+  font-size: 0.9rem;
+  font-family: "Helvetica", "Arial", sans-serif;
+  color: #555;
 }

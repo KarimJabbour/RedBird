@@ -178,12 +178,22 @@
         <!-- Created Bookings -->
         <section class="column bookings">
           <div class="section-title">
-            <h2>Scheduled Bookings</h2>
+            <h2>Created Bookings</h2>
             <img
               src="Images/icons/FE612C_plus.png"
               alt="Create Booking"
               class="plus"
             />
+          </div>
+          <div class="booking-container">
+            <!-- Filled dynamically -->
+          </div>
+        </section>
+
+        <!-- Reserved 3rdparty Bookings -->
+        <section class="column other-bookings">
+          <div class="section-title">
+            <h2>Reserved Bookings</h2>
           </div>
           <div class="booking-container">
             <!-- Filled dynamically -->
@@ -201,7 +211,6 @@
           </div>
           <div class="booking-container"></div>
         </section>
-
         <section class="column bookings-history">
           <div class="section-title">
             <h2>History</h2>
@@ -217,3 +226,18 @@
     </div>
   </body>
 </html>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const createBookingPlus = document.querySelector(".bookings .plus");
+    const createPollPlus = document.querySelector(".polls .plus");
+
+    createBookingPlus.addEventListener("click", () => {
+      window.location.href =
+        "http://localhost/RedBird/pages/create_booking.html";
+    });
+
+    createPollPlus.addEventListener("click", () => {
+      window.location.href = "http://localhost/RedBird/pages/create_poll.html";
+    });
+  });
+</script>

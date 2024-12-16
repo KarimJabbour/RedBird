@@ -114,9 +114,48 @@ if (empty($response)) {
     exit;
 }
 
+
+/// Fetch reserved bookings directly from BookingParticipants
+$sqlReservedBookings = "
+SELECT 
+    bp.BookingID, 
+    bp.UserID, 
+    bp.Email, 
+    bp.McGillID, 
+    bp.FullName, 
+    bp.MeetingDates, 
+    bp.StartTimes, 
+    bp.EndTimes,
+    cb.BookingName, 
+    cb.RecurrenceFrequency, 
+    cb.StartRecurringDate, 
+    cb.EndRecurringDate, 
+    cb.Location, 
+    cb.Details
+FROM BookingParticipants bp
+JOIN CreatedBookings cb ON bp.BookingID = cb.ID
+WHERE bp.UserID = ?
+";
+
+$stmtReservedBookings = $conn->prepare($sqlReservedBookings);
+$stmtReservedBookings->bind_param("i", $userId);
+$stmtReservedBookings->execute();
+$resultReservedBookings = $stmtReservedBookings->get_result();
+
+$reservedBookings = [];
+if ($resultReservedBookings->num_rows > 0) {
+while ($row = $resultReservedBookings->fetch_assoc()) {
+    $reservedBookings[] = $row;
+}
+}
+
+// Add reserved bookings to the response
+$response['reservedBookings'] = $reservedBookings;
+
+
 header('Content-Type: application/json');
 echo json_encode($response);
 
-
 $conn->close();
+
 ?>
