@@ -47,6 +47,30 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         if (data.success) {
           alert("Vote counts updated successfully!");
+
+          // Call the email script after votes are successfully updated
+          const emailData = new FormData();
+          emailData.append("pollID", pollID);
+          emailData.append("email", formData.get("email"));
+
+          fetch("http://localhost/RedBird/mail/sendPollReservation.php", {
+            method: "POST",
+            body: emailData,
+          })
+            .then((emailResponse) => emailResponse.json())
+            .then((emailData) => {
+              if (emailData.success) {
+                alert("Email sent successfully!");
+              } else {
+                alert("Failed to send email: " + emailData.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error sending email:", error);
+              alert("An error occurred while sending the email.");
+            });
+
+          // Redirect to dashboard after everything is done
           window.location.href = "/RedBird/pages/dashboard.html";
         } else if (data.duplicate) {
           alert("You can only vote once.");

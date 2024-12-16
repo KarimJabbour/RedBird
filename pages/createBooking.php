@@ -76,6 +76,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("si", $hashedID, $lastId);
 
         if ($stmt->execute()) {
+            $emailQuery = $conn->prepare("SELECT email FROM Users WHERE id = ?");
+            $emailQuery->bind_param("i", $userId);
+            $emailQuery->execute();
+            $emailResult = $emailQuery->get_result();
+            
+            if ($emailResult->num_rows > 0) {
+                $emailRow = $emailResult->fetch_assoc();
+                $email = $emailRow['email'];
+            
+                $sendEmailUrl = 'http://localhost/RedBird/mail/sendBookingCreation.php';
+                $postFields = http_build_query([
+                    'email' => $email,
+                    'bookingID' => $lastId
+                ]);
+            
+                $ch = curl_init($sendEmailUrl);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+            
+                if ($response) {
+                    error_log("Email sent successfully: $response");
+                } else {
+                    error_log("Failed to send email for booking ID $lastId");
+                }
+            } else {
+                echo "User email not found.";
+            }            
             echo '<script>
                 setTimeout(function() {
                     window.location.href = "dashboard.html";

@@ -5,7 +5,7 @@ let highlighted = [];
 let startTimes = [];
 let endTimes = [];
 let availability = {};
-
+let global_bookingID = "";
 document.addEventListener("DOMContentLoaded", function () {
   populateCalendar(currentMonth, currentYear);
   getDates();
@@ -58,7 +58,7 @@ async function fetchAvailableDates() {
     // Retrieve the bookingId from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const bookingId = urlParams.get("id"); // Extracts the 'id' from the URL
-
+    global_bookingID = urlParams.get("id");
     if (!bookingId) {
       throw new Error("Booking ID is missing in the URL.");
     }
@@ -242,16 +242,14 @@ function bookMeeting() {
     return;
   }
 
-  // Retrieve the bookingId from the URL
   const urlParams = new URLSearchParams(window.location.search);
-  const bookingId = urlParams.get("id"); // Extracts the 'id' from the URL
+  const bookingId = urlParams.get("id");
 
   if (!bookingId) {
     alert("Booking ID is missing in the URL.");
     return;
   }
 
-  // Include the user's details in the request data
   const requestData = {
     booking_id: bookingId,
     MeetingDates: JSON.stringify([selectedSlot.date]),
@@ -280,17 +278,52 @@ function bookMeeting() {
     })
     .then((data) => {
       if (data.success) {
-        alert("Meeting successfully booked!");
         console.log("Booking response:", data);
-        window.location.href = "/RedBird/pages/dashboard.html";
+        // alert("Meeting successfully booked!");
+
+        // Call the email script to send a confirmation email
+        return sendEmailConfirmation(email, bookingId);
       } else {
         alert("Error booking meeting: " + (data.error || "Unknown error"));
         console.error("Server error:", data);
       }
     })
+    .then(() => {
+      // Redirect to the dashboard after successful booking and email
+      window.location.href = "/RedBird/pages/dashboard.html";
+    })
     .catch((error) => {
       alert("Error booking meeting.");
       console.error("Booking error:", error);
+    });
+}
+
+function sendEmailConfirmation(email, bookingId) {
+  const emailData = {
+    email: email,
+    bookingID: bookingId,
+  };
+
+  return fetch("../mail/sendBookingReservation.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(emailData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to send email confirmation.");
+      }
+      return response.text();
+    })
+    .then((result) => {
+      console.log("Email confirmation result:", result);
+      alert("Meeting successfully booked! Email confirmation sent!");
+    })
+    .catch((error) => {
+      console.error("Error sending email confirmation:", error);
+      alert("Failed to send email confirmation.");
     });
 }
 

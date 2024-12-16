@@ -5,7 +5,7 @@ $userId = $_SESSION['user_id'];
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname ="fall2024-comp307-kjabbo2";
+$dbname = "fall2024-comp307-kjabbo2";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -14,8 +14,22 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch the user's email from the Users table
+$sql = "SELECT email FROM Users WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+    $email = $user['email'];
+} else {
+    echo "User email not found!";
+    exit;
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
     $pollName = htmlspecialchars($_POST['name']);
     $details = htmlspecialchars($_POST['details']);
 
@@ -25,18 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $startTimes = '"' . $startTimes . '"';
     $endTimes = htmlspecialchars($_POST['endTimes']);
     $endTimes = '"' . $endTimes . '"';
-    //$pollCloseDateTime = htmlspecialchars($_POST['poll-close-time']); //need to figure out a default time stamp maybe not required
     $pollCloseDateTime = empty($_POST['poll-close-time']) ? null : htmlspecialchars($_POST['poll-close-time']);
-
-    echo $pollCloseDateTime;
-
-    // $dateTimeOptions = '" "';
 
     $dateTimeOptionsCount = count(explode(',', $dates));
     $voteCounts = implode(',', array_fill(0, $dateTimeOptionsCount, '0'));
     $voteCounts = '"' . $voteCounts . '"';
-    echo $dateTimeOptionsCount;
-    echo $voteCounts;
 
     if ($pollCloseDateTime === null) {
         $sql = "INSERT INTO CreatedPolls (
@@ -88,8 +95,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
         $updateSql = "UPDATE CreatedPolls SET hashedID = '$hashedId' WHERE ID = '$lastId'";
         $conn->query($updateSql);
-    
-        
+            
+        $emailData = [
+            "email" => $email,
+            "pollID" => $hashedId
+        ];
+
+        // Make a POST request to the email script
+        $emailScriptUrl = "http://localhost/RedBird/mail/sendPollCreation.php";
+        $ch = curl_init($emailScriptUrl);
+
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($emailData));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // Execute the request and handle the response
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            error_log("Error sending email: " . curl_error($ch));
+        }
+        curl_close($ch);
+
+        if ($response) {
+            error_log("Email script response: $response");
+        }
+
         // Redirect to dashboard if poll creation was successful
         echo '<script>
             setTimeout(function() {
@@ -114,11 +147,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </script>';
     }
 
-}
-else {
+} else {
     echo "Poll creation failed! Try again";
 }
 
 $conn->close();
- 
 ?>
