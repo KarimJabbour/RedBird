@@ -53,24 +53,12 @@ try {
         $stmt->execute();
         $result = $stmt->get_result();
     
-        if ($result->num_rows > 0) {
-            // User already booked. Update the entry
-            $stmt->close();
-            $stmt = $conn->prepare("
-                UPDATE BookingParticipants
-                SET MeetingDates = ?, StartTimes = ?, EndTimes = ?, FullName = ?, Email = ?, McGillID = ?
-                WHERE BookingID = ? AND UserID = ?
-            ");
-            $stmt->bind_param("ssssssii", $meetingDates, $startTimes, $endTimes, $fullName, $email, $mcgillID, $bookingId, $userId);
-        } else {
-            // User hasn't booked. Insert a new entry
-            $stmt->close();
-            $stmt = $conn->prepare("
-                INSERT INTO BookingParticipants (BookingID, UserID, Email, McGillID, FullName, MeetingDates, StartTimes, EndTimes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->bind_param("iissssss", $bookingId, $userId, $email, $mcgillID, $fullName, $meetingDates, $startTimes, $endTimes);
-        }
+        $stmt->close();
+        $stmt = $conn->prepare("
+            INSERT INTO BookingParticipants (BookingID, UserID, Email, McGillID, FullName, MeetingDates, StartTimes, EndTimes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param("iissssss", $bookingId, $userId, $email, $mcgillID, $fullName, $meetingDates, $startTimes, $endTimes);
     } else {
         // Case 2: Anonymous user
         $stmt = $conn->prepare("
