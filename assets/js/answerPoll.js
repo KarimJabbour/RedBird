@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(() => {
         // Redirect to dashboard after successful submission
-        window.location.href = "/RedBird/pages/dashboard.html";
+        window.location.href = "http://localhost/RedBird/pages/dashboard.html";
       })
       .catch((error) => {
         console.error("Error submitting vote:", error);

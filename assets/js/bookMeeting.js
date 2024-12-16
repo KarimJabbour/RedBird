@@ -290,7 +290,7 @@ function bookMeeting() {
     })
     .then(() => {
       // Redirect to the dashboard after successful booking and email
-      window.location.href = "/RedBird/pages/dashboard.html";
+      window.location.href = "http://localhost/RedBird/pages/dashboard.html";
     })
     .catch((error) => {
       alert("Error booking meeting.");

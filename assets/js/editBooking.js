@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Booking ID:", bookingId);
 
     // Fetch booking data or handle the booking ID
-    fetch(`/RedBird/pages/editBooking.php?bookingId=${bookingId}`)
+    fetch(
+      `http://localhost/RedBird/pages/editBooking.php?bookingId=${bookingId}`
+    )
       .then((response) => response.json())
       .then((bookingData) => {
         loadBookingData(bookingData);
