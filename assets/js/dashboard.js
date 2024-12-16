@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ".other-bookings .booking-container"
   );
 
-  fetch(`http://localhost/redbird/pages/displayDashboard.php`)
+  fetch(`http://localhost/RedBird/pages/displayDashboard.php`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -624,7 +624,7 @@ function deleteBooking(bookingId) {
 
   console.log("bookingid" + bookingId);
 
-  fetch("http://localhost/redbird/pages/deleteBooking.php", {
+  fetch("http://localhost/RedBird/pages/deleteBooking.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -657,7 +657,7 @@ function editBooking(bookingId) {
   }
   console.log("Redirecting to edit booking page with bookingId:", bookingId);
   window.location.replace(
-    `http://localhost/redbird/pages/edit_booking.html?bookingId=${bookingId}`
+    `http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`
   );
 }
 
@@ -669,7 +669,7 @@ function closePoll(pollID) {
   const closeTime = new Date().toISOString().replace("Z", ""); // Current timestamp
   // console.log("closetime"+closeTime);
 
-  fetch("http://localhost/redbird/pages/closePoll.php", {
+  fetch("http://localhost/RedBird/pages/closePoll.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -703,7 +703,7 @@ function declineAlternateRequest(requestID) {
     return;
   }
 
-  fetch("http://localhost/redbird/pages/declineAlternateRequest.php", {
+  fetch("http://localhost/RedBird/pages/declineAlternateRequest.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -741,7 +741,7 @@ function acceptAlternateRequest(alternateRequestID, selectedOption, message) {
   };
   console.log(payload);
 
-  fetch("http://localhost/redbird/pages/acceptAlternateRequest.php", {
+  fetch("http://localhost/RedBird/pages/acceptAlternateRequest.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -757,7 +757,7 @@ function acceptAlternateRequest(alternateRequestID, selectedOption, message) {
         );
         location.reload();
         window.location.replace(
-          `http://localhost/redbird/pages/edit_booking.html?bookingId=${bookingId}`
+          `http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`
         );
       } else {
         alert("Failed to accept alternate request: " + data.message);

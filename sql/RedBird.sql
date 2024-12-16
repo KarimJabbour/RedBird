@@ -57,7 +57,7 @@ INSERT INTO `AlternateRequests` (`ID`, `FullName`, `Email`, `Details`, `LinkedBo
 
 CREATE TABLE `CreatedBookings` (
   `ID` int(11) NOT NULL,
-  'hashedID' VARCHAR(255),
+  `hashedID` VARCHAR(255),
   `UserID` int(11) NOT NULL,
   `BookingName` varchar(30) NOT NULL,
   `RecurrenceFrequency` varchar(20) NOT NULL,
@@ -109,7 +109,7 @@ INSERT INTO `CreatedBookings` (`ID`, `UserID`, `BookingName`, `RecurrenceFrequen
 
 CREATE TABLE `CreatedPolls` (
   `ID` int(11) NOT NULL,
-  'hashedID' VARCHAR(255),
+  `hashedID` VARCHAR(255),
   `UserID` int(11) NOT NULL,
   `PollName` varchar(30) NOT NULL,
   `DateOptions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
