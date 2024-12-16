@@ -223,6 +223,11 @@
           <div class="booking-container"></div>
         </section>
       </main>
+      <div class="export-pdf-container">
+        <a id="export-pdf-btn" class="export-pdf-btn" href="#" target="_blank">
+          <i class="fas fa-file-pdf"></i> Export PDF
+        </a>
+      </div>
     </div>
   </body>
 </html>
@@ -239,5 +244,11 @@
     createPollPlus.addEventListener("click", () => {
       window.location.href = "http://localhost/RedBird/pages/create_poll.html";
     });
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const exportPdfBtn = document.getElementById("export-pdf-btn");
+    exportPdfBtn.href = `http://localhost/RedBird/pdf/userActivity.php`;
   });
 </script>

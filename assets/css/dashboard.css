@@ -738,3 +738,37 @@ body {
   font-family: "Helvetica", "Arial", sans-serif;
   color: #555;
 }
+
+.export-pdf-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.export-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eb0920;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.export-pdf-btn i {
+  margin-right: 10px;
+  font-size: 1.5rem;
+}
+
+.export-pdf-btn:hover {
+  background: #c2081b;
+  transform: translateY(-3px);
+}
+
+.export-pdf-btn:active {
+  transform: translateY(1px);
+}
