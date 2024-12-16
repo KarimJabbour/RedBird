@@ -108,6 +108,7 @@ INSERT INTO `CreatedBookings` (`ID`, `UserID`, `BookingName`, `RecurrenceFrequen
 
 CREATE TABLE `CreatedPolls` (
   `ID` int(11) NOT NULL,
+  'hashedID' VARCHAR(255),
   `UserID` int(11) NOT NULL,
   `PollName` varchar(30) NOT NULL,
   `DateOptions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,

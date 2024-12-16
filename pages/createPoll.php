@@ -81,31 +81,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'current'
                 )";
     }
-    
-    // $sql = "INSERT INTO CreatedPolls (
-    //             UserID, 
-    //             PollName,
-    //             DateOptions,
-    //             StartTimes,
-    //             EndTimes,
-    //             Details,  
-    //             PollCloseDateTime,
-    //             VoteCounts,
-    //             Status
-    //         ) VALUES (
-    //             '$userId',
-    //             '$pollName',
-    //             '$dates',
-    //             '$startTimes',
-    //             '$endTimes',
-    //             '$details',
-    //             '$pollCloseDateTime',
-    //             '$voteCounts',
-    //             'current'
-    //         )";
-
 
     if ($conn->query($sql) === TRUE) {
+        $lastId = $conn->insert_id; // Get the last inserted ID
+        $hashedId = hash('sha256', $lastId); // Make hash
+    
+        $updateSql = "UPDATE CreatedPolls SET hashedID = '$hashedId' WHERE ID = '$lastId'";
+        $conn->query($updateSql);
+    
+        
         // Redirect to dashboard if poll creation was successful
         echo '<script>
             setTimeout(function() {

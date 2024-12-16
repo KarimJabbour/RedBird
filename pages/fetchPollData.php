@@ -13,8 +13,25 @@ if ($conn->connect_error) {
     exit();
 }
 
-// Get the pollID from the request
-$pollID = isset($_GET['pollID']) ? intval($_GET['pollID']) : 0;
+$pollID = $_GET['pollID'] ?? null;
+
+if (!$pollID) {
+    echo json_encode(["success" => false, "message" => "Invalid or missing poll ID"]);
+    exit();
+}
+
+// Match the hashed ID to its numeric ID
+$stmt = $conn->prepare("SELECT ID FROM CreatedPolls WHERE hashedID = ?");
+$stmt->bind_param("s", $pollID);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo json_encode(["success" => false, "message" => "Poll not found"]);
+    exit();
+}
+
+$pollID = $result->fetch_assoc()['ID'];
 
 if ($pollID === 0) {
     echo json_encode(["success" => false, "message" => "Invalid poll ID"]);

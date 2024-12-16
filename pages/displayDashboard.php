@@ -43,7 +43,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-$sqlPolls = "SELECT ID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
+$sqlPolls = "SELECT ID, hashedID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
              FROM CreatedPolls 
              WHERE UserID = $userId AND Status = 'current'";
 
@@ -72,7 +72,7 @@ if ($resultPastBookings->num_rows > 0) {
 }
 
 // Fetch past polls
-$pastPollsQuery = "SELECT ID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
+$pastPollsQuery = "SELECT ID, hashedID, PollName, DateOptions, StartTimes, EndTimes, Details, PollCloseDateTime, VoteCounts 
                     FROM CreatedPolls 
                     WHERE UserID = $userId AND Status = 'past'";
 

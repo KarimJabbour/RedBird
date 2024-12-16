@@ -493,7 +493,7 @@ function showPollPopup(poll, inHistory = false) {
   const pollPopup = document.getElementById("poll-details-popup");
   pollPopup.style.display = "flex";
 
-  const pollUrl = `http://localhost/RedBird/pages/answer_poll.html?pollID=${poll.ID}`;
+  const pollUrl = `http://localhost/RedBird/pages/answer_poll.html?pollID=${poll.hashedID}`;
 
   pollPopup.querySelector(".modal-header h2").textContent = poll.PollName;
   pollPopup.querySelector(".modal-body").innerHTML = `
