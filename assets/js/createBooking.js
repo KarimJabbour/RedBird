@@ -16,25 +16,73 @@ document.addEventListener("DOMContentLoaded", function () {
 
     defaultStartTimeInput.addEventListener("input", () => {
         console.log("default start changed");
+        validateTimeInputs(defaultStartTimeInput, defaultEndTimeInput, "start");
         applyDefaultTimesToTimeCards();
     });
 
     defaultEndTimeInput.addEventListener("input", () => {
         console.log("default end changed");
+        validateTimeInputs(defaultStartTimeInput, defaultEndTimeInput, "end");
         applyDefaultTimesToTimeCards();
     });
 
     document.getElementById("recurring-timeline").addEventListener("change", () => {
+
+        const recurrence = document.getElementById("recurring-timeline").value;
+
+        clearAllHighlights();
+
         console.log("Frequency changed");
         updateCalendar();
+        if (recurrence == "daily") {
+            generateDailyTimeCards();
+        }
     });
     
+    const startDateInput = document.getElementById("start-date");
+    const todayUTC = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()));
+    const formattedToday = todayUTC.toISOString().split('T')[0];
+
     document.getElementById("start-date").addEventListener("change", () => {
+        const selectedDate = new Date(startDateInput.value + "T00:00:00Z");
+        if (selectedDate < todayUTC) {
+            showAlert("Start date cannot be earlier than today.");
+            startDateInput.value = formattedToday; 
+            startDateInput.blur();
+        }
+
+        validateDateInputs("start");
+        const start = document.getElementById("start-date").value;
+        manualAdjustments.forEach(date => {
+            if ((new Date (date) < new Date(start))) {
+                manualAdjustments.delete(date);
+                const timeCardContainer = document.querySelector(".time-cards");
+                const timeCard = timeCardContainer.querySelector(`.time-card[data-date='${date}']`);
+                if (timeCard) {
+                    timeCard.remove();
+                }
+            }
+        })
+        
         console.log("Start date changed");
         updateCalendar();
     });
     
     document.getElementById("end-date").addEventListener("change", () => {
+
+        validateDateInputs("end");
+        const end = document.getElementById("end-date").value;
+        manualAdjustments.forEach(date => {
+            if ((new Date (date) > new Date(end))) {
+                manualAdjustments.delete(date);
+                const timeCardContainer = document.querySelector(".time-cards");
+                const timeCard = timeCardContainer.querySelector(`.time-card[data-date='${date}']`);
+                if (timeCard) {
+                    timeCard.remove();
+                }
+            }
+        })
+
         console.log("End date changed");
         updateCalendar();
     });
@@ -42,26 +90,42 @@ document.addEventListener("DOMContentLoaded", function () {
     const daySelector = document.querySelectorAll("input[name='days[]']");
     daySelector.forEach(checkbox => {
         checkbox.addEventListener("change", () => {
-            console.log("Day selected/changed:", checkbox.value, checkbox.checked);
 
-            if (!checkbox.checked) {
-                // Clear deselected dates when a recurrence day is unchecked
-                deselectedDates.clear();
-                console.log("Cleared deselectedDates because recurrence day was unchecked.");
+            if (checkRange()) {
+
+                console.log("Day selected/changed:", checkbox.value, checkbox.checked);
+
+                const dayMapping = { "M": 0, "T": 1, "W": 2, "Th": 3, "F": 4, "S": 5, "Su": 6 };
+
+                if (!checkbox.checked) {
+                    // Clear deselected dates when a recurrence day is unchecked
+                    deselectedDates.forEach(date => {
+                        const weekday = (new Date(date)).getDay();
+                        if (weekday == dayMapping[checkbox.value]) {
+                            deselectedDates.delete(date);
+                        }
+                    })
+                    console.log("Cleared deselectedDates because recurrence day was unchecked.");
+                }
+
+                // updateRecurringDayTimes(checkbox.value, checkbox.checked);
+                updateTimeCards();
+                updateCalendar();
+
+            } else {
+                checkbox.checked = false;
+                showAlert("Please select the start and end dates first.");
             }
 
-            // updateRecurringDayTimes(checkbox.value, checkbox.checked);
-            updateTimeCards();
-            updateCalendar();
         });
     });
 
 
     document.getElementById("booking-form").addEventListener("submit", function (event) {
-        //event.preventDefault();
+        event.preventDefault();
 
         if (!validateTimeCards()) {
-            alert("Please ensure all time cards have both start and end times filled.");
+            showAlert("Please ensure all time cards have both start and end times filled.");
             return;
         }
 
@@ -108,10 +172,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Process recurring dates with their times
             if (recurrenceDays.length > 0 && startDate && endDate) {
-                const computedRecurringDates = calculateRecurringDates(startDate, endDate, document.getElementById("recurring-timeline").value, recurrenceDays);
+                //const computedRecurringDates = calculateRecurringDates(startDate, endDate, document.getElementById("recurring-timeline").value, recurrenceDays);
                 console.log("Updated Recurring Day Times:", recurringDayTimes);
 
-                computedRecurringDates.forEach(date => {
+                recurringDates.forEach(date => {
                     const dayOfWeek = new Date(date).getDay();
                     const dayKey = ["M", "T", "W", "Th", "F", "S", "Su"][dayOfWeek];
 
@@ -140,19 +204,11 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // // Process manually added dates
-        // manualAdjustments.forEach(date => {
-        //     const startTime = prompt(`Enter start time for ${date} (HH:mm):`);
-        //     const endTime = prompt(`Enter end time for ${date} (HH:mm):`);
+        if (meetingDates.length == 0) {
+            showAlert("Please make sure to pick at least one date for the booking.");
+            return;
+        }
 
-        //     if (startTime && endTime) {
-        //         meetingDates.push(date);
-        //         startTimes.push(startTime);
-        //         endTimes.push(endTime);
-        //     }
-        // });
-
-        // // const highlightedDates = getHighlightedDates();
         document.getElementById("highlighted-dates").value = meetingDates.join(",");
         document.getElementById("start-times").value = startTimes.join(",");
         document.getElementById("end-times").value = endTimes.join(",");
@@ -163,7 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Start Times:", startTimes);
         console.log("End Times:", endTimes);
         console.log("Recurrence Days:", recurrenceDays);
-        
+        this.submit();
     });
 });
 
@@ -240,7 +296,6 @@ function generateRecurrenceTimeCards(recurrenceDays) {
         const timeCard = document.createElement("div");
         timeCard.classList.add("time-card");
 
-        // Card title
         const title = document.createElement("h3");
         title.textContent = `${day}`;
         timeCard.appendChild(title);
@@ -255,7 +310,7 @@ function generateRecurrenceTimeCards(recurrenceDays) {
             <b>Start Time:</b>
             <input type="time" class="time-slot start-time" data-day="${day}" required>
         `;
-        timeSlotRow.appendChild(startTimeLabel);
+        const startTimeInput = startTimeLabel.querySelector("input");
 
         // End Time input
         const endTimeLabel = document.createElement("label");
@@ -264,10 +319,16 @@ function generateRecurrenceTimeCards(recurrenceDays) {
             <b>End Time:</b>
             <input type="time" class="time-slot end-time" data-day="${day}" required>
         `;
+        const endTimeInput = endTimeLabel.querySelector("input");
+
+        startTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "start"));
+        endTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "end"));
+
+        timeSlotRow.appendChild(startTimeLabel);
         timeSlotRow.appendChild(endTimeLabel);
         timeCard.appendChild(timeSlotRow);
 
-        // Add button for additional slots (optional)
+        // Button to create additional time slots
         const addButton = document.createElement("button");
         addButton.type = "button";
         addButton.textContent = "+ Add Time";
@@ -280,6 +341,65 @@ function generateRecurrenceTimeCards(recurrenceDays) {
         timeCardContainer.appendChild(timeCard);
         applyDefaultTimesToTimeCard(timeCard);
     });
+
+    manualAdjustments.forEach(date => {
+        generateManualTimeCard(date);
+    })
+
+}
+
+function generateDailyTimeCards() {
+    const timeCardContainer = document.querySelector(".time-cards");
+    timeCardContainer.innerHTML = ""; // Clear existing time cards
+
+        const timeCard = document.createElement("div");
+        timeCard.classList.add("time-card");
+
+        const title = document.createElement("h3");
+        title.textContent = "Daily";
+        timeCard.appendChild(title);
+
+        const timeSlotRow = document.createElement("div");
+        timeSlotRow.classList.add("time-slot-row");
+
+        // Start Time input
+        const startTimeLabel = document.createElement("label");
+        startTimeLabel.classList.add("time-slot-label");
+        startTimeLabel.innerHTML = `
+            <b>Start Time:</b>
+            <input type="time" class="time-slot start-time" data-day="Daily" required>
+        `;
+        const startTimeInput = startTimeLabel.querySelector("input");
+
+        // End Time input
+        const endTimeLabel = document.createElement("label");
+        endTimeLabel.classList.add("time-slot-label");
+        endTimeLabel.innerHTML = `
+            <b>End Time:</b>
+            <input type="time" class="time-slot end-time" data-day="Daily" required>
+        `;
+        const endTimeInput = endTimeLabel.querySelector("input");
+
+        startTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "start"));
+        endTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "end"));
+
+        timeSlotRow.appendChild(startTimeLabel);
+        timeSlotRow.appendChild(endTimeLabel);
+        timeCard.appendChild(timeSlotRow);
+
+        // Button to create additional time slots
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.textContent = "+ Add Time";
+        addButton.classList.add("add-time-btn");
+        addButton.addEventListener("click", () => {
+            addTimeSlot(timeCard, day);
+        });
+        timeCard.appendChild(addButton);
+
+        timeCardContainer.appendChild(timeCard);
+        applyDefaultTimesToTimeCard(timeCard);
+
 }
 
 function generateManualTimeCard(date) {
@@ -289,7 +409,6 @@ function generateManualTimeCard(date) {
     timeCard.classList.add("time-card");
     timeCard.setAttribute("data-date", date);
 
-    // Card title
     const title = document.createElement("h3");
     const dateObj = new Date(date);
     const formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: "UTC" });
@@ -308,7 +427,7 @@ function generateManualTimeCard(date) {
         <b>Start Time:</b>
         <input type="time" class="time-slot start-time" data-date="${date}" required>
     `;
-    timeSlotRow.appendChild(startTimeLabel);
+    const startTimeInput = startTimeLabel.querySelector("input");
 
     // End Time input
     const endTimeLabel = document.createElement("label");
@@ -317,10 +436,16 @@ function generateManualTimeCard(date) {
         <b>End Time:</b>
         <input type="time" class="time-slot end-time" data-date="${date}" required>
     `;
+    const endTimeInput = endTimeLabel.querySelector("input");
+
+    startTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "start"));
+    endTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "end"));
+
+    timeSlotRow.appendChild(startTimeLabel);
     timeSlotRow.appendChild(endTimeLabel);
     timeCard.appendChild(timeSlotRow);
 
-    // Add button for additional slots (optional)
+    // Button to create additional time slots
     const addButton = document.createElement("button");
     addButton.type = "button";
     addButton.textContent = "+ Add Time";
@@ -341,7 +466,6 @@ function generateMonthlyTimeCard(dayOfMonth) {
     timeCard.classList.add("time-card");
     timeCard.setAttribute("data-day", dayOfMonth);
 
-    // Card title
     const title = document.createElement("h3");
     title.textContent = `Day ${dayOfMonth} (Monthly)`; // Title shows the day of the month
     timeCard.appendChild(title);
@@ -356,7 +480,7 @@ function generateMonthlyTimeCard(dayOfMonth) {
         <b>Start Time:</b>
         <input type="time" class="time-slot start-time" data-day="${dayOfMonth}" required>
     `;
-    timeSlotRow.appendChild(startTimeLabel);
+    const startTimeInput = startTimeLabel.querySelector("input");
 
     // End Time input
     const endTimeLabel = document.createElement("label");
@@ -365,10 +489,17 @@ function generateMonthlyTimeCard(dayOfMonth) {
         <b>End Time:</b>
         <input type="time" class="time-slot end-time" data-day="${dayOfMonth}" required>
     `;
+    const endTimeInput = endTimeLabel.querySelector("input");
+
+    startTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "start"));
+    endTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "end"));
+
+    timeSlotRow.appendChild(startTimeLabel);
     timeSlotRow.appendChild(endTimeLabel);
+
     timeCard.appendChild(timeSlotRow);
 
-    // Add button for additional slots (optional)
+    // Button to create additional time slots
     const addButton = document.createElement("button");
     addButton.type = "button";
     addButton.textContent = "+ Add Time";
@@ -395,7 +526,7 @@ function addTimeSlot(timeCard, day) {
         <b>Start Time:</b>
         <input type="time" class="time-slot start-time" data-day="${day}" required>
     `;
-    timeSlotRow.appendChild(startTimeLabel);
+    const startTimeInput = startTimeLabel.querySelector("input");
 
     const endTimeLabel = document.createElement("label");
     endTimeLabel.classList.add("time-slot-label");
@@ -403,6 +534,12 @@ function addTimeSlot(timeCard, day) {
         <b>End Time:</b>
         <input type="time" class="time-slot end-time" data-day="${day}" required>
     `;
+    const endTimeInput = endTimeLabel.querySelector("input");
+
+    startTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "start"));
+    endTimeInput.addEventListener("input", () => validateTimeInputs(startTimeInput, endTimeInput, "end"));
+
+    timeSlotRow.appendChild(startTimeLabel);
     timeSlotRow.appendChild(endTimeLabel);
 
     const removeButton = document.createElement("button");
@@ -414,11 +551,11 @@ function addTimeSlot(timeCard, day) {
     });
     timeSlotRow.appendChild(removeButton);
 
-    // Insert the new row before the "+ Add Time" button
+    // Insert before the "+ Add Time" button
     const addTimeButton = timeCard.querySelector(".add-time-btn");
     timeCard.insertBefore(timeSlotRow, addTimeButton);
 
-    // Apply default times to the new row
+    // Apply default times to the created row
     const defaultStartTime = document.getElementById("start-time").value;
     const defaultEndTime = document.getElementById("end-time").value;
 
@@ -484,13 +621,43 @@ function populateCalendar(month, year) {
 
         // Handle manual date selection by toggling highlight
         dayDiv.addEventListener("click", function () {
-            toggleDateSelection(date);
+
+            if (!validateRecurrenceDays()) {
+                return; // Prevent selection on calendar if at least one recurrence day is not selected
+            }
+
+            if (checkRange()) {
+
+                const endDate = document.getElementById("end-date").value;
+                const startDate = document.getElementById("start-date").value;
+                console.log("start date" + startDate);
+                console.log("current date" + dayDiv.getAttribute("data-date"));
+                if ((new Date(dayDiv.getAttribute("data-date")) > new Date(endDate)) || (new Date (dayDiv.getAttribute("data-date")) < new Date(startDate))) {
+                    showAlert("Date selected is out of your selected date range.");
+                }
+                else {
+                    toggleDateSelection(date);
+                }
+
+            } else {
+                showAlert("Please select the start and end dates first.");
+            }
+
         });
 
         calendarGrid.appendChild(dayDiv);
     }
 
     updateCalendar();
+}
+
+function showAlert(message) {
+    const alert = document.getElementById("alert");
+    alert.textContent = message;
+    alert.className = "alert show";
+    setTimeout(() => {
+        alert.className = alert.className.replace("show", "");
+    }, 2500);
 }
 
 function changeMonth(direction) {
@@ -631,17 +798,15 @@ function toggleDateSelection(date) {
             // Deselect the day
             dayElement.classList.remove("highlight");
             manualAdjustments.delete(day);
-            recurringDates.pop(day); 
+            recurringDates.pop(day); //check
             const timeCard = timeCardContainer.querySelector(`.time-card[data-day='${day}']`);
             if (timeCard) timeCard.remove();
-            //highlighted.pop(date);
         } else {
             // Select the day
             dayElement.classList.add("highlight");
             manualAdjustments.add(day);
             recurringDates.push(day); // For monthly a day selected on the calendar is part of the recurrence
             generateMonthlyTimeCard(day);
-            //highlighted.push(date);
         }
         updateCalendar();
 
@@ -650,9 +815,15 @@ function toggleDateSelection(date) {
             // Deselect the date
             dayElement.classList.remove("highlight");
             manualAdjustments.delete(date);
+            
+            if (frequency === "weekly" || frequency === "2weekly" || frequency === "4weekly") {
+                recurringDates.splice(recurringDates.indexOf(date), recurringDates.indexOf(date)); //also need to remove from recurrinf dates if deselcted date was a calculated recurring date
+            }
             deselectedDates.add(date); // Mark explicitly deselected
             const timeCard = timeCardContainer.querySelector(`.time-card[data-date='${date}']`);
-            if (timeCard) timeCard.remove();
+            if (timeCard) { 
+                timeCard.remove();
+            }
             console.log(`Date deselected: ${date}`);
         } else {
             // Select the date
@@ -776,3 +947,55 @@ function toggleRecurrenceDays() {
     }
 
   }
+
+function checkRange() {
+    const start = document.getElementById("start-date").value;
+    const end = document.getElementById("end-date").value;
+    
+    if (!start || !end) {
+        return false;
+    } else {
+        return true;
+    }
+
+}
+
+function validateDateInputs(inputType) {
+    const startDate = document.getElementById("start-date");
+    const endDate = document.getElementById("end-date");
+
+    if (startDate.value && endDate.value && startDate.value >= endDate.value && inputType == "end") {
+        showAlert("End date must be greater than start date.");
+        endDate.value = "";
+    }
+    else if (startDate.value && endDate.value && startDate.value >= endDate.value && inputType == "start") {
+        showAlert("Start date must be greater than end date.");
+        startDate.value = ""; 
+    }
+}
+
+function validateTimeInputs(startInput, endInput, inputType) {
+    const startTime = startInput.value;
+    const endTime = endInput.value;
+
+    if (startTime && endTime && startTime >= endTime && inputType == "start") {
+        showAlert("End time must be greater than start time.");
+        startInput.value = "";
+    }
+    else if (startTime && endTime && startTime >= endTime && inputType == "end") {
+        showAlert("End time must be greater than start time.");
+        endInput.value = "";
+    }
+
+}
+
+function validateRecurrenceDays() {
+    const frequency = document.getElementById("recurring-timeline").value;
+    const checkedDays = document.querySelectorAll("input[name='days[]']:checked");
+
+    if ((frequency === "weekly" || frequency === "2weekly" || frequency === "4weekly") && checkedDays.length === 0) {
+        showAlert("Please select at least one recurrence day before picking dates on the calendar.");
+        return false;
+    }
+    return true;
+}
