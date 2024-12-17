@@ -34,6 +34,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars($data['email'] ?? '');
     $hashedID = $data['bookingID'] ?? '';
 
+
+    require_once 'checkNotifications.php';
+
+    if (!checkNotificationsEnabled($conn, $email)) {
+        echo "Notifications are disabled for this user.";
+        exit();
+    }
+
+
     // Validate required fields
     if (empty($email) || empty($hashedID)) {
         http_response_code(400);
@@ -51,6 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $bookingID = $row['ID'];
+
     } else {
         http_response_code(400);
         error_log("Invalid hashed ID provided: $hashedID");

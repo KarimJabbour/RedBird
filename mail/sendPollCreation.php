@@ -32,6 +32,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Extract email and hashed poll ID from JSON data
     $email = htmlspecialchars($data['email'] ?? '');
+
+    require_once 'checkNotifications.php';
+
+    if (!checkNotificationsEnabled($conn, $email)) {
+        echo "Notifications are disabled for this user.";
+        exit();
+    }
+    
     $hashedID = $data['pollID'] ?? '';
 
     // Validate required fields

@@ -271,6 +271,9 @@ function bookMeeting() {
     body: JSON.stringify(requestData),
   })
     .then((response) => {
+      if (response.status === 403) {
+        throw new Error("The selected time slot is already full.");
+      }
       if (!response.ok) {
         throw new Error("Failed to book meeting.");
       }
@@ -279,8 +282,6 @@ function bookMeeting() {
     .then((data) => {
       if (data.success) {
         console.log("Booking response:", data);
-        // alert("Meeting successfully booked!");
-
         // Call the email script to send a confirmation email
         return sendEmailConfirmation(email, bookingId);
       } else {
@@ -293,7 +294,11 @@ function bookMeeting() {
       window.location.href = "http://localhost/RedBird/pages/dashboard.html";
     })
     .catch((error) => {
-      alert("Error booking meeting.");
+      if (error.message === "The selected time slot is already full.") {
+        alert(error.message);
+      } else {
+        alert("Error booking meeting.");
+      }
       console.error("Booking error:", error);
     });
 }

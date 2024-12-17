@@ -48,6 +48,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
+    require_once 'checkNotifications.php';
+
+    if (!checkNotificationsEnabled($conn, $email)) {
+        echo "Notifications are disabled for this user.";
+        exit();
+    }
+    
+
     // Find the numeric PollID using the hashed ID
     $sql = "SELECT ID FROM CreatedPolls WHERE hashedID = ?";
     $stmt = $conn->prepare($sql);

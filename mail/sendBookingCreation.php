@@ -22,6 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = htmlspecialchars($_POST['email']);
     $bookingID = intval($_POST['bookingID']);
 
+    require_once 'checkNotifications.php';
+
+    if (!checkNotificationsEnabled($conn, $email)) {
+        echo "Notifications are disabled for this user.";
+        exit();
+    }
+    
     // Fetch booking details from the database
     $sql = "SELECT * FROM CreatedBookings WHERE ID = ?";
     $stmt = $conn->prepare($sql);

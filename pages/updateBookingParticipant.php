@@ -44,6 +44,35 @@ $mcgillID = $inputData['mcgill_id'] ?? null;
 $userId = $_SESSION['user_id'] ?? null;
 
 try {
+
+// Check MaxAttendees
+$sql = "SELECT MaxAttendees FROM CreatedBookings WHERE ID = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $bookingId);
+$stmt->execute();
+$result = $stmt->get_result();
+$maxAttendees = $result->fetch_assoc()['MaxAttendees'];
+
+    if ($maxAttendees > 0) {
+        $stmt = $conn->prepare("
+            SELECT COUNT(*) AS participantCount
+            FROM BookingParticipants
+            WHERE BookingID = ? AND MeetingDates = ? AND StartTimes = ? AND EndTimes = ?
+        ");
+        $stmt->bind_param("isss", $bookingId, $meetingDates, $startTimes, $endTimes);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $participantCount = $result->fetch_assoc()['participantCount'];
+
+        if ($participantCount >= $maxAttendees) {
+            http_response_code(403);
+            echo json_encode(["error" => "Max capacity reached for this time slot."]);
+            exit();
+        }
+    }
+
+
+
     if ($userId) {
         // Case 1: Logged-in user
         $stmt = $conn->prepare("
