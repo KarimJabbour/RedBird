@@ -43,6 +43,18 @@ body {
     margin-right: 10px;
 }
 
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+    box-sizing: border-box;
+}
+
 .nav-links {
     list-style: none;
     display: flex;
@@ -72,6 +84,48 @@ body {
     width: 26px;
     height: 26px;
     border-radius: 50%;
+}
+
+/* Dropdown Container */
+.user-dropdown {
+    position: relative;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background-color: #EB0920;
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 160px;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-menu li {
+    list-style: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dropdown-menu li:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-menu li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Header */
@@ -397,13 +451,12 @@ body {
 
 .time-slot {
    all: unset !important;
-   font-size: 12px;
    font-family: inherit;
    color: inherit;
    cursor: pointer;
    padding: 0;
-   width: auto;
    line-height: 0.5;
+   width: auto;
 }
 
 .time-slot::placeholder {
@@ -585,12 +638,12 @@ body {
     font-size: 16px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   }
-  
+
   .alert.show {
     visibility: visible;
     animation: fadeInOut 2.5s;
   }
-  
+
   @keyframes fadeInOut {
     0%,
     100% {
@@ -601,4 +654,48 @@ body {
       opacity: 1;
     }
   }
-  
+
+@media (max-width: 1105px) {
+
+  .time-slot-row {
+      line-height: 1.2;
+  }
+
+  .time-slot-label {
+      line-height: inherit;
+  }
+
+  .time-slot-label b {
+      line-height: inherit;
+  }
+
+  .time-slot {
+     line-height: inherit;
+  }
+
+}
+
+@media (max-width: 950px) {
+
+  .split-content {
+      grid-template-columns: 1.6fr 1.4fr;
+  }
+
+}
+
+@media (max-width: 850px) {
+
+    .time-slot-label {
+        font-size: 10px !important;
+    }
+
+    .add-time-btn {
+        padding: 3px 8px;
+        font-size: 0.8rem;
+    }
+
+    .time-card h3 {
+        font-size: 1rem !important;
+    }
+
+}
