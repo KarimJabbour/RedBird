@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,44 +14,27 @@
   </head>
 
   <body>
+
     <div class="container">
+
       <!-- Navigation Bar -->
       <nav class="navbar">
-        <div class="logo">
-          <img
-            src="Images/logo.png"
-            alt="RedBird Logo"
-            class="logo-img"
-          />RedBird Roster
-        </div>
-        <ul class="nav-links">
-          <li>
-            <a href="dashboard.html" class="active">
-              <i class="fas fa-tachometer-alt"></i> &nbsp;Dashboard
-            </a>
-          </li>
-          <li>
-            <a
-              href="create_booking.html"
-              class="<?= basename($_SERVER['PHP_SELF']) == 'create_booking.php' ? 'active' : '' ?>"
-            >
-              <i class="fas fa-calendar-plus"></i> &nbsp; Create Booking
-            </a>
-          </li>
-          <li>
-            <a
-              href="user_settings.php"
-              class="<?= basename($_SERVER['PHP_SELF']) == 'user_settings.php' ? 'active' : '' ?>"
-            >
-              <i class="fas fa-user-cog"></i> &nbsp; User Settings
-            </a>
-          </li>
-          <li>
-            <a href="logout.php" class="logout-btn">
-              <i class="fas fa-sign-out-alt"></i> &nbsp;Logout
-            </a>
-          </li>
-        </ul>
+          <div class="logo">
+              <a href="dashboard.html"><img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster</a>
+          </div>
+          <ul class="nav-links">
+              <li><a href="#" class="active">Dashboard</a></li>
+              <li><a href="create_booking.html">Create Booking</a></li>
+              <li class="user-dropdown">
+                  <a href="#" id="user-icon-link">
+                      <img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon" />
+                  </a>
+                  <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="user_settings.php">User Settings</a></li>
+                      <li><a href="logout.php">Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
       </nav>
 
       <div class="copy-alert" id="copy-alert"></div>
@@ -77,6 +61,26 @@
             <button class="delete-btn" onclick="deleteBooking()">
               Delete Booking
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attending Booking Details Popup -->
+      <div class="modal" id="attending-booking-details-popup">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Test</h2>
+            <button
+              class="close-btn"
+              onclick="closePopup('attending-booking-details-popup')"
+            >
+              ✕
+            </button>
+          </div>
+          <div class="modal-body other-bookings">
+            <!-- Filled dynamically -->
+          </div>
+          <div class="modal-footer">
           </div>
         </div>
       </div>
@@ -178,9 +182,9 @@
         <!-- Created Bookings -->
         <section class="column bookings">
           <div class="section-title">
-            <h2>Created Bookings</h2>
+            <h2>Hosting Bookings</h2>
             <img
-              src="Images/icons/FE612C_plus.png"
+              src="Images/icons/FF651D_plus.png"
               alt="Create Booking"
               class="plus"
             />
@@ -190,10 +194,10 @@
           </div>
         </section>
 
-        <!-- Reserved 3rdparty Bookings -->
+        <!-- Attending Bookings -->
         <section class="column other-bookings">
           <div class="section-title">
-            <h2>Reserved Bookings</h2>
+            <h2>Attending Bookings</h2>
           </div>
           <div class="booking-container">
             <!-- Filled dynamically -->
@@ -204,51 +208,35 @@
           <div class="section-title">
             <h2>Created Polls</h2>
             <img
-              src="Images/icons/FF872C_plus.png"
+              src="Images/icons/FFA12C_plus.png"
               alt="Create Poll"
               class="plus"
             />
           </div>
           <div class="booking-container"></div>
         </section>
+
         <section class="column bookings-history">
           <div class="section-title">
-            <h2>History</h2>
+            <h2>Bookings & Poll History</h2>
             <img
-              src="Images/icons/FFA12C_arrow.png"
+              src="Images/icons/FDAE4F_arrow.png"
               alt="Expand"
               class="arrow"
             />
           </div>
-          <div class="booking-container"></div>
+          <div class="booking-container history expanded"></div>
         </section>
+
       </main>
+
       <div class="export-pdf-container">
         <a id="export-pdf-btn" class="export-pdf-btn" href="#" target="_blank">
           <i class="fas fa-file-pdf"></i> Export PDF
         </a>
       </div>
     </div>
+
   </body>
+
 </html>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const createBookingPlus = document.querySelector(".bookings .plus");
-    const createPollPlus = document.querySelector(".polls .plus");
-
-    createBookingPlus.addEventListener("click", () => {
-      window.location.href =
-        "http://localhost/RedBird/pages/create_booking.html";
-    });
-
-    createPollPlus.addEventListener("click", () => {
-      window.location.href = "http://localhost/RedBird/pages/create_poll.html";
-    });
-  });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const exportPdfBtn = document.getElementById("export-pdf-btn");
-    exportPdfBtn.href = `http://localhost/RedBird/pdf/userActivity.php`;
-  });
-</script>
