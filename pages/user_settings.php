@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,48 +58,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     />
     <link rel="stylesheet" href="../assets/css/user_settings.css">
 </head>
+
 <body>
+
     <div class="container">
-        <nav class="navbar">
-            <div class="logo">
-            <img
-                src="Images/logo.png"
-                alt="RedBird Logo"
-                class="logo-img"
-            />RedBird Roster
-            </div>
-            <ul class="nav-links">
-                <li>
-                    <a href="dashboard.html" class="<?= basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : '' ?>">
-                        <i class="fas fa-tachometer-alt"></i> &nbsp;Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="create_booking.html" class="<?= basename($_SERVER['PHP_SELF']) == 'create_booking.php' ? 'active' : '' ?>">
-                        <i class="fas fa-calendar-plus"></i> &nbsp; Create Booking
-                    </a>
-                </li>
-                <li>
-                    <a href="user_settings.php" class="<?= basename($_SERVER['PHP_SELF']) == 'user_settings.php' ? 'active' : '' ?>">
-                        <i class="fas fa-user-cog"></i> &nbsp; User Settings
-                    </a>
-                </li>
-                <li>
-                    <a href="logout.php" class="logout-btn">
-                        <i class="fas fa-sign-out-alt"></i> &nbsp;Logout
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <h1 class="page-title">User Settings</h1>
+
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+          <div class="logo">
+              <a href="dashboard.html"><img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster</a>
+          </div>
+          <ul class="nav-links">
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="create_booking.html">Create Booking</a></li>
+              <li class="user-dropdown">
+                  <a href="#" id="user-icon-link">
+                      <img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon" />
+                  </a>
+                  <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="#" class="active">User Settings</a></li>
+                      <li><a href="logout.php">Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+      </nav>
+
+      <div class="settings-box">
+        <h2>User Settings</h2>
 
         <?php if ($error): ?>
-            <p style="color: red;"><?= htmlspecialchars($error) ?></p>
+            <p class="error-message"><?= htmlspecialchars($error) ?></p>
         <?php elseif ($success): ?>
-            <p style="color: green;"><?= htmlspecialchars($success) ?></p>
+            <p class="success-message"><?= htmlspecialchars($success) ?></p>
         <?php endif; ?>
 
-        <form action="user_settings.php" method="POST" class="form-container">
+        <form action="user_settings.php" method="POST">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" value="<?= htmlspecialchars($email) ?>" readonly>
@@ -120,19 +114,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="text" id="default_location" name="default_location" value="<?= htmlspecialchars($default_location) ?>">
             </div>
             <div class="form-group">
-                <label>
-                    <input type="checkbox" id="notifications_enabled" name="notifications_enabled" <?= $notifications_enabled ? 'checked' : '' ?>>
-                    Enable Notifications
-                </label>
-            </div>
-            <div class="form-group">
                 <label for="mcgillID">McGill ID:</label>
                 <input type="text" id="mcgillID" name="mcgillID" value="<?= htmlspecialchars($mcgillID) ?>" required>
             </div>
             <div class="form-group">
-                <button type="submit" class="btn-submit">Save Changes</button>
+                <label class="emailcheckbox">
+                    <input type="checkbox" id="notifications_enabled" name="notifications_enabled" value="1" checked>
+                    Enable Email Notifications
+                </label>
             </div>
+            <button type="submit">Save Changes</button>
         </form>
     </div>
+
+    </div>
+
+    <script src="../assets/js/userSettings.js"></script>
+
 </body>
+
 </html>
