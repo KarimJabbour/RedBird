@@ -10,6 +10,24 @@ let recurringDayTimes = {}; // Stores start/end times for recurring days
 
 document.addEventListener("DOMContentLoaded", function () {
     populateCalendar(currentMonth, currentYear);
+    const userIconLink = document.getElementById("user-icon-link");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    userIconLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (dropdownMenu.style.display === "block") {
+            dropdownMenu.style.display = "none";
+        } else {
+            dropdownMenu.style.display = "block";
+        }
+
+    });
+
+    window.addEventListener("click", (e) => {
+        if (!userIconLink.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
 
     const defaultStartTimeInput = document.getElementById("start-time");
     const defaultEndTimeInput = document.getElementById("end-time");
