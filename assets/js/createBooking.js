@@ -15,25 +15,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const defaultEndTimeInput = document.getElementById("end-time");
 
     defaultStartTimeInput.addEventListener("input", () => {
-        console.log("default start changed");
         validateTimeInputs(defaultStartTimeInput, defaultEndTimeInput, "start");
         applyDefaultTimesToTimeCards();
     });
 
     defaultEndTimeInput.addEventListener("input", () => {
-        console.log("default end changed");
         validateTimeInputs(defaultStartTimeInput, defaultEndTimeInput, "end");
         applyDefaultTimesToTimeCards();
     });
 
     document.getElementById("recurring-timeline").addEventListener("change", () => {
-
         const recurrence = document.getElementById("recurring-timeline").value;
 
         clearAllHighlights();
-
-        console.log("Frequency changed");
         updateCalendar();
+
         if (recurrence == "daily") {
             generateDailyTimeCards();
         }
@@ -64,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
         
-        console.log("Start date changed");
         updateCalendar();
     });
     
@@ -83,14 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
 
-        console.log("End date changed");
         updateCalendar();
     });
     
     const daySelector = document.querySelectorAll("input[name='days[]']");
     daySelector.forEach(checkbox => {
         checkbox.addEventListener("change", () => {
-
             if (checkRange()) {
 
                 console.log("Day selected/changed:", checkbox.value, checkbox.checked);
@@ -108,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("Cleared deselectedDates because recurrence day was unchecked.");
                 }
 
-                // updateRecurringDayTimes(checkbox.value, checkbox.checked);
                 updateTimeCards();
                 updateCalendar();
 
@@ -172,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Process recurring dates with their times
             if (recurrenceDays.length > 0 && startDate && endDate) {
-                //const computedRecurringDates = calculateRecurringDates(startDate, endDate, document.getElementById("recurring-timeline").value, recurrenceDays);
                 console.log("Updated Recurring Day Times:", recurringDayTimes);
 
                 recurringDates.forEach(date => {
@@ -513,8 +504,6 @@ function generateMonthlyTimeCard(dayOfMonth) {
     applyDefaultTimesToTimeCard(timeCard);
 }
 
-
-
 function addTimeSlot(timeCard, day) {
     // Create a new row for additional start and end time slots
     const timeSlotRow = document.createElement("div");
@@ -621,13 +610,11 @@ function populateCalendar(month, year) {
 
         // Handle manual date selection by toggling highlight
         dayDiv.addEventListener("click", function () {
-
             if (!validateRecurrenceDays()) {
                 return; // Prevent selection on calendar if at least one recurrence day is not selected
             }
 
             if (checkRange()) {
-
                 const endDate = document.getElementById("end-date").value;
                 const startDate = document.getElementById("start-date").value;
                 console.log("start date" + startDate);
@@ -859,17 +846,6 @@ function updateHighlightedDates() {
     const calendarDays = document.querySelectorAll(".day[data-date]");
     const frequency = document.getElementById("recurring-timeline").value;
 
-    //let allHighlightedDates;
-
-    // if (frequency === "monthly") {
-    //     allHighlightedDates = new Set(recurringDates);
-    // } else {
-    //     allHighlightedDates = new Set([
-    //         ...recurringDates.filter(date => !deselectedDates.has(date)), // Exclude deselected recurring dates
-    //         ...manualAdjustments, // Include manually added dates
-    //     ]);
-    // }
-
     let allHighlightedDates = new Set([...recurringDates]);
     manualAdjustments.forEach(date => allHighlightedDates.add(date));
     deselectedDates.forEach(date => allHighlightedDates.delete(date));
@@ -912,10 +888,12 @@ function getHighlightedDates() {
             manualAdjustments.delete(item);
         }
     });
+
     allHighlightedDates = new Set([
         ...recurringDates.filter(date => !deselectedDates.has(date)),
         ...manualAdjustments,
     ]);
+
     return Array.from(allHighlightedDates);
 }
 
