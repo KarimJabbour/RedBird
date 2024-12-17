@@ -433,3 +433,24 @@
   </body>
 
 </html>
+<script>
+  // Fetch default location from db
+  async function fetchDefaultLocation() {
+    try {
+      const response = await fetch("../includes/user_data.php");
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const data = await response.json();
+      if (data.default_location) {
+        document.getElementById("location").value = data.default_location;
+      } else {
+        console.error("Default location not found");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+    }
+  }
+  document.addEventListener("DOMContentLoaded", fetchDefaultLocation);
+</script>
