@@ -58,6 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fetch(`http://localhost/RedBird/pages/displayDashboard.php`)
     .then((response) => {
+      if (response.status === 401) { // Unauthorized user
+        window.location.replace("http://localhost/RedBird/pages/login.php");
+        return;
+      }
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
