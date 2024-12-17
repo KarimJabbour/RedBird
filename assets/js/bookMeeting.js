@@ -352,7 +352,7 @@ function populateBookingDetails(data) {
   titleElement.querySelector("h2").textContent =
     data.BookingName || "Untitled Booking";
 
-  const detailsElement = document.getElementById("booking-details");
+  const detailsElement = document.getElementById("booking-other-details");
   detailsElement.querySelector("p").textContent =
     data.Details || "No additional details provided.";
 
