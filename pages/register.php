@@ -116,23 +116,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </script>
 </head>
+
 <body>
 
     <div class="container">
 
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <div class="logo">
-                <a href="landing.html">
-                    <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
-                </a>
-            </div>
-        </nav>
+      <!-- Navigation Bar -->
+      <nav class="navbar">
+          <div class="logo">
+                  <a href="landing.html"><img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster</a>
+          </div>
+      </nav>
 
         <!-- Register Box -->
         <div class="main-content">
             <div class="form-container">
-                <img src="Images/logo.png" alt="Logo" class="dialog-logo">
+                <img src="Images/logo.png" alt="Logo" class="dialog-logo" style="width: 80px; margin-bottom: 20px;">
                 <h1>Register</h1>
 
                 <?php if ($error): ?>
