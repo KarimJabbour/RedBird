@@ -1,4 +1,4 @@
-// Global variables 
+// Global variables
 let currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
@@ -8,6 +8,25 @@ let sidebarData = {};
 document.addEventListener("DOMContentLoaded", function () {
     populateCalendar(currentMonth, currentYear);
 
+    const userIconLink = document.getElementById("user-icon-link");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+
+    userIconLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (dropdownMenu.style.display === "block") {
+            dropdownMenu.style.display = "none";
+        } else {
+            dropdownMenu.style.display = "block";
+        }
+
+    });
+
+    window.addEventListener("click", (e) => {
+        if (!userIconLink.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.style.display = "none";
+        }
+    });
+
     document.getElementById("poll-form").addEventListener("submit", function (event) {
         //event.preventDefault();
 
@@ -16,16 +35,16 @@ document.addEventListener("DOMContentLoaded", function () {
             startTime: sidebarData[date]?.startTime || "",
             endTime: sidebarData[date]?.endTime || ""
         }));
-    
+
         // Populate the hidden inputs
         const datesInput = document.getElementById("dates-hidden");
         const startTimesInput = document.getElementById("start-times-hidden");
         const endTimesInput = document.getElementById("end-times-hidden");
-    
+
         datesInput.value = timeCardData.map(entry => entry.date).join(",");
         startTimesInput.value = timeCardData.map(entry => entry.startTime).join(",");
         endTimesInput.value = timeCardData.map(entry => entry.endTime).join(",");
-    
+
 
         // Log for debugging
         // console.log("Populated Hidden Inputs:");
@@ -148,8 +167,8 @@ function updateSidebar() {
                     type="time"
                     class="time-slot"
                     id="start-time-${date}"
-                    value="${sidebarData[date].startTime}" 
-                    data-date="${date}" 
+                    value="${sidebarData[date].startTime}"
+                    data-date="${date}"
                 >
             </label>
             <label for="end-time-${date}" class="time-slot-label">
@@ -158,8 +177,8 @@ function updateSidebar() {
                     type="time"
                     class="time-slot"
                     id="end-time-${date}"
-                    value="${sidebarData[date].endTime}" 
-                    data-date="${date}" 
+                    value="${sidebarData[date].endTime}"
+                    data-date="${date}"
                 >
             </label>
         `;
@@ -202,7 +221,7 @@ function clearAllHighlights() {
     calendarDays.forEach(day => {
         day.classList.remove("highlight");
     });
-  
+
     selectedDates.clear();
     sidebarData = {};
     updateSidebar();
