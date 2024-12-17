@@ -360,3 +360,12 @@ function populateBookingDetails(data) {
   locationElement.querySelector("p").textContent =
     data.Location || "No location specified.";
 }
+
+function redirectToAlternate() {
+  if (!global_bookingID) {
+    return;
+  }
+
+  const redirectURL = `alternate_request.html?id=${encodeURIComponent(global_bookingID)}`;
+  window.location.href = redirectURL;
+}

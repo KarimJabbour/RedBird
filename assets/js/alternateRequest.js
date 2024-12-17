@@ -6,10 +6,13 @@ let selectedDates = new Set(); // Store selected dates
 let sidebarData = {};
 
 document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingID = urlParams.get("id");
+
     populateCalendar(currentMonth, currentYear);
+    console.log("bookingID" + bookingID);
 
     document.getElementById("alternate-form").addEventListener("submit", function (event) {
-        
         const timeCardData = Object.keys(sidebarData).map(date => ({
             date: date,
             startTime: sidebarData[date]?.startTime || "",
@@ -20,10 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const datesInput = document.getElementById("dates-hidden");
         const startTimesInput = document.getElementById("start-times-hidden");
         const endTimesInput = document.getElementById("end-times-hidden");
+        const bookingIDHidden = document.getElementById("booking-id");
     
         datesInput.value = timeCardData.map(entry => entry.date).join(",");
         startTimesInput.value = timeCardData.map(entry => entry.startTime).join(",");
         endTimesInput.value = timeCardData.map(entry => entry.endTime).join(",");
+        bookingIDHidden.value = bookingID;
     });
 });
 

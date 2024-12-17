@@ -89,7 +89,7 @@ if ($resultPastPolls->num_rows > 0) {
 $sqlAlternateRequests = "
     SELECT ar.*, cb.BookingName 
     FROM AlternateRequests ar
-    JOIN CreatedBookings cb ON ar.LinkedBookingID = cb.ID
+    JOIN CreatedBookings cb ON ar.LinkedBookingID = cb.hashedID
     WHERE cb.UserID = ? AND ar.Status='pending'";
 
 $stmtAlternateRequests = $conn->prepare($sqlAlternateRequests);

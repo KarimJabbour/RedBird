@@ -8,7 +8,7 @@
 //     echo "<p>You are not logged in. <a href='login.php?return_url={$returnUrl}'>Click here to log in</a> or continue as a guest.</p>";
 // }
 
-$userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : -1; //public users should be allowed to book meetings/request alternate times
+//$userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : -1; //public users should be allowed to book meetings/request alternate times
 
 $servername = "localhost";
 $username = "root";
@@ -35,15 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $endTimes = htmlspecialchars($_POST['endTimes']);
     $endTimes = '"' . $endTimes . '"';
 
-    // echo $dates;
-    // echo $startTimes;
-    // echo $endTimes;
-
-    $linkedBookingID = 70; //replace with booking id of booking associated with alternate request
-    // $dateTimeOptions = '" "';
+    $linkedBookingID = htmlspecialchars($_POST['booking-id']);
 
     $sql = "INSERT INTO AlternateRequests (
-                UserID,
                 FullName,
                 Email,
                 Details,
@@ -52,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 StartTimes,
                 EndTimes
             ) VALUES (
-                '$userId',
                 '$name',
                 '$email',
                 '$details',
