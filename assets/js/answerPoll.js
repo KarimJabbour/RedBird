@@ -182,83 +182,60 @@ function sendConfirmationEmail(email, pollID) {
 
 // Populate time options dynamically
 function populateTimeOptions(poll) {
-  const timeline = document.querySelector(".timeline");
-  timeline.innerHTML = ""; // Clear existing content
+  const currentDate = new Date(Date.now())
 
-  const dateOptions = poll.DateOptions;
-  const startTimes = poll.StartTimes;
-  const endTimes = poll.EndTimes;
+  const pollCloseDateTime = poll.PollCloseDateTime;
 
-  dateOptions.forEach((date, index) => {
-    const dateGroup = document.createElement("div");
-    dateGroup.classList.add("date-group");
+  const [datePart, timePart] = pollCloseDateTime.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
 
-    const dateBubble = document.createElement("div");
-    dateBubble.classList.add("date-bubble");
-    dateBubble.innerHTML = `<h4>${new Date(date).toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    })}</h4>`;
-    dateGroup.appendChild(dateBubble);
+  const pollCloseUTC = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  
+  if (pollCloseUTC <= currentDate) {
+    document.getElementById("header").innerText = "This poll is no longer accepting votes.";
+    document.getElementById("sub-header").style.display = "none";
+    document.getElementById("main-content").style.display = 'none';
+  } else {
+    const timeline = document.querySelector(".timeline");
+    timeline.innerHTML = ""; // Clear existing content
 
-    const timeOptions = document.createElement("div");
-    timeOptions.classList.add("time-options");
+    const dateOptions = poll.DateOptions;
+    const startTimes = poll.StartTimes;
+    const endTimes = poll.EndTimes;
 
-    const timeCircle = document.createElement("div");
-    timeCircle.classList.add("time-circle");
-    timeCircle.dataset.date = date;
-    timeCircle.dataset.start = startTimes[index];
-    timeCircle.dataset.end = endTimes[index];
-    timeCircle.innerHTML = `<span>${startTimes[index]}<br> - <br>${endTimes[index]}</span>`;
-    timeOptions.appendChild(timeCircle);
+    dateOptions.forEach((date, index) => {
+      const dateGroup = document.createElement("div");
+      dateGroup.classList.add("date-group");
 
-    timeCircle.addEventListener("click", () => {
-      timeCircle.classList.toggle("selected");
+      const dateBubble = document.createElement("div");
+      dateBubble.classList.add("date-bubble");
+      dateBubble.innerHTML = `<h4>${new Date(date).toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        timeZone: "UTC"
+      })}</h4>`;
+      dateGroup.appendChild(dateBubble);
+
+      const timeOptions = document.createElement("div");
+      timeOptions.classList.add("time-options");
+
+      const timeCircle = document.createElement("div");
+      timeCircle.classList.add("time-circle");
+      timeCircle.dataset.date = date;
+      timeCircle.dataset.start = startTimes[index];
+      timeCircle.dataset.end = endTimes[index];
+      timeCircle.innerHTML = `<span>${startTimes[index]}<br> - <br>${endTimes[index]}</span>`;
+      timeOptions.appendChild(timeCircle);
+
+      timeCircle.addEventListener("click", () => {
+        timeCircle.classList.toggle("selected");
+      });
+
+      dateGroup.appendChild(timeOptions);
+      timeline.appendChild(dateGroup);
     });
-
-    dateGroup.appendChild(timeOptions);
-    timeline.appendChild(dateGroup);
-  });
+  }
+  
 }
-
-// function populateTimeOptions(poll) {
-//   const timeline = document.querySelector(".timeline");
-//   timeline.innerHTML = ""; // Clear existing content
-
-//   const dateOptions = poll.DateOptions;
-//   const startTimes = poll.StartTimes;
-//   const endTimes = poll.EndTimes;
-
-//   dateOptions.forEach((date, index) => {
-//     const dateGroup = document.createElement("div");
-//     dateGroup.classList.add("date-group");
-
-//     const dateBubble = document.createElement("div");
-//     dateBubble.classList.add("date-bubble");
-//     dateBubble.innerHTML = `<h4>${new Date(date).toLocaleDateString("en-US", {
-//       weekday: "long",
-//       month: "long",
-//       day: "numeric",
-//     })}</h4>`;
-//     dateGroup.appendChild(dateBubble);
-
-//     const timeOptions = document.createElement("div");
-//     timeOptions.classList.add("time-options");
-
-//     const timeCircle = document.createElement("div");
-//     timeCircle.classList.add("time-circle");
-//     timeCircle.dataset.date = date;
-//     timeCircle.dataset.start = startTimes[index];
-//     timeCircle.dataset.end = endTimes[index];
-//     timeCircle.innerHTML = `<span>${startTimes[index]}<br> - <br>${endTimes[index]}</span>`;
-//     timeOptions.appendChild(timeCircle);
-
-//     timeCircle.addEventListener("click", () => {
-//       timeCircle.classList.toggle("selected");
-//     });
-
-//     dateGroup.appendChild(timeOptions);
-//     timeline.appendChild(dateGroup);
-//   });
-// }
