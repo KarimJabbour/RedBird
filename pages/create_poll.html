@@ -8,29 +8,29 @@
   </head>
 
   <body>
+
     <script src="../assets/js/createPoll.js"></script>
+
     <div class="container">
+
       <!-- Navigation Bar -->
       <nav class="navbar">
-        <div class="logo">
-          <img
-            src="Images/logo.png"
-            alt="RedBird Logo"
-            class="logo-img"
-          />RedBird Roster
-        </div>
-        <ul class="nav-links">
-          <li><a href="#" class="active">Dashboard</a></li>
-          <li><a href="create_booking.html">Create Booking</a></li>
-          <li>
-            <a href="#"
-              ><img
-                src="Images/icons/user-icon.png"
-                alt="User Icon"
-                class="user-icon"
-            /></a>
-          </li>
-        </ul>
+          <div class="logo">
+              <a href="dashboard.html"><img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster</a>
+          </div>
+          <ul class="nav-links">
+              <li><a href="dashboard.html">Dashboard</a></li>
+              <li><a href="create_booking.html">Create Booking</a></li>
+              <li class="user-dropdown">
+                  <a href="#" id="user-icon-link">
+                      <img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon" />
+                  </a>
+                  <ul class="dropdown-menu" id="dropdown-menu">
+                      <li><a href="user_settings.php">User Settings</a></li>
+                      <li><a href="logout.php">Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
       </nav>
 
       <!-- Header -->
