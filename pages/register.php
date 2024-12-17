@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password'];
     $full_name = trim($_POST['full_name']);
     $role = $_POST['role'];
+    $mcgill_id = trim($_POST['mcgill_id']);
     $default_location = trim($_POST['default_location']);
     $notifications_enabled = isset($_POST['notifications_enabled']) ? 1 : 0;
 
@@ -46,11 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Register new user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("
-                INSERT INTO Users (email, password, full_name, role, default_location, notifications_enabled)
-                VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO Users (email, password, full_name, role, default_location, notifications_enabled, mcgillId)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             ");
-            $stmt->bind_param('sssssi', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled);
-
+            $stmt->bind_param('sssssis', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled, $mcgill_id);
             if ($stmt->execute()) {
                 $_SESSION['user_id'] = $conn->insert_id;
                 header('Location: dashboard.html');
@@ -177,6 +177,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="TA">TA</option>
                                 <option value="Student">Student</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mcgill_id">McGill ID</label>
+                            <input type="text" id="mcgill_id" name="mcgill_id" required>
                         </div>
                         <div class="form-group">
                             <label for="default_location">Default Meeting Location (Optional):</label>
