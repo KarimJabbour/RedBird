@@ -1,5 +1,47 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const userId = 1; // Replace with the actual logged-in user's ID
+
+  const historySection = document.querySelector(".bookings-history .booking-container");
+  const toggleArrow = document.querySelector(".bookings-history .arrow");
+
+  toggleArrow.addEventListener("click", () => {
+    historySection.classList.toggle("expanded");
+    toggleArrow.classList.toggle("rotated");
+  });
+
+  const createBookingPlus = document.querySelector(".bookings .plus");
+  const createPollPlus = document.querySelector(".polls .plus");
+
+  createBookingPlus.addEventListener("click", () => {
+    window.location.href =
+      "http://localhost/RedBird/pages/create_booking.html";
+  });
+
+  createPollPlus.addEventListener("click", () => {
+    window.location.href = "http://localhost/RedBird/pages/create_poll.html";
+  });
+
+  const userIconLink = document.getElementById("user-icon-link");
+  const dropdownMenu = document.getElementById("dropdown-menu");
+
+  userIconLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (dropdownMenu.style.display === "block") {
+          dropdownMenu.style.display = "none";
+      } else {
+          dropdownMenu.style.display = "block";
+      }
+
+  });
+
+  window.addEventListener("click", (e) => {
+      if (!userIconLink.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.style.display = "none";
+      }
+  });
+
+  const exportPdfBtn = document.getElementById("export-pdf-btn");
+  exportPdfBtn.href = `http://localhost/RedBird/pdf/userActivity.php`;
+
   const bookingContainer = document.querySelector(
     ".bookings .booking-container"
   );
@@ -111,15 +153,21 @@ function displayPolls(polls, container) {
       const pollRow = document.createElement("div");
       pollRow.className = "booking-row created";
       pollRow.onclick = () => showPollPopup(poll);
-      pollRow.innerHTML = `
-        <div class="column-title">${poll.PollName}</div>
-        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
-          poll.DateOptions
-        )}</div>
-        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
-          getFirst(poll.StartTimes)
-        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
-      `;
+      const index = getFirst(poll);
+      if (index != -1) {
+          pollRow.innerHTML = `
+            <div class="column-title">${poll.PollName}</div>
+            <div class="column-date"><b>Preferred Date:</b> ${formatDate(poll.DateOptions.trim().replace(/^"|"$/g, "").split(',')[index])}</div>
+            <div class="column-time"><b>Preferred Time:</b> ${formatTime(
+              poll.StartTimes.trim().replace(/^"|"$/g, "").split(',')[index]
+            )} - ${formatTime(poll.EndTimes.trim().replace(/^"|"$/g, "").split(',')[index])}</div>
+          `;
+      } else {
+        pollRow.innerHTML = `
+          <div class="column-title">${poll.PollName}</div>
+          <div class="column-date">No responses yet.</div>
+        `;
+      }
       container.appendChild(pollRow);
     });
   } else {
@@ -148,15 +196,21 @@ function displayPastBookingsAndPolls(pastBookings, pastPolls, container) {
       const pollRow = document.createElement("div");
       pollRow.className = "booking-row past";
       pollRow.onclick = () => showPollPopup(poll, true);
-      pollRow.innerHTML = `
-        <div class="column-title">${poll.PollName}</div>
-        <div class="column-date"><b>Preferred Date:</b> ${getFirst(
-          poll.DateOptions
-        )}</div>
-        <div class="column-time"><b>Preferred Time:</b> ${formatTime(
-          getFirst(poll.StartTimes)
-        )} - ${formatTime(getFirst(poll.EndTimes))}</div>
-      `;
+      const index = getFirst(poll);
+      if (index != -1) {
+          pollRow.innerHTML = `
+            <div class="column-title">${poll.PollName}</div>
+            <div class="column-date"><b>Preferred Date:</b> ${formatDate(poll.DateOptions.trim().replace(/^"|"$/g, "").split(',')[index])}</div>
+            <div class="column-time"><b>Preferred Time:</b> ${formatTime(
+              poll.StartTimes.trim().replace(/^"|"$/g, "").split(',')[index]
+            )} - ${formatTime(poll.EndTimes.trim().replace(/^"|"$/g, "").split(',')[index])}</div>
+          `;
+      } else {
+        pollRow.innerHTML = `
+          <div class="column-title">${poll.PollName}</div>
+          <div class="column-date">No responses yet.</div>
+        `;
+      }
       container.appendChild(pollRow);
     });
   } else {
@@ -171,31 +225,17 @@ function displayReservedBookings(reservedBookings, container) {
       const startTimes = JSON.parse(booking.StartTimes || "[]");
       const endTimes = JSON.parse(booking.EndTimes || "[]");
 
+      let linkedBooking; //For Khyati to fix
+
       const bookingRow = document.createElement("div");
       bookingRow.className = "booking-row reserved";
+      bookingRow.onclick = () => showAttendingPopup(booking, linkedBooking);
       bookingRow.innerHTML = `
-        <div class="column-title">${
-          booking.BookingName || "Unnamed Booking"
-        }</div>
-        <div class="meeting-dates">
-          ${
-            meetingDates.length > 0
-              ? meetingDates
-                  .map(
-                    (date, index) => `
-                    <div class="meeting-item">
-                      <b>Date:</b> <span>${date}</span>
-                      <br/>
-                      <b>Time:</b> <span>${startTimes[index] || "TBD"} - ${
-                      endTimes[index] || "TBD"
-                    }</span>
-                    </div>
-                  `
-                  )
-                  .join("")
-              : '<div class="empty">No meetings scheduled</div>'
-          }
-        </div>
+      <div class="column-title">${booking.BookingName}</div>
+      <div class="column-date"><b>Date:</b> ${formatDate(meetingDates[0])}</div>
+      <div class="column-time"><b>Time:</b> ${formatTime(
+        startTimes[0]
+      )} - ${formatTime(endTimes[0])}</div>
       `;
       container.appendChild(bookingRow);
     });
@@ -228,6 +268,28 @@ function formatTime(timeStr) {
   const period = hour >= 12 ? "PM" : "AM";
   const formattedHour = hour % 12 || 12; // Convert 0 to 12 for midnight
   return `${formattedHour}:${minutes} ${period}`;
+}
+
+function formatDateTime(dateTimeStr) {
+  console.log(dateTimeStr);
+  if (!dateTimeStr) {
+    return null;
+  }
+
+  const date = new Date(dateTimeStr);
+  console.log(date);
+  const options = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true,
+};
+
+const formattedDate = new Intl.DateTimeFormat("en-US", options).format(date);
+return formattedDate;
+console.log(formattedDate);
 }
 
 function getEarliestUpcomingDateWithTimes(dates, startTimes, endTimes) {
@@ -268,13 +330,24 @@ function formatFrequency(frequency) {
   );
 }
 
-function getFirst(options) {
-  if (!options) {
-    return "None";
+function getFirst(poll) {
+
+  const votes = poll.VoteCounts.trim().replace(/^"|"$/g, "").split(",");
+  var max = 0;
+  var index = 0;
+  votes.forEach((vote, i) => {
+      if (max < vote) {
+          max = vote;
+          index = i;
+      }
+  });
+
+  if (max == 0) {
+      index = -1;
   }
-  const optionList = options.split(",");
-  const first = optionList[0].trim().replace(/^"|"$/g, "");
-  return first || "None";
+
+  return index;
+
 }
 
 function closePopup(popupID) {
@@ -332,8 +405,8 @@ function showAlternatePopup(request) {
       return `
             <li>
                 <div class="time-item"
-                    data-date="${formattedDateObject}" 
-                    data-start="${startTimes[index]}" 
+                    data-date="${formattedDateObject}"
+                    data-start="${startTimes[index]}"
                     data-end="${endTimes[index]}">
                     <span>${formatDate(date)}</span>
                     <span>${formatTime(startTimes[index])} - ${formatTime(
@@ -389,15 +462,10 @@ function showBookingPopup(booking, inHistory = false) {
     param === -1 || param === "-1" ? "" : param;
 
   bookingPopup.querySelector(".modal-body").innerHTML = `
-        <p><b>Details:</b> ${formatParameter(booking.Details) || "None"}</p>
+    <p><b>Details:</b> ${formatParameter(booking.Details) || "None"}</p>
     <p><b>Location:</b> ${formatParameter(booking.Location) || "Undecided"}</p>
     <p><b>Max Participants:</b> ${
       formatParameter(booking.MaxAttendees) || "N/A"
-    }</p>
-    <p><b>Time Slot:</b> ${
-      formatParameter(booking.TimeSlotLength)
-        ? `${formatParameter(booking.TimeSlotLength)} minutes`
-        : "N/A"
     }</p>
         <div class="copy-container">
             <b>Zoom Link:</b>
@@ -420,7 +488,7 @@ function showBookingPopup(booking, inHistory = false) {
                     <button class="copy-btn" onclick="copyToClipboard('meeting-url')">Copy</button>`
                 : "N/A"
             }
-            
+
         </div>
         <div class="meeting-times">
             <h3>Booking Schedule</h3>
@@ -505,6 +573,23 @@ function showBookingPopup(booking, inHistory = false) {
   }
 }
 
+function showAttendingPopup(booking, linkedBooking) {
+  const attendingPopup = document.getElementById("attending-booking-details-popup");
+  attendingPopup.style.display = "flex";
+
+  const meetingDates = JSON.parse(booking.MeetingDates || "[]");
+  const startTimes = JSON.parse(booking.StartTimes || "[]");
+  const endTimes = JSON.parse(booking.EndTimes || "[]");
+
+  attendingPopup.querySelector(".modal-body").innerHTML = `
+    <p><b>Details:</b> ${formatParameter(linkedBooking.Details) || "None"}</p>
+    <p><b>Location:</b> ${formatParameter(linkedBooking.Location) || "Undecided"}</p>
+    <p><b>Date:</b> ${formatDate(meetingDates[0]) || "Undecided"}</p>
+    <p><b>Time:</b> ${formatTime(startTimes[0])} - ${formatTime(endTimes[0])}</p>
+  `;
+
+}
+
 function showPollPopup(poll, inHistory = false) {
   const pollPopup = document.getElementById("poll-details-popup");
   pollPopup.style.display = "flex";
@@ -515,12 +600,18 @@ function showPollPopup(poll, inHistory = false) {
   pollPopup.querySelector(".modal-body").innerHTML = `
         <p><b>Details:</b> ${poll.Details || "None"}</p>
         <p><b>Poll Close Date:</b> ${
-          poll.PollCloseDateTime ? poll.PollCloseDateTime : "No date set yet"
+          poll.PollCloseDateTime ? formatDateTime(poll.PollCloseDateTime) : "No date set yet"
         }</p>
-        <p><b>Poll URL:</b> 
-            <a href="${pollUrl}" target="_blank">${pollUrl}</a>
-            <button class="copy-btn" onclick="copyPollUrl('${pollUrl}')">Copy</button>
-        </p>
+        <div class="copy-container">
+            <b>Poll URL:</b>
+            ${
+              poll.ID
+                ? `<a href="${pollUrl}" target="_blank" id="poll-url">${pollUrl}</a>
+                    <button class="copy-btn" onclick="copyToClipboard('poll-url')">Copy</button>`
+                : "N/A"
+            }
+
+        </div>
         <div class="poll-results">
             <h3>Poll Results</h3>
             <ul class="poll-results-list">
@@ -591,16 +682,7 @@ function populatePollResults(poll) {
     pollResultsList.appendChild(pollOption);
   });
 }
-function copyPollUrl(url) {
-  navigator.clipboard
-    .writeText(url)
-    .then(() => {
-      showAlert("Poll URL copied to clipboard!");
-    })
-    .catch((err) => {
-      console.error("Failed to copy URL: ", err);
-    });
-}
+
 function copyToClipboard(elementId) {
   const copyText = document.getElementById(elementId).href;
   navigator.clipboard.writeText(copyText).then(() => {
