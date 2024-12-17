@@ -1,6 +1,4 @@
 <?php
-header('Content-Type: application/json');
-
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -16,26 +14,31 @@ if ($conn->connect_error) {
 // Validate incoming POST data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("POST Data: " . print_r($_POST, true));
-    $bookingId = intval($_POST['bookingId'] ?? 0);
+    $bookingId = intval($_POST['booking-id'] ?? 0);
     $bookingName = $_POST['booking-name'] ?? '';
     $location = $_POST['location'] ?? '-1';
     $details = $_POST['details'] ?? '';
     $maxAttendees = intval($_POST['maxAttendees'] ?? -1);
     $meetingDates = $_POST['highlighted-dates'] ?? '';
+    $meetingDates = '"' . $meetingDates . '"';
     $startTimes = $_POST['start-times'] ?? '';
     $endTimes = $_POST['end-times'] ?? '';
     $recurringDays = $_POST['recurring-days'] ?? '';
     $recurrenceFrequency = $_POST['recurring-timeline'] ?? '';
     $startDate = $_POST['start-date'] ?? '';
     $endDate = $_POST['end-date'] ?? '';
+    $startTimes = '"' . $startTimes . '"';
+    $endTimes = '"' . $endTimes . '"';
 
     if (!$bookingId) {
-        echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+
+        echo json_encode(["success" => false, "message" => "Invalid booking ID.", "bookingId" => $bookingId]);
         exit();
     }
 
     // Update the booking in the database
-    $stmt = $conn->prepare("UPDATE CreatedBookings SET 
+    $stmt = $conn->prepare("UPDATE CreatedBookings 
+    SET 
         BookingName = ?, 
         Location = ?, 
         Details = ?, 
@@ -47,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         RecurrenceFrequency = ?, 
         StartRecurringDate = ?, 
         EndRecurringDate = ? 
-        WHERE ID = ?");
+    WHERE ID = ?
+");
 
     if (!$stmt) {
         echo json_encode(["success" => false, "message" => "Failed to prepare the update statement."]);
@@ -55,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $stmt->bind_param(
-        "sssisisssssi",
+        "sssisssssssi",
         $bookingName,
         $location,
         $details,
@@ -71,9 +75,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($stmt->execute()) {
-        echo json_encode(["success" => true, "message" => "Booking updated successfully."]);
+        //echo json_encode(["success" => true, "message" => "Booking updated successfully.", "startTimes" => $startTimes, "endTimes" => $endTimes]);
+        echo '<script>
+                setTimeout(function() {
+                    window.location.href = "dashboard.html";
+                }, 0);
+            </script>';
     } else {
-        echo json_encode(["success" => false, "message" => "Failed to update booking: " . $stmt->error]);
+        //echo json_encode(["success" => false, "message" => "Failed to update booking: " . $stmt->error]);
+        echo '<button onclick="redirectToForm()">Try Again</button>';
+        echo '<button onclick="redirectToDashboard()">Go to Dashboard</button>';
+        echo '<script>
+                function redirectToForm() {
+                    window.location.href = "edit_booking.html?bookingId=' . $bookingId . '";
+                }
+                function redirectToDashboard() {
+                    window.location.href = "dashboard.html";
+                }
+            </script>';
     }
 
     $stmt->close();
