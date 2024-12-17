@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Register new user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $conn->prepare("
-                INSERT INTO Users (email, password, full_name, role, default_location, notifications_enabled) 
+                INSERT INTO Users (email, password, full_name, role, default_location, notifications_enabled)
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
             $stmt->bind_param('sssssi', $email, $hashed_password, $full_name, $role, $default_location, $notifications_enabled);
@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,15 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Register</title>
     <link rel="stylesheet" href="../assets/css/register.css">
     <script>
-        // function showStep2() {
-        //     document.getElementById('step1').style.display = 'none';
-        //     document.getElementById('step2').style.display = 'block';
-        // }
 
-        // function goBackToStep1() {
-        //     document.getElementById('step2').style.display = 'none';
-        //     document.getElementById('step1').style.display = 'block';
-        // }
         function validateStep1() {
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value.trim();
@@ -124,71 +117,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">
-            <img src="Images/logo.png" alt="Logo" class="logo-img">RedBird Roster
-        </div>
-    </nav>
-    <div class="register-container">
-        <div class="form-container">
-        <img src="Images/logo.png" alt="Logo" class="dialog-logo" style="display: block; margin: 0 auto 20px; width: 80px; height: auto;">
-        <h1>Register</h1>
-            <?php if ($error): ?>
-                <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
-            <?php elseif ($success): ?>
-                <p class="success-message"><?php echo htmlspecialchars($success); ?></p>
-            <?php endif; ?>
-            <form method="POST" action="register.php">
-                <!-- Step 1 -->
-                <div id="step1">
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm_password">Confirm Password:</label>
-                        <input type="password" id="confirm_password" name="confirm_password" required>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="button" class="btn-submit" onclick="validateStep1()">Next</button>
-                    </div> 
-                </div>
 
-                <!-- Step 2 -->
-                <div id="step2" style="display: none;">
-                    <div class="form-group">
-                        <label for="full_name">Full Name:</label>
-                        <input type="text" id="full_name" name="full_name" required>
+    <div class="container">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="logo">
+                <a href="landing.html">
+                    <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
+                </a>
+            </div>
+        </nav>
+
+        <!-- Register Box -->
+        <div class="main-content">
+            <div class="form-container">
+                <img src="Images/logo.png" alt="Logo" class="dialog-logo">
+                <h1>Register</h1>
+
+                <?php if ($error): ?>
+                    <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+                <?php elseif ($success): ?>
+                    <p class="success-message"><?php echo htmlspecialchars($success); ?></p>
+                <?php endif; ?>
+
+                <form method="POST" action="register.php">
+
+                    <!-- Step 1 -->
+                    <div id="step1">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password:</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn-submit" onclick="validateStep1()">Next</button>
+                        </div>
+                        <p class="links">
+                            <a href="login.php">Already have an account? Login Here</a>
+                        </p>
                     </div>
-                    <div class="form-group">
-                        <label for="role">Role:</label>
-                        <select id="role" name="role" required>
-                            <option value="Professor">Professor</option>
-                            <option value="TA">TA</option>
-                            <option value="Student">Student</option>
-                        </select>
+
+                    <!-- Step 2 -->
+                    <div id="step2" style="display: none;">
+                        <div class="form-group">
+                            <label for="full_name">Full Name:</label>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role:</label>
+                            <select id="role" name="role" required>
+                                <option value="Professor">Professor</option>
+                                <option value="TA">TA</option>
+                                <option value="Student">Student</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="default_location">Default Meeting Location (Optional):</label>
+                            <input type="text" id="default_location" name="default_location">
+                        </div>
+                        <div class="form-group">
+                            <label class="emailcheckbox">
+                                <input type="checkbox" id="notifications_enabled" name="notifications_enabled" value="1" checked>
+                                Enable Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-buttons">
+                            <button type="button" class="btn-submit" onclick="goBackToStep1()">Back</button>
+                            <button type="submit" class="btn-submit">Register</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="default_location">Default Location:</label>
-                        <input type="text" id="default_location" name="default_location">
-                    </div>
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="notifications_enabled" name="notifications_enabled" value="1" checked>
-                            Enable Notifications
-                        </label>
-                    </div>
-                    <div class="form-buttons">
-                        <button type="button" class="btn-submit" onclick="goBackToStep1()">Back</button>
-                        <button type="submit" class="btn-submit">Register</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+
+            </div>
         </div>
+
     </div>
+
 </body>
+
 </html>
