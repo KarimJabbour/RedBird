@@ -49,11 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const recurrence = document.getElementById("recurring-timeline").value;
 
         clearAllHighlights();
-
-        console.log("Frequency changed");
         updateCalendar();
+        
         if (recurrence == "daily") {
             generateDailyTimeCards();
+            updateCalendar();
         }
     });
 
@@ -190,19 +190,30 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
 
             // Process recurring dates with their times
-            if (recurrenceDays.length > 0 && startDate && endDate) {
+            if ((recurrenceDays.length > 0 || frequency == "daily") && startDate && endDate) {
                 //const computedRecurringDates = calculateRecurringDates(startDate, endDate, document.getElementById("recurring-timeline").value, recurrenceDays);
                 console.log("Updated Recurring Day Times:", recurringDayTimes);
-
+                console.log("recurringdates"+recurringDates);
+                
                 recurringDates.forEach(date => {
                     if (!manualAdjustments.has(date)) {
-                        const dayOfWeek = new Date(date).getDay();
-                        const dayKey = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayOfWeek];
+                        if (frequency === "weekly" || frequency === "2weekly" || frequency === "4weekly") {
+                            const dayOfWeek = new Date(date).getDay();
+                            const dayKey = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayOfWeek];
 
-                        console.log("Processing date:", date, "with dayKey:", dayKey);
+                            console.log("Processing date:", date, "with dayKey:", dayKey);
 
-                        if (recurringDayTimes[dayKey]) {
-                            recurringDayTimes[dayKey].forEach(time => {
+                            if (recurringDayTimes[dayKey]) {
+                                recurringDayTimes[dayKey].forEach(time => {
+                                    console.log(`Adding for ${date}: Start - ${time.start}, End - ${time.end}`);
+                                    meetingDates.push(date);
+                                    startTimes.push(time.start);
+                                    endTimes.push(time.end);
+                                });
+                            }
+                        }
+                        else if (frequency === "daily") {
+                            recurringDayTimes["Daily"].forEach(time => {
                                 console.log(`Adding for ${date}: Start - ${time.start}, End - ${time.end}`);
                                 meetingDates.push(date);
                                 startTimes.push(time.start);
