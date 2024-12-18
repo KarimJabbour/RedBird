@@ -15,15 +15,14 @@
 
   <section class="hero">
       <div class="hero-content">
-          <img src="Images/logo.png" alt="RedBird Logo" class="logo-img"/>
+        <img src="Images/logo.png" alt="RedBird Logo" class="logo-img"/>
           <h1>Welcome to RedBird Roster</h1>
           <p>Effortless meeting management for professors and students.</p>
           <a href="login.php"><button class="getstarted">Get Started</button></a>
       </div>
       <div class="scroll-down">
-        <button id="scroll-btn">
-        </button>
-        </div>
+        <button id="scroll-btn"></button>
+      </div>
   </section>
 
   <!-- Book by URL -->
@@ -77,26 +76,6 @@
   </section>
 
   <script src="../assets/js/landing.js"></script>
-  <script>
-    let isScrolledDown = false;
-
-    document.getElementById("scroll-btn").addEventListener("click", () => {
-        const scrollBtn = document.getElementById("scroll-btn");
-        const targetSection = document.querySelector(".id-section");
-
-        if (!isScrolledDown) {
-            targetSection.scrollIntoView({ behavior: "smooth" });
-            scrollBtn.classList.add("up");
-        } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            scrollBtn.classList.remove("up");
-        }
-
-        isScrolledDown = !isScrolledDown;
-    });
-</script>
-
-
 
 </body>
 
