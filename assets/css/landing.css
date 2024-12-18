@@ -292,3 +292,9 @@ body {
 #scroll-btn.up::before {
     content: "▲"; /* Upward arrow */
 }
+
+.logo-img {
+    margin: 0 auto 20px;
+    width: 100px;
+    height: auto;
+}
