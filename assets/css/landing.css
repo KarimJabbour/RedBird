@@ -239,3 +239,56 @@ body {
         transform: translateY(0);
     }
 }
+.scroll-down {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+}
+
+#scroll-btn {
+    background-color: #EB0920;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    animation: bounce 1.5s infinite;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    transform: rotate(0deg);
+}
+
+#scroll-btn:hover {
+    background-color: #C2081B;
+    transform: scale(1.1);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+
+#scroll-btn::before {
+    content: "▼"; /* Downward arrow */
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+}
+
+#scroll-btn.up::before {
+    content: "▲"; /* Upward arrow */
+}
