@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `AlternateRequests` (
-  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `ID` INT(11) NOT NULL,
   `FullName` VARCHAR(40) NOT NULL,
   `Email` VARCHAR(50) NOT NULL,
   `Details` TEXT NOT NULL,
