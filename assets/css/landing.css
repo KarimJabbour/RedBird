@@ -45,6 +45,12 @@ body {
     margin-bottom: 20px;
 }
 
+.logo-img {
+    margin: 0 auto 20px;
+    width: 100px;
+    height: auto;
+}
+
 .getstarted {
     background: #EB0920;
     color: white;
@@ -239,62 +245,62 @@ body {
         transform: translateY(0);
     }
 }
+
+/* Scroll Down Button */
 .scroll-down {
     position: absolute;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #scroll-btn {
-    background-color: #EB0920;
-    color: white;
-    border: none;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(235, 9, 32, 0.8);
+    background: rgba(235, 9, 32, 0.1);
     border-radius: 50%;
-    width: 70px;
-    height: 70px;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    transition: background 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#scroll-btn::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-right: 3px solid rgba(235, 9, 32, 0.9);
+    border-bottom: 3px solid rgba(235, 9, 32, 0.9);
+    transform: rotate(45deg);
+    transition: border-color 0.3s ease;
     animation: bounce 1.5s infinite;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    transform: rotate(0deg);
 }
 
 #scroll-btn:hover {
-    background-color: #C2081B;
+    background: rgba(235, 9, 32, 0.2);
+    border-color: rgba(235, 9, 32, 1);
     transform: scale(1.1);
+}
+
+#scroll-btn:hover::after {
+    border-color: rgba(235, 9, 32, 1);
 }
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
+        transform: translateY(0) rotate(45deg);
     }
     40% {
-        transform: translateY(-10px);
+        transform: translateY(10px) rotate(45deg);
     }
     60% {
-        transform: translateY(-5px);
+        transform: translateY(5px) rotate(45deg);
     }
-}
-
-
-#scroll-btn::before {
-    content: "▼"; /* Downward arrow */
-    font-size: 2rem;
-    transition: transform 0.3s ease;
-}
-
-#scroll-btn.up::before {
-    content: "▲"; /* Upward arrow */
-}
-
-.logo-img {
-    margin: 0 auto 20px;
-    width: 100px;
-    height: auto;
 }
