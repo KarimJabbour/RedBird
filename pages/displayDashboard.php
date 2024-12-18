@@ -21,9 +21,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Get UserID from request (e.g., passed via GET method)
-#$userId = $_GET['userId'];
-// $userId = -1;
 
 // Update status of past bookings and past polls
 $conn->query("UPDATE CreatedBookings SET Status = 'past' WHERE Status = 'current' AND EndRecurringDate < CURDATE()");
@@ -131,7 +128,9 @@ SELECT
     cb.StartRecurringDate, 
     cb.EndRecurringDate, 
     cb.Location, 
-    cb.Details
+    cb.Details,
+    cb.MeetingLink,
+    cb.Attachments
 FROM BookingParticipants bp
 JOIN CreatedBookings cb ON bp.BookingID = cb.ID
 WHERE bp.UserID = ?

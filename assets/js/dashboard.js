@@ -75,27 +75,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const alternateRequests = data.alternateRequests || [];
       const reservedBookings = data.reservedBookings || [];
 
-      // Clear containers
+      // Clear all containers
       bookingContainer.innerHTML = "";
       pollsContainer.innerHTML = "";
       historyContainer.innerHTML = "";
       alternateRequestsContainer.innerHTML = "";
       otherBookingsContainer.innerHTML = "";
 
-      // Handle Alternate Requests
       displayAlternateRequests(alternateRequests, alternateRequestsContainer);
-
-      // Handle Bookings
       displayBookings(bookings, bookingContainer);
-
-      // Handle Polls
       displayPolls(polls, pollsContainer);
-
-      // Handle Past Bookings and Polls
       displayPastBookingsAndPolls(pastBookings, pastPolls, historyContainer);
-
-      // Handle Reserved Bookings
-      displayReservedBookings(reservedBookings, otherBookingsContainer);
+      displayReservedBookings(reservedBookings, otherBookingsContainer, bookings);
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -224,22 +215,20 @@ function displayPastBookingsAndPolls(pastBookings, pastPolls, container) {
 
 function displayReservedBookings(reservedBookings, container) {
   if (reservedBookings.length > 0) {
-    reservedBookings.forEach((booking) => {
-      const meetingDates = JSON.parse(booking.MeetingDates || "[]");
-      const startTimes = JSON.parse(booking.StartTimes || "[]");
-      const endTimes = JSON.parse(booking.EndTimes || "[]");
-
-      let linkedBooking; //For Khyati to fix
+    reservedBookings.forEach((reservedBooking) => {
+      const meetingDates = JSON.parse(reservedBooking.MeetingDates || "[]");
+      const startTimes = JSON.parse(reservedBooking.StartTimes || "[]");
+      const endTimes = JSON.parse(reservedBooking.EndTimes || "[]");
 
       const bookingRow = document.createElement("div");
       bookingRow.className = "booking-row reserved";
-      bookingRow.onclick = () => showAttendingPopup(booking, linkedBooking);
+      bookingRow.onclick = () => showAttendingPopup(reservedBooking);
       bookingRow.innerHTML = `
-      <div class="column-title">${booking.BookingName}</div>
-      <div class="column-date"><b>Date:</b> ${formatDate(meetingDates[0])}</div>
-      <div class="column-time"><b>Time:</b> ${formatTime(
-        startTimes[0]
-      )} - ${formatTime(endTimes[0])}</div>
+        <div class="column-title">${reservedBooking.BookingName}</div>
+        <div class="column-date"><b>Date:</b> ${formatDate(meetingDates[0])}</div>
+        <div class="column-time"><b>Time:</b> ${formatTime(
+          startTimes[0]
+        )} - ${formatTime(endTimes[0])}</div>
       `;
       container.appendChild(bookingRow);
     });
@@ -248,6 +237,8 @@ function displayReservedBookings(reservedBookings, container) {
       '<div class="empty">No reserved bookings available</div>';
   }
 }
+
+
 
 function formatDate(dateStr) {
   if (!dateStr) {
@@ -577,22 +568,34 @@ function showBookingPopup(booking, inHistory = false) {
   }
 }
 
-function showAttendingPopup(booking, linkedBooking) {
+function showAttendingPopup(reservedBooking) {
   const attendingPopup = document.getElementById("attending-booking-details-popup");
   attendingPopup.style.display = "flex";
 
-  const meetingDates = JSON.parse(booking.MeetingDates || "[]");
-  const startTimes = JSON.parse(booking.StartTimes || "[]");
-  const endTimes = JSON.parse(booking.EndTimes || "[]");
+  const meetingDates = JSON.parse(reservedBooking.MeetingDates || "[]");
+  const startTimes = JSON.parse(reservedBooking.StartTimes || "[]");
+  const endTimes = JSON.parse(reservedBooking.EndTimes || "[]");
+
+  attendingPopup.querySelector(".modal-header h2").textContent = reservedBooking.BookingName;
 
   attendingPopup.querySelector(".modal-body").innerHTML = `
-    <p><b>Details:</b> ${formatParameter(linkedBooking.Details) || "None"}</p>
-    <p><b>Location:</b> ${formatParameter(linkedBooking.Location) || "Undecided"}</p>
+    <p><b>Details:</b> ${reservedBooking.Details || "None"}</p>
+    <p><b>Location:</b> ${reservedBooking.Location || "Undecided"}</p>
     <p><b>Date:</b> ${formatDate(meetingDates[0]) || "Undecided"}</p>
     <p><b>Time:</b> ${formatTime(startTimes[0])} - ${formatTime(endTimes[0])}</p>
+    <p><b>Meeting Link:</b> ${
+      reservedBooking.MeetingLink && reservedBooking.MeetingLink !== "-1"
+        ? `<a href="${reservedBooking.MeetingLink}" target="_blank">Join Meeting</a>`
+        : "Not provided"
+    }</p>
+    <p><b>Attachments:</b> ${
+      reservedBooking.Attachments && reservedBooking.Attachments !== "-1"
+        ? `<a href="${reservedBooking.Attachments}" target="_blank">View Attachments</a>`
+        : "No attachments"
+    }</p>
   `;
-
 }
+
 
 function showPollPopup(poll, inHistory = false) {
   const pollPopup = document.getElementById("poll-details-popup");
