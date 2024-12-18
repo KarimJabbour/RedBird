@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="../assets/css/confirmation.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Confirmation Container -->
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <div class="icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Booking Created!</h1>
+            <p>Your meeting has successfully been created. Below are the details:</p>
+
+            <div class="booking-details">
+                <p><b>Meeting Title:</b> Office Hours with Professor X</p>
+                <p><b>Details:</b> Extra Office Hours</p>
+                <p><b>Location:</b> McGill University, Room 101</p>
+                <p><b>Meeting Link:</b> https://zoom.us/j/5551112222</p>
+                <p><b>Share the following link with your attendees:</b></p>
+                <p id="meeting-link"> http://localhost/RedBird/pages/book_meeting.html?id=a68b412c4282555f15546cf6e1fc42893b7e07f271557ceb021821098dd66c1b</p>
+                <div id="qrcode"></div>
+            </div>
+            <a href="dashboard.html" class="btn">Return to Dashboard</a>
+        </div>
+    </div>
+
+<script src="../assets/js/confirmation_qrcode.js"></script>
+
+</body>
+
+</html>
