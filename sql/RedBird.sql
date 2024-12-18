@@ -37,8 +37,7 @@ CREATE TABLE `AlternateRequests` (
   `StartTimes` LONGTEXT NOT NULL,
   `EndTimes` LONGTEXT NOT NULL,
   `ResponseMessage` TEXT DEFAULT NULL,
-  `Status` VARCHAR(20) NOT NULL DEFAULT 'pending',
-  PRIMARY KEY (`ID`) -- Adding primary key for table consistency
+  `Status` VARCHAR(20) NOT NULL DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
