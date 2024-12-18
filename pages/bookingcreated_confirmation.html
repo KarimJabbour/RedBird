@@ -22,19 +22,21 @@
             <p>Your meeting has successfully been created. Below are the details:</p>
 
             <div class="booking-details">
-                <p><b>Meeting Title:</b> Office Hours with Professor X</p>
-                <p><b>Details:</b> Extra Office Hours</p>
-                <p><b>Location:</b> McGill University, Room 101</p>
-                <p><b>Meeting Link:</b> https://zoom.us/j/5551112222</p>
+                <p><b>Meeting Title:</b> <span id="meeting-title"></span></p>
+                <p><b>Details:</b> <span id="meeting-details"></span></p>
+                <p><b>Location:</b> <span id="meeting-location"></span></p>
+                <p><b>Attachments:</b> <span id="attachment-link"></span></p>
+                <p><b>Meeting Link:</b> <span id="meeting-link"></span></p>
                 <p><b>Share the following link with your attendees:</b></p>
-                <p id="meeting-link"> http://localhost/RedBird/pages/book_meeting.html?id=a68b412c4282555f15546cf6e1fc42893b7e07f271557ceb021821098dd66c1b</p>
+                <p id="link"></p>
                 <div id="qrcode"></div>
             </div>
             <a href="dashboard.html" class="btn">Return to Dashboard</a>
         </div>
     </div>
 
-<script src="../assets/js/confirmation_qrcode.js"></script>
+
+<script src="../assets/js/bookingcreated_confirmation.js"></script>
 
 </body>
 

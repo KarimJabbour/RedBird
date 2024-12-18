@@ -21,6 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $endDate = htmlspecialchars($_POST['end-date']);
     $location = htmlspecialchars($_POST['location']);
     $details = htmlspecialchars($_POST['details']);
+    $meetingLink = htmlspecialchars($_POST['meeting-link']);
+    $attachment = htmlspecialchars($_POST['attachment-link']);
+    $maxAttendees = htmlspecialchars($_POST['max-attendees']);
 
     $selectedDays = isset($_POST['days']) ? $_POST['days'] : [];
     $recurrenceDays = implode(",", $selectedDays);
@@ -36,17 +39,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $recurrenceDays = htmlspecialchars($_POST['recurring-days']);
 
     $sql = "INSERT INTO CreatedBookings (
-                UserID, 
+                UserID,
                 BookingName,
-                RecurrenceFrequency, 
+                RecurrenceFrequency,
                 MeetingDates,
-                RecurrenceDays, 
-                StartTimes, 
+                RecurrenceDays,
+                StartTimes,
                 EndTimes,
-                StartRecurringDate, 
-                EndRecurringDate,  
+                StartRecurringDate,
+                EndRecurringDate,
                 Details,
-                Location,  
+                MaxAttendees,
+                Location,
+                MeetingLink,
+                Attachments,
                 Status
             ) VALUES (
                 '$userId',
@@ -59,7 +65,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 '$startDate',
                 '$endDate',
                 '$details',
+                '$maxAttendees',
                 '$location',
+                '$meetingLink',
+                '$attachment',
                 'current'
             )";
 
@@ -80,24 +89,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $emailQuery->bind_param("i", $userId);
             $emailQuery->execute();
             $emailResult = $emailQuery->get_result();
-            
+
             if ($emailResult->num_rows > 0) {
                 $emailRow = $emailResult->fetch_assoc();
                 $email = $emailRow['email'];
-            
+
                 $sendEmailUrl = 'http://localhost/RedBird/mail/sendBookingCreation.php';
                 $postFields = http_build_query([
                     'email' => $email,
                     'bookingID' => $lastId
                 ]);
-            
+
                 $ch = curl_init($sendEmailUrl);
                 curl_setopt($ch, CURLOPT_POST, 1);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $response = curl_exec($ch);
                 curl_close($ch);
-            
+
                 if ($response) {
                     error_log("Email sent successfully: $response");
                 } else {
@@ -105,14 +114,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             } else {
                 echo "User email not found.";
-            }            
+            }
+            $confirmationUrl = "bookingcreated_confirmation.html";
+            $queryParams = http_build_query([
+                'title' => $bookingName,
+                'details' => $details,
+                'location' => $location,
+                'attachment-link' => $attachment,
+                'meeting-link' => $meetingLink,
+                'link' => urlencode("http://localhost/RedBird/pages/book_meeting.html?id=$hashedID"),
+            ]);
+
             echo '<script>
                 setTimeout(function() {
-                    window.location.href = "dashboard.html";
+                    window.location.href = "' . $confirmationUrl . '?' . $queryParams . '";
                 }, 0);
             </script>';
-        } else {
-            echo "Failed to update hashed ID.";
+                } else {
+                    echo "Failed to update hashed ID.";
         }
     } else {
         echo "Booking failed! Try again";
