@@ -38,6 +38,18 @@ body {
     font-weight: bold;
 }
 
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+    box-sizing: border-box;
+}
+
 .logo-img {
     width: 50px;
     padding: 0px;
@@ -311,21 +323,6 @@ body {
 .time-slot::placeholder {
     color: #888;
 }
-
-/* .remove-btn {
-    background: #EB0920;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.remove-btn:hover {
-    background: #FF702E;
-} */
 
 /* Form Section */
 .form-container {
