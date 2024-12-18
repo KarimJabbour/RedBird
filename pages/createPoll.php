@@ -47,12 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($pollCloseDateTime === null) {
         $sql = "INSERT INTO CreatedPolls (
-                    UserID, 
+                    UserID,
                     PollName,
                     DateOptions,
                     StartTimes,
                     EndTimes,
-                    Details,  
+                    Details,
                     VoteCounts,
                     Status
                 ) VALUES (
@@ -67,12 +67,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 )";
     } else {
         $sql = "INSERT INTO CreatedPolls (
-                    UserID, 
+                    UserID,
                     PollName,
                     DateOptions,
                     StartTimes,
                     EndTimes,
-                    Details,  
+                    Details,
                     PollCloseDateTime,
                     VoteCounts,
                     Status
@@ -92,10 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->query($sql) === TRUE) {
         $lastId = $conn->insert_id; // Get the last inserted ID
         $hashedId = hash('sha256', $lastId); // Make hash
-    
+
         $updateSql = "UPDATE CreatedPolls SET hashedID = '$hashedId' WHERE ID = '$lastId'";
         $conn->query($updateSql);
-            
+
         $emailData = [
             "email" => $email,
             "pollID" => $hashedId
@@ -123,13 +123,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             error_log("Email script response: $response");
         }
 
-        // Redirect to dashboard if poll creation was successful
-        echo '<script>
-            setTimeout(function() {
-                    window.location.href = "dashboard.html";
+        $confirmationUrl = "pollcreated_confirmation.html";
+            $queryParams = http_build_query([
+                'title' => $pollName,
+                'details' => $details,
+                'link' => urlencode("http://localhost/RedBird/pages/answer_poll.html?pollID=$hashedId"),
+            ]);
+
+            echo '<script>
+                setTimeout(function() {
+                    window.location.href = "' . $confirmationUrl . '?' . $queryParams . '";
                 }, 0);
             </script>';
-    
+
     } else {
         echo "Poll creation failed! Try again";
         echo "Error: " . $sql . "<br>" . $conn->error;

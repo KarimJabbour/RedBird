@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $startDate = htmlspecialchars($_POST['start-date']);
     $endDate = htmlspecialchars($_POST['end-date']);
     $location = htmlspecialchars($_POST['location']);
-    $details = htmlspecialchars($_POST['details']);
-    $meetingLink = htmlspecialchars($_POST['meeting-link']);
-    $attachment = htmlspecialchars($_POST['attachment-link']);
-    $maxAttendees = htmlspecialchars($_POST['max-attendees']);
+    $details = htmlspecialchars($_POST['details']) || "";
+    $meetingLink = htmlspecialchars($_POST['meeting-link']) || "";
+    $attachment = htmlspecialchars($_POST['attachment-link']) || "";
+    $maxAttendees = htmlspecialchars($_POST['max-attendees']) || 100000;
 
     $selectedDays = isset($_POST['days']) ? $_POST['days'] : [];
     $recurrenceDays = implode(",", $selectedDays);

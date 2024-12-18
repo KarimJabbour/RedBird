@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,53 +37,39 @@
       <!-- Header -->
       <header class="header">
         <h1>Create a Poll</h1>
-        <p class="sub-header">
-          Choose dates, add details, and create a poll for participants.
-        </p>
+        <p class="sub-header">Choose dates, add details, and create a poll for participants.</p>
       </header>
 
       <!-- Main Content -->
-      <form
-        action="createPoll.php"
-        method="POST"
-        class="poll-form"
-        id="poll-form"
-      >
+      <form action="createPoll.php" method="POST" class="poll-form" id="poll-form">
+
         <section class="split-content">
+
           <!-- Dynamic Sidebar -->
           <div class="dynamic-container">
             <div class="dynamic-content" id="dynamic-calendar">
               <h3>Calendar</h3>
               <div class="calendar">
+
                 <!-- Calendar Header -->
                 <div class="calendar-header">
                   <button class="prev-month" type="button">
-                    <img
-                      src="Images/icons/FF702E_left_arrow.png"
-                      alt="Previous Month"
-                      class="arrow"
-                      onclick="changeMonth(-1)"
-                    />
+                    <img src="Images/icons/FF702E_left_arrow.png" alt="Previous Month" class="arrow" onclick="changeMonth(-1)"/>
                   </button>
                   <div class="month-year" id="month-year"></div>
                   <button class="next-month" type="button">
-                    <img
-                      src="Images/icons/FF702E_right_arrow.png"
-                      alt="Next Month"
-                      class="arrow"
-                      onclick="changeMonth(1)"
-                    />
+                    <img src="Images/icons/FF702E_right_arrow.png" alt="Next Month" class="arrow" onclick="changeMonth(1)"/>
                   </button>
                 </div>
+
                 <!-- Calendar Grid -->
                 <div class="calendar-grid" id="calendar-grid">
                   <!-- Dynamically Generated in JavaScript -->
                 </div>
-                <button type="button" class="clear-btn" onclick="clearForm()">
-                  Clear All Selections
-                </button>
+                <button type="button" class="clear-btn" onclick="clearForm()">Clear All Selections</button>
               </div>
             </div>
+
           </div>
 
           <!-- Time Selection -->
@@ -90,67 +77,47 @@
             <div class="title">
               <h2>Date/Time Suggestions</h2>
             </div>
-            <div class="time-cards"></div>
+            <div class="time-cards">
+              <!-- Dynamically Generated -->
+            </div>
           </section>
+
         </section>
 
         <!-- Poll Details -->
         <section class="form-container details">
+
           <div class="title">
             <h2>Poll Details</h2>
-            <button
-              type="button"
-              class="clear-btn"
-              onclick="clearAllHighlights()"
-            >
-              Clear
-            </button>
+            <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear</button>
           </div>
           <div class="form-group">
             <label for="details">Poll Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Enter the poll name"
-              required
-            />
+            <input type="text" id="name" name="name" placeholder="Enter the poll name" required/>
           </div>
           <div class="form-group">
             <label for="details">Details</label>
-            <input
-              type="text"
-              id="details"
-              name="details"
-              placeholder="Provide additional information for your attendees (optional)"
-            />
+            <input type="text" id="details" name="details" placeholder="Provide additional information for your attendees (optional)"/>
           </div>
           <div class="form-group">
             <label for="poll-close-time">Poll Close Date/Time</label>
-            <input
-              type="text"
-              id="poll-close-time"
-              name="poll-close-time"
-              placeholder="Enter the time for when the poll should close and stop accepting answers (required)"
-              onfocus="(this.type='datetime-local')"
-              onblur="(this.type='text')"
-            required />
+            <input type="text" id="poll-close-time" name="poll-close-time" placeholder="Enter the time for when the poll should close and stop accepting answers (required)" onfocus="(this.type='datetime-local')" onblur="(this.type='text')" required/>
           </div>
 
-          <input type="hidden" id="dates-hidden" name="dates" value="" />
-          <input
-            type="hidden"
-            id="start-times-hidden"
-            name="startTimes"
-            value=""
-          />
-          <input type="hidden" id="end-times-hidden" name="endTimes" value="" />
+          <input type="hidden" id="dates-hidden" name="dates" value=""/>
+          <input type="hidden" id="start-times-hidden" name="startTimes" value=""/>
+          <input type="hidden" id="end-times-hidden" name="endTimes" value=""/>
 
           <div class="form-buttons">
             <button type="submit" class="btn-save">Save</button>
           </div>
+
         </section>
+
       </form>
+
     </div>
+
   </body>
+
 </html>
