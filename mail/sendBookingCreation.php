@@ -63,6 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $startDate = $booking['StartRecurringDate'];
         $endDate = $booking['EndRecurringDate'];
         $details = $booking['Details'];
+        $attachments = $booking['Attachments'];
+        $meetingLink = $booking['MeetingLink'];
 
         // Prepare email content
         $emailContentPlain = "Created booking '$bookingName'.\n\n" .
@@ -77,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "End Times: $endTimes\n" .
             "Details: $details\n" .
             "Booking URL: $bookingURL";
+            
 
         $emailContentHtml = '
         <!DOCTYPE html>
@@ -120,23 +123,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 .details strong {
                     color: #d32f2f;
                 }
-                .dates {
-                    color: #333;
-                    background-color: #f9f9f9;
-                    padding: 10px;
-                    border-radius: 5px;
-                    margin: 10px 0;
-                }
-                .button {
-                    display: inline-block;
-                    background-color: #d32f2f;
-                    color: #fff;
-                    padding: 10px 20px;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    margin-top: 20px;
-                    font-weight: bold;
-                }
                 .link-container {
                     margin-top: 10px;
                     text-align: center;
@@ -155,6 +141,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     font-size: 12px;
                     color: #888;
                 }
+                .button {
+                    display: inline-block;
+                    background-color: #d32f2f;
+                    color: #fff;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
             </style>
         </head>
         <body>
@@ -170,7 +166,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p><strong>Location:</strong> ' . htmlspecialchars($location) . '</p>
                     <p><strong>Meeting Dates:</strong> ' . htmlspecialchars($meetingDatesString) . '</p>
                     <p><strong>Recurrence Frequency:</strong> ' . htmlspecialchars($recurrenceFrequency) . '</p>
-                    <p><strong>Details:</strong> ' . htmlspecialchars($details) . '</p>
+                    <p><strong>Details:</strong> ' . htmlspecialchars($details) . '</p>';
+        
+        // Add Attachments if valid
+        if ($attachments !== '-1') {
+            $emailContentHtml .= '<p><strong>Attachments:</strong> ' . htmlspecialchars($attachments) . '</p>';
+        }
+    
+        // Add Meeting Link if valid
+        if ($meetingLink !== '-1') {
+            $emailContentHtml .= '<p><strong>Meeting Link:</strong> <a href="' . htmlspecialchars($meetingLink) . '">' . htmlspecialchars($meetingLink) . '</a></p>';
+        }
+    
+        $emailContentHtml .= '
                 </div>
                 <a class="button" href="' . htmlspecialchars($bookingURL) . '">View Your Booking</a>
                 <div class="link-container">
