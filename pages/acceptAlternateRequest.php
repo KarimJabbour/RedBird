@@ -34,7 +34,7 @@ if (!$alternateRequestID || !$date || !$startTime || !$endTime) {
 
 // Get the original booking details
 $stmt = $conn->prepare("SELECT CB.BookingName, CB.Details, CB.MeetingLink FROM CreatedBookings CB 
-                        JOIN AlternateRequests AR ON AR.LinkedBookingID = CB.ID 
+                        JOIN AlternateRequests AR ON AR.LinkedBookingID = CB.hashedID 
                         WHERE AR.ID = ?");
 
 if (!$stmt) {
@@ -59,8 +59,8 @@ $details = $originalBooking['Details'];
 $meetingLink = $originalBooking['MeetingLink'];
 
 // Insert the new alternate booking
-$stmt = $conn->prepare("INSERT INTO CreatedBookings (UserID, BookingName, RecurrenceFrequency, MeetingDates, RecurrenceDays, StartTimes, EndTimes, StartRecurringDate, EndRecurringDate, Details, MeetingLink, Status) 
-                        VALUES (?, ?,'non-recurring', ?, '', ?, ?, ?, ?, ?, ?, 'current')");
+$stmt = $conn->prepare("INSERT INTO CreatedBookings (UserID, BookingName, RecurrenceFrequency, MeetingDates, RecurrenceDays, StartTimes, EndTimes, StartRecurringDate, EndRecurringDate, Details, Location, MeetingLink, Status) 
+                        VALUES (?, ?,'non-recurring', ?, '', ?, ?, ?, ?, ?, '', ?, 'current')");
 
 $startDate = $date;
 $endDate = $date;

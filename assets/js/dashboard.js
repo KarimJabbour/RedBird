@@ -742,9 +742,7 @@ function editBooking(bookingId) {
     return; // Exit if the user cancels the action
   }
   console.log("Redirecting to edit booking page with bookingId:", bookingId);
-  window.location.replace(
-    `http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`
-  );
+  window.location.replace(`http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`);
 }
 
 function closePoll(pollID) {
@@ -842,9 +840,7 @@ function acceptAlternateRequest(alternateRequestID, selectedOption, message) {
           "A booking has been created for the alternate request! Optionally, make any adjustments now."
         );
         location.reload();
-        window.location.replace(
-          `http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`
-        );
+        window.location.replace(`http://localhost/RedBird/pages/edit_booking.html?bookingId=${bookingId}`);
       } else {
         alert("Failed to accept alternate request: " + data.message);
       }
