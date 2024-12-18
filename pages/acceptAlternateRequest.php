@@ -61,7 +61,7 @@ $alternateBookingName = "Alternate - " . $originalBooking['BookingName'];
 $details = $originalBooking['Details'];
 $meetingLink = $originalBooking['MeetingLink'];
 
-// Insert the new alternate booking
+// Insert the newly created alternate booking
 $stmt = $conn->prepare("INSERT INTO CreatedBookings (UserID, BookingName, RecurrenceFrequency, MeetingDates, RecurrenceDays, StartTimes, EndTimes, StartRecurringDate, EndRecurringDate, Details, Location, MeetingLink, Status) 
                         VALUES (?, ?,'non-recurring', ?, '', ?, ?, ?, ?, ?, '', ?, 'current')");
 

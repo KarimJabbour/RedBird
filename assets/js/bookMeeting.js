@@ -42,6 +42,7 @@ function loadUserDetails() {
     });
 }
 
+// Start Thomas
 function getDates() {
   fetchAvailableDates()
     .then((availableDates) => {
@@ -57,7 +58,7 @@ async function fetchAvailableDates() {
   try {
     // Retrieve the bookingId from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    const bookingId = urlParams.get("id"); // Extracts the 'id' from the URL
+    const bookingId = urlParams.get("id");
     global_bookingID = urlParams.get("id");
     if (!bookingId) {
       throw new Error("Booking ID is missing in the URL.");
@@ -154,6 +155,8 @@ function highlightAvailableDates(availableDates) {
     }
   });
 }
+
+// End Thomas
 
 let selectedSlot = null;
 
@@ -332,6 +335,7 @@ function sendEmailConfirmation(email, bookingId) {
     });
 }
 
+// Start Thomas
 function changeMonth(direction) {
   currentMonth += direction;
 
@@ -360,6 +364,7 @@ function populateBookingDetails(data) {
   locationElement.querySelector("p").textContent =
     data.Location || "No location specified.";
 }
+// End Thomas
 
 function redirectToAlternate() {
   if (!global_bookingID) {

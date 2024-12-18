@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Start Karim
 async function fetchUserDetails() {
   try {
     const response = await fetch("../includes/user_data.php");
@@ -46,6 +47,7 @@ async function fetchUserDetails() {
     console.error("Error:", error.message);
   }
 }
+// End Karim
 
 function populateCalendar(month, year) {
     const calendarGrid = document.getElementById("calendar-grid");
@@ -72,7 +74,7 @@ function populateCalendar(month, year) {
     monthYearDisplay.textContent = `${monthNames[month]} ${year}`;
 
     const firstDay = new Date(year, month, 1).getDay(); // Day of the week (0 = Sunday)
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Total days in the month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     // Adjust firstDay to align with Monday as the starting day
     const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;

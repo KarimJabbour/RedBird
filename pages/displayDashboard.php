@@ -111,7 +111,7 @@ if (empty($response)) {
     exit;
 }
 
-
+// Start Karim
 /// Fetch reserved bookings directly from BookingParticipants
 $sqlReservedBookings = "
 SELECT 
@@ -150,7 +150,7 @@ while ($row = $resultReservedBookings->fetch_assoc()) {
 
 // Add reserved bookings to the response
 $response['reservedBookings'] = $reservedBookings;
-
+// End Karim
 
 header('Content-Type: application/json');
 echo json_encode($response);

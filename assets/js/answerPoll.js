@@ -180,6 +180,7 @@ function sendConfirmationEmail(email, pollID) {
     });
 }
 
+// Start Khyati
 // Populate time options dynamically
 function populateTimeOptions(poll) {
   const currentDate = new Date(Date.now())
@@ -239,3 +240,5 @@ function populateTimeOptions(poll) {
   }
   
 }
+
+// End Khyati

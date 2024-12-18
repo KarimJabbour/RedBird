@@ -12,20 +12,11 @@
       <!-- Navigation Bar -->
       <nav class="navbar">
         <div class="logo">
-          <img
-            src="Images/logo.png"
-            alt="RedBird Logo"
-            class="logo-img"
-          />RedBird Roster
+          <img src="Images/logo.png" alt="RedBird Logo" class="logo-img"/>RedBird Roster
         </div>
         <ul class="nav-links">
           <li>
-            <a href="http://localhost/RedBird/pages/login.php"
-              ><img
-                src="Images/icons/user-icon.png"
-                alt="User Icon"
-                class="user-icon"
-            /></a>
+            <a href="http://localhost/RedBird/pages/login.php"><img src="Images/icons/user-icon.png" alt="User Icon"class="user-icon"/></a>
           </li>
         </ul>
       </nav>
@@ -39,12 +30,7 @@
       </header>
 
       <div class="main-content" id="main-content">
-        <form
-          action="updateVoteCounts.php"
-          method="POST"
-          class="answer-poll"
-          id="answer-poll"
-        >
+        <form action="updateVoteCounts.php" method="POST" class="answer-poll" id="answer-poll">
           <input type="hidden" name="pollID" id="pollID" value="" />
           <div class="poll-card">
             <div class="poll-details">
@@ -53,42 +39,26 @@
               <p><b>Answer By:</b> <span id="poll-close-date"></span></p>
             </div>
           </div>
+
           <!-- Enhanced Time Selector -->
           <div class="time-selector">
             <h2>Select Dates and Times</h2>
             <div class="timeline"></div>
           </div>
+
           <section class="form-container details">
             <div>
               <div class="info-item">
                 <label for="fullname"><h3>Full Name</h3></label>
-                <input
-                  type="text"
-                  id="fullname"
-                  name="fullname"
-                  placeholder="Enter your full name."
-                  required
-                />
+                <input type="text" id="fullname" name="fullname" placeholder="Enter your full name." required/>
               </div>
               <div class="info-item">
                 <label for="mcgillemail"><h3>McGill Email Address</h3></label>
-                <input
-                  type="email"
-                  id="mcgillemail"
-                  name="mcgillemail"
-                  placeholder="Enter your McGill email."
-                  required
-                />
+                <input type="email" id="mcgillemail" name="mcgillemail" placeholder="Enter your McGill email." required/>
               </div>
               <div class="info-item">
                 <label for="mcgillid"><h3>McGill ID</h3></label>
-                <input
-                  type="text"
-                  id="mcgillid"
-                  name="mcgillid"
-                  placeholder="Enter your McGill ID."
-                  required
-                />
+                <input type="text" id="mcgillid" name="mcgillid" placeholder="Enter your McGill ID." required/>
               </div>
             </div>
           </section>

@@ -439,9 +439,9 @@ function showAlternatePopup(request) {
   const timeItems = alternatePopup.querySelectorAll(".time-item");
   timeItems.forEach((item) => {
     item.addEventListener("click", () => {
-      timeItems.forEach((el) => el.classList.remove("selected")); // Deselect all other time items
-      item.classList.add("selected"); // Select the clicked item
-      acceptButton.style.display = "block"; // Show the accept button
+      timeItems.forEach((el) => el.classList.remove("selected"));
+      item.classList.add("selected"); // Mark clicked item as selcted
+      acceptButton.style.display = "block";
     });
   });
 }
@@ -452,7 +452,7 @@ function showBookingPopup(booking, inHistory = false) {
 
   bookingPopup.querySelector(".modal-header h2").textContent =
     booking.BookingName;
-  // bookingPopup.querySelector(".delete-btn").setAttribute('onclick', `deleteBooking(${booking.ID})`);
+  
   const formatParameter = (param) =>
     param === -1 || param === "-1" ? "" : param;
 
@@ -754,7 +754,6 @@ function closePoll(pollID) {
   }
 
   const closeTime = new Date().toISOString().replace("Z", ""); // Current timestamp
-  // console.log("closetime"+closeTime);
 
   fetch("http://localhost/RedBird/pages/closePoll.php", {
     method: "POST",
@@ -785,7 +784,7 @@ function closePoll(pollID) {
 }
 
 function declineAlternateRequest(requestID) {
-  const message = document.getElementById("message").value.trim(); // Get the optional message
+  const message = document.getElementById("message").value.trim();
   if (!confirm("Are you sure you want to decline this request?")) {
     return;
   }
