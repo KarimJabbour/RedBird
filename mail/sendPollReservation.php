@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
 
     // Find the numeric PollID using the hashed ID
-    $sql = "SELECT ID FROM CreatedPolls WHERE hashedID = ?";
+    $sql = "SELECT ID, PollName FROM CreatedPolls WHERE hashedID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $hashedPollID);
     $stmt->execute();
@@ -66,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $pollID = $row['ID'];
+        $pollName = $row['PollName'];
     } else {
         http_response_code(400);
         error_log("Invalid hashed poll ID provided: $hashedPollID");
@@ -112,20 +113,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "Start Times: $startTimesString\n" .
             "End Times: $endTimesString\n";
 
-        $emailContentHtml = "<strong>Poll Vote Details:</strong><br><br>" .
-            "<ul>" .
-            "<li><strong>Name:</strong> $fullName</li>" .
-            "<li><strong>McGill ID:</strong> $mcgillID</li>" .
-            "<li><strong>Email:</strong> $email</li>" .
-            "<li><strong>Meeting Dates:</strong> $meetingDatesString</li>" .
-            "<li><strong>Start Times:</strong> $startTimesString</li>" .
-            "<li><strong>End Times:</strong> $endTimesString</li>" .
-            "</ul>";
-
+        $emailContentHtml = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    text-align: center;
+                }
+                .email-container {
+                    background-color: #fff;
+                    margin: 30px auto;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    max-width: 600px;
+                }
+                .header {
+                    margin-bottom: 20px;
+                }
+                .header img {
+                    max-width: 120px;
+                }
+                .header h2 {
+                    color: #d32f2f;
+                    margin: 10px 0;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .content {
+                    font-size: 16px;
+                    color: #555;
+                    line-height: 1.6;
+                    margin: 20px 0;
+                }
+                .link-container {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                .link-container input {
+                    font-size: 14px;
+                    padding: 10px;
+                    width: 90%;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                    box-sizing: border-box;
+                }
+                .button {
+                    display: inline-block;
+                    background-color: #d32f2f;
+                    color: #fff;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+                .footer {
+                    margin-top: 30px;
+                    font-size: 12px;
+                    color: #888;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <img src="https://i.imgur.com/V4lqM2r.png" alt="Logo">
+                    <h2>Poll Vote Confirmation</h2>
+                </div>
+                <div class="content">
+                    <p>Dear User,</p>
+                    <p>You voted on the poll: <strong>' . htmlspecialchars($pollName) . '</strong>.</p>
+                </div>
+                <a class="button" href="http://localhost/RedBird/pages/answer_poll.html?pollID=' . htmlspecialchars($hashedPollID) . '">View Poll</a>
+                <div class="link-container">
+                    <p>Copy the poll link below:</p>
+                    <input type="text" value="http://localhost/RedBird/pages/answer_poll.html?pollID=' . htmlspecialchars($hashedPollID) . '" readonly>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2024 RedBird Notifications | McGill University</p>
+                </div>
+            </div>
+        </body>
+        </html>';
+            
         // Send email using SendGrid
         $sendgridEmail = new \SendGrid\Mail\Mail();
         $sendgridEmail->setFrom("redbirdnotifs@gmail.com", "RedBird Notifications");
-        $sendgridEmail->setSubject("Poll Vote Details");
+        $sendgridEmail->setSubject("Poll Vote");
         $sendgridEmail->addTo($email);
         $sendgridEmail->addContent("text/plain", $emailContentPlain);
         $sendgridEmail->addContent("text/html", $emailContentHtml);

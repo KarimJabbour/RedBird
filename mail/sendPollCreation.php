@@ -95,23 +95,117 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "Status: $status\n" .
             "Poll URL: $pollURL";
 
-        $emailContentHtml = "<strong>Poll Created: '$pollName'.</strong><br><br>" .
-            "<p><strong>Details:</strong></p>" .
-            "<ul>" .
-            "<li><strong>Poll Name:</strong> $pollName</li>" .
-            "<li><strong>Poll Description:</strong> $details</li>" .
-            "<li><strong>Date Options:</strong> $dateOptionsString</li>" .
-            "<li><strong>Start Times:</strong> $startTimesString</li>" .
-            "<li><strong>End Times:</strong> $endTimesString</li>" .
-            "<li><strong>Poll Close Time:</strong> $pollCloseDateTime</li>" .
-            "<li><strong>Status:</strong> $status</li>" .
-            "<li><strong>Poll URL:</strong> <a href=\"$pollURL\">$pollURL</a></li>" .
-            "</ul>";
-
+        $emailContentHtml = '<!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    text-align: center;
+                }
+                .email-container {
+                    background-color: #fff;
+                    margin: 30px auto;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    max-width: 600px;
+                }
+                .header {
+                    margin-bottom: 20px;
+                }
+                .header img {
+                    max-width: 120px;
+                }
+                .header h2 {
+                    color: #d32f2f;
+                    margin: 10px 0;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .details {
+                    color: #555;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    margin: 20px 0;
+                }
+                .details strong {
+                    color: #d32f2f;
+                }
+                .dates {
+                    color: #333;
+                    background-color: #f9f9f9;
+                    padding: 10px;
+                    border-radius: 5px;
+                    margin: 10px 0;
+                }
+                .button {
+                    display: inline-block;
+                    background-color: #d32f2f;
+                    color: #fff;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+                .link-container {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                .link-container input {
+                    font-size: 14px;
+                    padding: 10px;
+                    width: 90%;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                    box-sizing: border-box;
+                }
+                .footer {
+                    margin-top: 30px;
+                    font-size: 12px;
+                    color: #888;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <img src="https://i.imgur.com/V4lqM2r.png" alt="Logo">
+                    <h2>Poll Creation</h2>
+                </div>
+                <p>Dear User,</p>
+                <p>You created the following poll:</p>
+                <div class="details">
+                    <p><strong>Poll Name:</strong> ' . htmlspecialchars($pollName) . '</p>
+                    <div class="dates">
+                        <p><strong>Date Options:</strong> ' . htmlspecialchars($dateOptionsString) . '</p>
+                        <p><strong>Start Times:</strong> ' . htmlspecialchars($startTimesString) . '</p>
+                        <p><strong>End Times:</strong> ' . htmlspecialchars($endTimesString) . '</p>
+                        <p><strong>Poll Close Time:</strong> ' . htmlspecialchars($pollCloseDateTime) . '</p>
+                    </div>
+                </div>
+                <a class="button" href="' . htmlspecialchars($pollURL) . '">Visit Poll</a>
+                <div class="link-container">
+                    <p>Copy the poll link below:</p>
+                    <input type="text" value="' . htmlspecialchars($pollURL) . '" readonly>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2024 RedBird Notifications | McGill University</p>
+                </div>
+            </div>
+        </body>
+        </html>';
+            
         // Send email using SendGrid
         $sendgridEmail = new \SendGrid\Mail\Mail();
         $sendgridEmail->setFrom("redbirdnotifs@gmail.com", "RedBird Notifications");
-        $sendgridEmail->setSubject("Poll Invitation: $pollName");
+        $sendgridEmail->setSubject("Poll Creation");
         $sendgridEmail->addTo($email);
         $sendgridEmail->addContent("text/plain", $emailContentPlain);
         $sendgridEmail->addContent("text/html", $emailContentHtml);

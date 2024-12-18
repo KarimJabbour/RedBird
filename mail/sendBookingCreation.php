@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $startTimes = $booking['StartTimes'];
         $endTimes = $booking['EndTimes'];
         $hashedID = $booking['hashedID'];
-        $bookingURL = "http://localhost/RedBird/pages/book_meeting.html?id=$hashedID"; // Generate Booking URL
+        $bookingURL = "http://localhost/RedBird/pages/book_meeting.html?id=$hashedID";
 
         $location = $booking['Location'];
         $startDate = $booking['StartRecurringDate'];
@@ -78,25 +78,117 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             "Details: $details\n" .
             "Booking URL: $bookingURL";
 
-        $emailContentHtml = "<strong>Created booking '$bookingName'.</strong><br><br>" .
-            "<p><strong>Details:</strong></p>" .
-            "<ul>" .
-            "<li><strong>Start Date:</strong> $startDate</li>" .
-            "<li><strong>End Date:</strong> $endDate</li>" .
-            "<li><strong>Location:</strong> $location</li>" .
-            "<li><strong>Meeting Dates:</strong> $meetingDatesString</li>" .
-            "<li><strong>Recurrence Frequency:</strong> $recurrenceFrequency</li>" .
-            "<li><strong>Recurrence Days:</strong> $recurrenceDays</li>" .
-            "<li><strong>Start Times:</strong> $startTimes</li>" .
-            "<li><strong>End Times:</strong> $endTimes</li>" .
-            "<li><strong>Details:</strong> $details</li>" .
-            "<li><strong>Booking URL:</strong> <a href=\"$bookingURL\">$bookingURL</a></li>" .
-            "</ul>";
+        $emailContentHtml = '
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f4f4f4;
+                    color: #333;
+                    text-align: center;
+                }
+                .email-container {
+                    background-color: #fff;
+                    margin: 30px auto;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    max-width: 600px;
+                }
+                .header {
+                    margin-bottom: 20px;
+                }
+                .header img {
+                    max-width: 120px;
+                }
+                .header h2 {
+                    color: #d32f2f;
+                    margin: 10px 0;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
+                .details {
+                    color: #555;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    margin: 20px 0;
+                }
+                .details strong {
+                    color: #d32f2f;
+                }
+                .dates {
+                    color: #333;
+                    background-color: #f9f9f9;
+                    padding: 10px;
+                    border-radius: 5px;
+                    margin: 10px 0;
+                }
+                .button {
+                    display: inline-block;
+                    background-color: #d32f2f;
+                    color: #fff;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                }
+                .link-container {
+                    margin-top: 10px;
+                    text-align: center;
+                }
+                .link-container input {
+                    font-size: 14px;
+                    padding: 10px;
+                    width: 90%;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                    box-sizing: border-box;
+                }
+                .footer {
+                    margin-top: 30px;
+                    font-size: 12px;
+                    color: #888;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    <img src="https://i.imgur.com/V4lqM2r.png" alt="Logo">
+                    <h2>Booking Creation</h2>
+                </div>
+                <p>Dear User,</p>
+                <p>You have successfully created the following booking:</p>
+                <div class="details">
+                    <p><strong>Booking Name:</strong> ' . htmlspecialchars($bookingName) . '</p>
+                    <p><strong>Location:</strong> ' . htmlspecialchars($location) . '</p>
+                    <p><strong>Meeting Dates:</strong> ' . htmlspecialchars($meetingDatesString) . '</p>
+                    <p><strong>Recurrence Frequency:</strong> ' . htmlspecialchars($recurrenceFrequency) . '</p>
+                    <p><strong>Details:</strong> ' . htmlspecialchars($details) . '</p>
+                </div>
+                <a class="button" href="' . htmlspecialchars($bookingURL) . '">View Your Booking</a>
+                <div class="link-container">
+                    <p>Copy the booking link below:</p>
+                    <input type="text" value="' . htmlspecialchars($bookingURL) . '" readonly>
+                </div>
+                <div class="footer">
+                    <p>&copy; 2024 RedBird Notifications | McGill University</p>
+                </div>
+            </div>
+        </body>
+        </html>';
+        
 
         // Send email using SendGrid
         $sendgridEmail = new \SendGrid\Mail\Mail();
         $sendgridEmail->setFrom("redbirdnotifs@gmail.com", "RedBird Notifications");
-        $sendgridEmail->setSubject("Booking Confirmation");
+        $sendgridEmail->setSubject("Booking Creation");
         $sendgridEmail->addTo($email);
         $sendgridEmail->addContent("text/plain", $emailContentPlain);
         $sendgridEmail->addContent("text/html", $emailContentHtml);
