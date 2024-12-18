@@ -14,14 +14,14 @@
 
       <!-- Navigation Bar -->
       <nav class="navbar">
-          <div class="logo">
-              <img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster
-          </div>
-          <ul class="nav-links">
-              <!-- <li><a href="#" class="active">Dashboard</a></li>
-              <li><a href="create_booking.html">Create Booking</a></li> -->
-              <li><a href="#"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"></a></li>
-          </ul>
+        <div class="logo">
+          <a href="landing.html"><img src="Images/logo.png" alt="RedBird Logo" class="logo-img">RedBird Roster</a>
+        </div>
+        <ul class="nav-links">
+          <li>
+            <a href="login.php"><img src="Images/icons/user-icon.png" alt="User Icon" class="user-icon"/></a>
+          </li>
+        </ul>
       </nav>
 
         <!-- Header -->
@@ -32,12 +32,14 @@
 
         <!-- Main Content -->
         <form action="alternateRequest.php" method="POST" class="alternate-form" id="alternate-form">
+
           <section class="split-content">
-            <!-- Dynamic Sidebar -->
+
             <div class="dynamic-container">
               <div class="dynamic-content" id="dynamic-calendar">
                 <h3>Calendar</h3>
                 <div class="calendar">
+
                   <!-- Calendar Header -->
                   <div class="calendar-header">
                     <button class="prev-month" type="button">
@@ -64,7 +66,7 @@
                 <button type="button" class="clear-btn" onclick="clearAllHighlights()">Clear</button>
               </div>
                 <div class="time-cards">
-
+                    <!-- Dynamically Populated -->
                 </div>
 
             </section>
@@ -90,7 +92,7 @@
                         <label for="details">Message</label>
                         <input type="text" id="details" name="details" placeholder="Explain why you need an alternate time." required>
                     </div>
-                    
+
                     <input type="hidden" id="dates-hidden" name="dates" value="">
                     <input type="hidden" id="start-times-hidden" name="startTimes" value="">
                     <input type="hidden" id="end-times-hidden" name="endTimes" value="">
@@ -109,17 +111,3 @@
 </body>
 
 </html>
-<script>
-  async function fetchUserDetails() {
-    try {
-      const response = await fetch("../includes/user_data.php");
-      if (!response.ok) throw new Error("Failed to fetch user details");
-      const data = await response.json();
-      if (data.full_name) document.getElementById("name").value = data.full_name;
-      if (data.email) document.getElementById("email").value = data.email;
-    } catch (error) {
-      console.error("Error:", error.message);
-    }
-  }
-  document.addEventListener("DOMContentLoaded", fetchUserDetails);
-</script>
