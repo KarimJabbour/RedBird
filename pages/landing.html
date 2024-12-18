@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedBird Roster</title>
+    <link rel="stylesheet" href="../assets/css/landing.css">
+</head>
+
+<body>
+
+  <!-- Feather Animation -->
+  <canvas id="feather-animation"></canvas>
+
+  <section class="hero">
+      <div class="hero-content">
+          <h1>Welcome to RedBird Roster</h1>
+          <p>Effortless meeting management for professors and students.</p>
+          <a href="login.php"><button class="getstarted">Get Started</button></a>
+      </div>
+  </section>
+
+  <!-- Book by URL -->
+  <section class="id-section">
+      <div class="id-container">
+          <h2>Access Your Bookings or Polls Instantly</h2>
+          <p>Enter your Booking ID or Poll ID to jump directly to your page.</p>
+          <div class="id-bubbles">
+              <div class="id-bubble">
+                  <input type="text" id="booking-id" placeholder="Enter Booking ID">
+                  <button class="id-btn" onclick="goToBooking()">&#x1F50D;</button>
+              </div>
+              <div class="id-bubble">
+                  <input type="text" id="poll-id" placeholder="Enter Poll ID">
+                  <button class="id-btn" onclick="goToPoll()">&#x1F50D;</button>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+      <div class="about-container">
+          <h2 class="about-title">About RedBird Roster</h2>
+          <p class="about-description">
+              RedBird Roster is McGill's meeting and office hour management system for professors, students and TAs. Schedule office hours, book meetings and send polls all from one platform.
+          </p>
+          <div class="about-features">
+              <div class="feature-card">
+                  <i class="fas fa-calendar-check"></i>
+                  <h3>Easy Scheduling</h3>
+                  <p>Easily setup your office hours and share a URL with your students.</p>
+              </div>
+              <div class="feature-card">
+                  <i class="fas fa-users"></i>
+                  <h3>Reschedule</h3>
+                  <p>Change of plans? You can edit your meetings and RedBird will automatically email all the attendees to let them know of the changes so you can reschedule without the hassle.</p>
+              </div>
+              <div class="feature-card">
+                  <i class="fas fa-clock"></i>
+                  <h3>Planning</h3>
+                  <p>Setup polls to vote for the best time to hold a meeting. Attendees can select their available times so you can minimize scheduling issues.</p>
+              </div>
+          </div>
+          <div class="about-getstarted">
+              <a href="login.php">
+                  <button class="getstarted">Get Started</button>
+              </a>
+          </div>
+      </div>
+  </section>
+
+  <script src="../assets/js/landing.js"></script>
+
+</body>
+
+</html>
