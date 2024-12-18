@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!manualAdjustments.has(date)) {
 
                         const dayOfWeek = new Date(date).getDay();
-                        const dayKey = ["M", "T", "W", "Th", "F", "S", "Su"][dayOfWeek];
+                        const dayKey = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayOfWeek];
 
                         console.log("Processing date:", date, "with dayKey:", dayKey);
 
@@ -329,12 +329,23 @@ function generateRecurrenceTimeCards(recurrenceDays) {
     const timeCardContainer = document.querySelector(".time-cards");
     timeCardContainer.innerHTML = ""; // Clear existing time cards
 
+    const dayNameMapping = {
+        "M": "Monday",
+        "T": "Tuesday",
+        "W": "Wednesday",
+        "Th": "Thursday",
+        "F": "Friday",
+        "S": "Saturday",
+        "Su": "Sunday"
+    };
+
     recurrenceDays.forEach(day => {
         const timeCard = document.createElement("div");
         timeCard.classList.add("time-card");
 
         const title = document.createElement("h3");
-        title.textContent = `${day}`;
+        const fullDayName = dayNameMapping[day];
+        title.textContent = `${fullDayName}`;
         timeCard.appendChild(title);
 
         const timeSlotRow = document.createElement("div");

@@ -126,8 +126,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("Cleared deselectedDates because recurrence day was unchecked.");
                 }
 
-                // updateRecurringDayTimes(checkbox.value, checkbox.checked);
+                updateDayTimesFromCards();
                 updateTimeCards();
+                displayTimeSlots();
                 updateCalendar();
 
             } else {
@@ -194,18 +195,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("Updated Recurring Day Times:", recurringDayTimes);
 
                 recurringDates.forEach(date => {
-                    const dayOfWeek = new Date(date).getDay();
-                    const dayKey = ["M", "T", "W", "Th", "F", "S", "Su"][dayOfWeek];
+                    if (!manualAdjustments.has(date)) {
+                        const dayOfWeek = new Date(date).getDay();
+                        const dayKey = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayOfWeek];
 
-                    console.log("Processing date:", date, "with dayKey:", dayKey);
+                        console.log("Processing date:", date, "with dayKey:", dayKey);
 
-                    if (recurringDayTimes[dayKey]) {
-                        recurringDayTimes[dayKey].forEach(time => {
-                            console.log(`Adding for ${date}: Start - ${time.start}, End - ${time.end}`);
-                            meetingDates.push(date);
-                            startTimes.push(time.start);
-                            endTimes.push(time.end);
-                        });
+                        if (recurringDayTimes[dayKey]) {
+                            recurringDayTimes[dayKey].forEach(time => {
+                                console.log(`Adding for ${date}: Start - ${time.start}, End - ${time.end}`);
+                                meetingDates.push(date);
+                                startTimes.push(time.start);
+                                endTimes.push(time.end);
+                            });
+                        }
                     }
                 });
             }
@@ -223,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (meetingDates.length == 0) {
+            console.log(recurringDayTimes);
             showAlert("Please make sure to pick at least one date for the booking.");
             return;
         }
@@ -506,7 +510,9 @@ function generateManualTimeCard(date) {
     timeCard.appendChild(addButton);
 
     timeCardContainer.prepend(timeCard);
-    applyDefaultTimesToTimeCard(timeCard);
+    if (!recurringDayTimes[date]) {
+        applyDefaultTimesToTimeCard(timeCard);
+    }
 }
 
 function generateMonthlyTimeCard(dayOfMonth) {
@@ -1055,4 +1061,26 @@ function validateRecurrenceDays() {
         return false;
     }
     return true;
+}
+
+function displayTimeSlots() {
+    Object.keys(recurringDayTimes).forEach(dayOrDate => {
+        const timeCard = document.querySelector(`.time-card[data-day='${dayOrDate}'], .time-card[data-date='${dayOrDate}']`);
+        
+        if (timeCard) {
+            const startInputs = timeCard.querySelectorAll(".start-time");
+            const endInputs = timeCard.querySelectorAll(".end-time");
+            const timeSlots = recurringDayTimes[dayOrDate];
+
+            // Update only if values are empty
+            timeSlots.forEach((timeSlot, index) => {
+                if (startInputs[index] && !startInputs[index].value) {
+                    startInputs[index].value = timeSlot.start;
+                }
+                if (endInputs[index] && !endInputs[index].value) {
+                    endInputs[index].value = timeSlot.end;
+                }
+            });
+        }
+    });
 }
