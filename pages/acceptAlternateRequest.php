@@ -1,5 +1,7 @@
 <?php
 header('Content-Type: application/json');
+// session_start();
+$userID = $_SESSION['user_id'];
 
 $servername = "localhost";
 $username = "root";
@@ -23,8 +25,8 @@ $startTime = $data['startTime'];
 $endTime = $data['endTime'];
 $message = $data['message'] ?? '';
 
-//placeholder value
-$userID = -1;
+$userID = $_SESSION['user_id'];
+
 
 // Validate inputs
 if (!$alternateRequestID || !$date || !$startTime || !$endTime) {
@@ -90,6 +92,16 @@ if ($stmt->execute()) {
 } else {
     echo json_encode(["success" => false, "message" => "Failed to update alternate request: " . $stmt->error]);
 }
+
+
+$newBookingId = $conn->insert_id;
+$hashedID = hash('sha256', $newBookingId);
+
+$updateHashedIdSql = "UPDATE CreatedBookings SET hashedID = ? WHERE ID = ?";
+$stmtUpdate = $conn->prepare($updateHashedIdSql);
+$stmtUpdate->bind_param("si", $hashedID, $newBookingId);
+$stmtUpdate->execute();
+
 
 $stmt->close();
 $conn->close();
