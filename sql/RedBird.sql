@@ -28,16 +28,17 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `AlternateRequests` (
-  `ID` int(11) NOT NULL,
-  `FullName` varchar(40) NOT NULL,
-  `Email` varchar(30) NOT NULL,
-  `Details` text NOT NULL,
-  `LinkedBookingID` int(11) NOT NULL,
-  `DateOptions` longtext NOT NULL,
-  `StartTimes` longtext NOT NULL,
-  `EndTimes` longtext NOT NULL,
-  `ResponseMessage` text DEFAULT NULL,
-  `Status` varchar(20) NOT NULL DEFAULT 'pending'
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `FullName` VARCHAR(40) NOT NULL,
+  `Email` VARCHAR(50) NOT NULL,
+  `Details` TEXT NOT NULL,
+  `LinkedBookingID` VARCHAR(64) NOT NULL, -- Changed to VARCHAR(64)
+  `DateOptions` LONGTEXT NOT NULL,
+  `StartTimes` LONGTEXT NOT NULL,
+  `EndTimes` LONGTEXT NOT NULL,
+  `ResponseMessage` TEXT DEFAULT NULL,
+  `Status` VARCHAR(20) NOT NULL DEFAULT 'pending',
+  PRIMARY KEY (`ID`) -- Adding primary key for table consistency
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -45,9 +46,9 @@ CREATE TABLE `AlternateRequests` (
 --
 
 INSERT INTO `AlternateRequests` (`ID`, `FullName`, `Email`, `Details`, `LinkedBookingID`, `DateOptions`, `StartTimes`, `EndTimes`, `ResponseMessage`, `Status`) VALUES
-(4, 'Khyati Singh', 'testing@gmail.com', 'busy', 38, '\"2024-12-06,2024-12-17\"', '\"16:04,17:00\"', '\"17:05,18:00\"', '', 'pending'),
-(6, 'k s', 'ks@gmail.com', 'bcjbajsk', 38, '\"2024-12-11\"', '\"16:05\"', '\"17:05\"', '', 'pending'),
-(7, 'test', 'a@gmail.com', 'ctvg', 38, '\"2024-12-06,2024-12-17\"', '\"16:00,15:06\"', '\"17:00,16:07\"', 'some msg', 'accepted');
+(4, 'Khyati Singh', 'testing@gmail.com', 'busy', '38', '\"2024-12-06,2024-12-17\"', '\"16:04,17:00\"', '\"17:05,18:00\"', '', 'pending'),
+(6, 'k s', 'ks@gmail.com', 'bcjbajsk', '38', '\"2024-12-11\"', '\"16:05\"', '\"17:05\"', '', 'pending'),
+(7, 'test', 'a@gmail.com', 'ctvg', '38', '\"2024-12-06,2024-12-17\"', '\"16:00,15:06\"', '\"17:00,16:07\"', 'some msg', 'accepted');
 
 -- --------------------------------------------------------
 
