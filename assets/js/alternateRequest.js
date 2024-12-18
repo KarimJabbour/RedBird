@@ -1,4 +1,4 @@
-// Global variables 
+// Global variables
 let currentDate = new Date();
 let currentMonth = currentDate.getMonth();
 let currentYear = currentDate.getFullYear();
@@ -6,6 +6,9 @@ let selectedDates = new Set(); // Store selected dates
 let sidebarData = {};
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    fetchUserDetails();
+
     const urlParams = new URLSearchParams(window.location.search);
     const bookingID = urlParams.get("id");
 
@@ -18,13 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
             startTime: sidebarData[date]?.startTime || "",
             endTime: sidebarData[date]?.endTime || ""
         }));
-    
+
         // Populate the hidden inputs
         const datesInput = document.getElementById("dates-hidden");
         const startTimesInput = document.getElementById("start-times-hidden");
         const endTimesInput = document.getElementById("end-times-hidden");
         const bookingIDHidden = document.getElementById("booking-id");
-    
+
         datesInput.value = timeCardData.map(entry => entry.date).join(",");
         startTimesInput.value = timeCardData.map(entry => entry.startTime).join(",");
         endTimesInput.value = timeCardData.map(entry => entry.endTime).join(",");
@@ -32,6 +35,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+async function fetchUserDetails() {
+  try {
+    const response = await fetch("../includes/user_data.php");
+    if (!response.ok) throw new Error("Failed to fetch user details");
+    const data = await response.json();
+    if (data.full_name) document.getElementById("name").value = data.full_name;
+    if (data.email) document.getElementById("email").value = data.email;
+  } catch (error) {
+    console.error("Error:", error.message);
+  }
+}
 
 function populateCalendar(month, year) {
     const calendarGrid = document.getElementById("calendar-grid");
@@ -145,8 +159,8 @@ function updateSidebar() {
                     type="time"
                     class="time-slot"
                     id="start-time-${date}"
-                    value="${sidebarData[date].startTime}" 
-                    data-date="${date}" 
+                    value="${sidebarData[date].startTime}"
+                    data-date="${date}"
                 >
             </label>
             <label for="end-time-${date}" class="time-slot-label">
@@ -155,8 +169,8 @@ function updateSidebar() {
                     type="time"
                     class="time-slot"
                     id="end-time-${date}"
-                    value="${sidebarData[date].endTime}" 
-                    data-date="${date}" 
+                    value="${sidebarData[date].endTime}"
+                    data-date="${date}"
                 >
             </label>
         `;
@@ -199,7 +213,7 @@ function clearAllHighlights() {
     calendarDays.forEach(day => {
         day.classList.remove("highlight");
     });
-  
+
     selectedDates.clear();
     sidebarData = {};
     updateSidebar();
