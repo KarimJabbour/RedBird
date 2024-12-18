@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f7f9fc, #e9eef5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    min-height: 100vh;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+/* Confirmation Card */
+.confirmation-card {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    max-width: 650px;
+    width: 100%;
+    animation: fadeIn 1s ease-in-out;
+    border: 2px solid #F34F51;
+}
+
+.confirmation-card .icon {
+    color: #28a745;
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.confirmation-card h1 {
+    font-size: 2rem;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.confirmation-card p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.booking-details {
+    background: #f8f8f8;
+    padding: 20px;
+    border: 1px solid #EB0920;
+    border-radius: 8px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.booking-details p {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: #333;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.booking-details p b {
+    color: #EB0920;
+}
+
+/* Button */
+.btn {
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    background-color: #FF702E;
+    color: #fff;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #EB0920;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#qrcode {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+@media (max-height: 580px) {
+    body {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-height: 500px) {
+    body {
+        transform: scale(0.8);
+    }
+}
