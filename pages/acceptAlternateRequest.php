@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 // session_start();
+require_once '../includes/auth.php'; // Ensure the user is logged in
 $userID = $_SESSION['user_id'];
 
 $servername = "localhost";
@@ -25,7 +26,7 @@ $startTime = $data['startTime'];
 $endTime = $data['endTime'];
 $message = $data['message'] ?? '';
 
-$userID = $_SESSION['user_id'];
+//$userID = $_SESSION['user_id'];
 
 
 // Validate inputs
